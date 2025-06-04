@@ -1,255 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4D Tessaract Encryptor/Decryptor</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .control-panel {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: inherit;
-            margin-bottom: 10px;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin-right: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .output {
-            background-color: #e8f4f8;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            border-left: 4px solid #3498db;
-        }
-        .cube {
-            background-color: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 300px;
-        }
-        .layer {
-            margin-bottom: 15px;
-        }
-        table {
-            border-collapse: collapse;
-            margin: 0 auto;
-        }
-        td {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ddd;
-            text-align: center;
-            vertical-align: middle;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        td:hover {
-            background-color: #e3f2fd;
-        }
-        .active {
-            background-color: #fffde7;
-            box-shadow: 0 0 0 2px #ffc107;
-        }
-        .coord-display {
-            background-color: #2c3e50;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 15px;
-            font-family: monospace;
-        }
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        button { padding: 8px 15px; margin-right: 10px; }
+        .cube { display: inline-block; margin: 10px; vertical-align: top; }
+        table { border-collapse: collapse; }
+        td { width: 25px; height: 25px; border: 1px solid #000; text-align: center; font-size: 12px; }
+        .highlight { background-color: yellow; }
     </style>
 </head>
 <body>
-    <h1>4D Tessaract Encryptor/Decryptor</h1>
+    <h2>4D Tessaract Encryptor/Decryptor</h2>
     
-    <div class="control-panel">
-        <h2>Text Transformation</h2>
-        <textarea id="inputText" placeholder="Enter text here..."></textarea>
-        <div>
-            <button onclick="encrypt()">Encrypt</button>
-            <button onclick="decrypt()">Decrypt</button>
-            <button onclick="clearAll()">Clear</button>
-        </div>
-        <div class="output">
-            <strong>Result:</strong>
-            <div id="output"></div>
-        </div>
-        <div class="coord-display">
-            <strong>Last Coordinates:</strong>
-            <div id="lastCoords"></div>
-        </div>
+    <div>
+        <textarea id="input" placeholder="Enter text"></textarea><br>
+        <button onclick="encrypt()">Encrypt</button>
+        <button onclick="decrypt()">Decrypt</button>
+        <button onclick="clearAll()">Clear</button>
     </div>
     
-    <h2>4D Tessaract Structure</h2>
-    <div class="container">
-        <div class="cube">
-            <h3>🔷 Cube W=1 (Latin)</h3>
-            <div class="layer">
-                <h4>🔸 Layer Z=1 (A-I)</h4>
-                <table id="w1z1"></table>
-            </div>
-            <div class="layer">
-                <h4>🔸 Layer Z=2 (J-R)</h4>
-                <table id="w1z2"></table>
-            </div>
-            <div class="layer">
-                <h4>🔸 Layer Z=3 (S-#)</h4>
-                <table id="w1z3"></table>
-            </div>
-        </div>
-        
-        <div class="cube">
-            <h3>🔶 Cube W=2 (Cyrillic)</h3>
-            <div class="layer">
-                <h4>🔹 Layer Z=1 (А-И)</h4>
-                <table id="w2z1"></table>
-            </div>
-            <div class="layer">
-                <h4>🔹 Layer Z=2 (Й-С)</h4>
-                <table id="w2z2"></table>
-            </div>
-            <div class="layer">
-                <h4>🔹 Layer Z=3 (Т-Ъ)</h4>
-                <table id="w2z3"></table>
-            </div>
-        </div>
-        
-        <div class="cube">
-            <h3>🔲 Cube W=3 (Digits/Symbols)</h3>
-            <div class="layer">
-                <h4>▪ Layer Z=1 (1-9)</h4>
-                <table id="w3z1"></table>
-            </div>
-            <div class="layer">
-                <h4>▪ Layer Z=2 (!-()</h4>
-                <table id="w3z2"></table>
-            </div>
-            <div class="layer">
-                <h4>▪ Layer Z=3 ()-§)</h4>
-                <table id="w3z3"></table>
-            </div>
-        </div>
+    <div>
+        <strong>Result:</strong>
+        <div id="output"></div>
     </div>
+    
+    <div id="cubes"></div>
 
     <script>
-        // Alphabet definition for 3 cubes (W=1,2,3)
+        // Alphabet definition
         const cubes = [
-            // Cube W=1 (Latin)
-            [
-                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],    // Z=1
-                ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'],    // Z=2
-                ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#']     // Z=3
+            [ // Latin (W=1)
+                ['A','B','C','D','E','F','G','H','I'], // Z=1
+                ['J','K','L','M','N','O','P','Q','R'], // Z=2
+                ['S','T','U','V','W','X','Y','Z',' ']  // Z=3
             ],
-            // Cube W=2 (Cyrillic)
-            [
-                ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И'],   // Z=1
-                ['Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С'],   // Z=2
-                ['Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ']    // Z=3
+            [ // Cyrillic (W=2)
+                ['А','Б','В','Г','Д','Е','Ж','З','И'],
+                ['Й','К','Л','М','Н','О','П','Р','С'],
+                ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
             ],
-            // Cube W=3 (Digits/Symbols)
-            [
-                ['1', '2', '3', '4', '5', '6', '7', '8', '9'],  // Z=1
-                ['!', '@', '#', '$', '%', '^', '&', '*', '('],  // Z=2
-                [')', '-', '+', '=', '/', '?', '|', '~', '§']   // Z=3
+            [ // Symbols (W=3)
+                ['1','2','3','4','5','6','7','8','9'],
+                ['!','@','#','$','%','^','&','*','('],
+                [')','-','+','=','/','?','|','~','§']
             ]
         ];
 
-        // Initialize all tables
-        function initTables() {
+        // Initialize cubes
+        function initCubes() {
+            let html = '';
             for (let w = 0; w < 3; w++) {
+                html += `<div class="cube"><h3>Cube W=${w+1}</h3>`;
                 for (let z = 0; z < 3; z++) {
-                    const tableId = `w${w+1}z${z+1}`;
-                    const table = document.getElementById(tableId);
-                    table.innerHTML = '';
-                    
-                    // Create 3x3 table
+                    html += `<div>Layer Z=${z+1}<table id="w${w+1}z${z+1}">`;
                     for (let y = 0; y < 3; y++) {
-                        const row = table.insertRow();
+                        html += '<tr>';
                         for (let x = 0; x < 3; x++) {
-                            const cell = row.insertCell();
-                            const index = y * 3 + x;
-                            cell.textContent = cubes[w][z][index];
-                            
-                            // Coordinates for tooltip
-                            const coords = `(${x+1},${y+1},${z+1},${w+1})`;
-                            cell.title = `${cubes[w][z][index]} ${coords}`;
-                            
-                            // Click handler
-                            cell.onclick = function() {
-                                highlightCell(x+1, y+1, z+1, w+1);
-                                document.getElementById('lastCoords').textContent = 
-                                    `Char: ${cubes[w][z][index]} | Coords: ${coords}`;
-                            };
+                            const char = cubes[w][z][y*3 + x];
+                            html += `<td onclick="showCoords(${x+1},${y+1},${z+1},${w+1})">${char}</td>`;
                         }
+                        html += '</tr>';
                     }
+                    html += '</table></div>';
                 }
+                html += '</div>';
             }
+            document.getElementById('cubes').innerHTML = html;
         }
 
-        // Highlight a specific cell
-        function highlightCell(x, y, z, w) {
-            // Remove all highlights
-            const allCells = document.querySelectorAll('td');
-            allCells.forEach(cell => cell.classList.remove('active'));
-            
-            // Find and highlight the target cell
-            const tableId = `w${w}z${z}`;
-            const table = document.getElementById(tableId);
-            if (table && table.rows[y-1] && table.rows[y-1].cells[x-1]) {
-                table.rows[y-1].cells[x-1].classList.add('active');
-            }
-        }
-
-        // Find character in cubes
-        function findChar(char) {
+        // Find character coordinates
+        function findChar(c) {
             for (let w = 0; w < 3; w++) {
                 for (let z = 0; z < 3; z++) {
                     for (let y = 0; y < 3; y++) {
                         for (let x = 0; x < 3; x++) {
-                            if (cubes[w][z][y*3 + x] === char) {
+                            if (cubes[w][z][y*3 + x] === c) {
                                 return { x: x+1, y: y+1, z: z+1, w: w+1 };
                             }
                         }
@@ -261,32 +89,19 @@
 
         // Get character from coordinates
         function getChar(x, y, z, w) {
-            if (w < 1 || w > 3 || z < 1 || z > 3 || x < 1 || x > 3 || y < 1 || y > 3) {
-                return '?';
-            }
-            return cubes[w-1][z-1][(y-1)*3 + (x-1)];
+            return cubes[w-1][z-1][(y-1)*3 + (x-1)] || '?';
         }
 
-        // Encryption algorithm: (x,y,z,w) → (y,w,x,z)
+        // Encryption: (x,y,z,w) → (y,w,x,z)
         function encrypt() {
-            const input = document.getElementById('inputText').value;
+            const input = document.getElementById('input').value.toUpperCase();
             let output = '';
             
-            for (let i = 0; i < input.length; i++) {
-                const char = input[i];
+            for (const char of input) {
                 const coords = findChar(char);
-                
                 if (coords) {
-                    // Transform coordinates
-                    const encryptedChar = getChar(
-                        coords.y,  // x ← y
-                        coords.w,  // y ← w
-                        coords.x,  // z ← x
-                        coords.z   // w ← z
-                    );
-                    
-                    output += encryptedChar || '?';
-                    highlightCell(coords.y, coords.w, coords.x, coords.z);
+                    const encrypted = getChar(coords.y, coords.w, coords.x, coords.z);
+                    output += encrypted;
                 } else {
                     output += '?';
                 }
@@ -295,26 +110,16 @@
             document.getElementById('output').textContent = output;
         }
 
-        // Decryption algorithm: (y,w,x,z) → (x,y,z,w)
+        // Decryption: (y,w,x,z) → (x,y,z,w)
         function decrypt() {
-            const input = document.getElementById('inputText').value;
+            const input = document.getElementById('input').value;
             let output = '';
             
-            for (let i = 0; i < input.length; i++) {
-                const char = input[i];
+            for (const char of input) {
                 const coords = findChar(char);
-                
                 if (coords) {
-                    // Reverse transform
-                    const decryptedChar = getChar(
-                        coords.z,  // x ← z
-                        coords.x,  // y ← x
-                        coords.w,  // z ← w
-                        coords.y   // w ← y
-                    );
-                    
-                    output += decryptedChar || '?';
-                    highlightCell(coords.z, coords.x, coords.w, coords.y);
+                    const decrypted = getChar(coords.z, coords.x, coords.w, coords.y);
+                    output += decrypted;
                 } else {
                     output += '?';
                 }
@@ -323,17 +128,19 @@
             document.getElementById('output').textContent = output;
         }
 
-        // Clear all inputs and highlights
+        // Clear all
         function clearAll() {
-            document.getElementById('inputText').value = '';
+            document.getElementById('input').value = '';
             document.getElementById('output').textContent = '';
-            document.getElementById('lastCoords').textContent = '';
-            const allCells = document.querySelectorAll('td');
-            allCells.forEach(cell => cell.classList.remove('active'));
         }
 
-        // Initialize on load
-        window.onload = initTables;
+        // Show coordinates
+        function showCoords(x, y, z, w) {
+            alert(`Char: ${getChar(x,y,z,w)}\nCoords: (${x},${y},${z},${w})`);
+        }
+
+        // Initialize
+        window.onload = initCubes;
     </script>
 </body>
 </html>

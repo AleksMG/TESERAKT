@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4D Тессеракт Шифратор</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .cube {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            width: 350px;
+        }
+        .layer {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        td:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.1);
+        }
+        .controls {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 30px 0;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .coord-display {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+        .highlight {
+            background-color: #fffde7 !important;
+            box-shadow: 0 0 0 2px #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 4D Тессеракт Шифратор</h1>
+    <p>Демонстрация 4D-шифрования через 3 куба (9 квадратов 3×3)</p>
+    
+    <div class="controls">
+        <h2>Шифрование/Дешифрование</h2>
+        <textarea id="inputText" placeholder="Введите текст..."></textarea>
+        <div>
+            <button onclick="encrypt()">Зашифровать</button>
+            <button onclick="decrypt()">Расшифровать</button>
+            <button onclick="clearAll()">Очистить</button>
+        </div>
+        <div class="output">
+            <strong>Результат:</strong>
+            <div id="output"></div>
+        </div>
+        <div class="coord-display">
+            <strong>Последние координаты:</strong>
+            <div id="lastCoords"></div>
+        </div>
+    </div>
+    
+    <h2>Визуализация 4D Тессеракта</h2>
+    <p>3 куба (W=1,2,3) × 3 слоя (Z=1,2,3) = 9 квадратов 3×3</p>
+    
+    <div class="container">
+        <div class="cube">
+            <h3>🔷 Куб W=1 (Латиница)</h3>
+            <div class="layer">
+                <h4>🔸 Слой Z=1 (A-I)</h4>
+                <table id="w1z1"></table>
+            </div>
+            <div class="layer">
+                <h4>🔸 Слой Z=2 (J-R)</h4>
+                <table id="w1z2"></table>
+            </div>
+            <div class="layer">
+                <h4>🔸 Слой Z=3 (S-#)</h4>
+                <table id="w1z3"></table>
+            </div>
+        </div>
+        
+        <div class="cube">
+            <h3>🔶 Куб W=2 (Кириллица)</h3>
+            <div class="layer">
+                <h4>🔹 Слой Z=1 (а-и)</h4>
+                <table id="w2z1"></table>
+            </div>
+            <div class="layer">
+                <h4>🔹 Слой Z=2 (й-с)</h4>
+                <table id="w2z2"></table>
+            </div>
+            <div class="layer">
+                <h4>🔹 Слой Z=3 (т-я)</h4>
+                <table id="w2z3"></table>
+            </div>
+        </div>
+        
+        <div class="cube">
+            <h3>🔲 Куб W=3 (Цифры/Символы)</h3>
+            <div class="layer">
+                <h4>▪ Слой Z=1 (1-9)</h4>
+                <table id="w3z1"></table>
+            </div>
+            <div class="layer">
+                <h4>▪ Слой Z=2 (!-()</h4>
+                <table id="w3z2"></table>
+            </div>
+            <div class="layer">
+                <h4>▪ Слой Z=3 ()-§)</h4>
+                <table id="w3z3"></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Полный алфавит для 3 кубов (W=1,2,3)
+        const cubes = [
+            // Куб W=1 (Латиница)
+            [
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],    // Z=1
+                ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'],    // Z=2
+                ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#']     // Z=3
+            ],
+            // Куб W=2 (Кириллица)
+            [
+                ['а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и'],   // Z=1
+                ['й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с'],   // Z=2
+                ['т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'я']    // Z=3
+            ],
+            // Куб W=3 (Цифры/Символы)
+            [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9'],  // Z=1
+                ['!', '@', '#', '$', '%', '^', '&', '*', '('],   // Z=2
+                [')', '-', '+', '=', '/', '?', '|', '~', '§']    // Z=3
+            ]
+        ];
+
+        // Инициализация всех таблиц
+        function initTables() {
+            for (let w = 0; w < 3; w++) {
+                for (let z = 0; z < 3; z++) {
+                    const tableId = `w${w+1}z${z+1}`;
+                    const table = document.getElementById(tableId);
+                    table.innerHTML = '';
+                    
+                    // Заполняем таблицу 3x3
+                    for (let y = 0; y < 3; y++) {
+                        const row = table.insertRow();
+                        for (let x = 0; x < 3; x++) {
+                            const cell = row.insertCell();
+                            const index = y * 3 + x;
+                            cell.textContent = cubes[w][z][index];
+                            
+                            // Координаты для подсказки
+                            const coords = `(${x+1},${y+1},${z+1},${w+1})`;
+                            cell.title = `${cubes[w][z][index]} ${coords}`;
+                            
+                            // Клик по ячейке
+                            cell.onclick = function() {
+                                highlightCell(x+1, y+1, z+1, w+1);
+                                document.getElementById('lastCoords').textContent = 
+                                    `Символ: ${cubes[w][z][index]} | Координаты: ${coords}`;
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        // Подсветка ячейки
+        function highlightCell(x, y, z, w) {
+            // Сбрасываем все подсветки
+            const allCells = document.querySelectorAll('td');
+            allCells.forEach(cell => cell.classList.remove('highlight'));
+            
+            // Находим нужную ячейку
+            const tableId = `w${w}z${z}`;
+            const table = document.getElementById(tableId);
+            if (table && table.rows[y-1] && table.rows[y-1].cells[x-1]) {
+                table.rows[y-1].cells[x-1].classList.add('highlight');
+            }
+        }
+
+        // Найти символ в алфавите
+        function findChar(char) {
+            for (let w = 0; w < 3; w++) {
+                for (let z = 0; z < 3; z++) {
+                    for (let y = 0; y < 3; y++) {
+                        for (let x = 0; x < 3; x++) {
+                            if (cubes[w][z][y*3 + x] === char) {
+                                return { x: x+1, y: y+1, z: z+1, w: w+1 };
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Получить символ по координатам
+        function getChar(x, y, z, w) {
+            if (w < 1 || w > 3 || z < 1 || z > 3 || x < 1 || x > 3 || y < 1 || y > 3) {
+                return '?';
+            }
+            return cubes[w-1][z-1][(y-1)*3 + (x-1)];
+        }
+
+        // Шифрование (перестановка координат)
+        function encrypt() {
+            const input = document.getElementById('inputText').value;
+            let output = '';
+            
+            for (let i = 0; i < input.length; i++) {
+                const char = input[i];
+                const coords = findChar(char);
+                
+                if (coords) {
+                    // Алгоритм шифрования: (x,y,z,w) → (y,w,x,z)
+                    const encryptedChar = getChar(
+                        coords.y,  // x ← y
+                        coords.w,  // y ← w
+                        coords.x,  // z ← x
+                        coords.z   // w ← z
+                    );
+                    
+                    output += encryptedChar || '?';
+                    highlightCell(coords.y, coords.w, coords.x, coords.z);
+                } else {
+                    output += '?';
+                }
+            }
+            
+            document.getElementById('output').textContent = output;
+        }
+
+        // Дешифрование (обратная перестановка)
+        function decrypt() {
+            const input = document.getElementById('inputText').value;
+            let output = '';
+            
+            for (let i = 0; i < input.length; i++) {
+                const char = input[i];
+                const coords = findChar(char);
+                
+                if (coords) {
+                    // Обратное преобразование: (y,w,x,z) → (x,y,z,w)
+                    const decryptedChar = getChar(
+                        coords.z,  // x ← z
+                        coords.x,  // y ← x
+                        coords.w,  // z ← w
+                        coords.y   // w ← y
+                    );
+                    
+                    output += decryptedChar || '?';
+                    highlightCell(coords.z, coords.x, coords.w, coords.y);
+                } else {
+                    output += '?';
+                }
+            }
+            
+            document.getElementById('output').textContent = output;
+        }
+
+        // Очистка
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('output').textContent = '';
+            document.getElementById('lastCoords').textContent = '';
+            const allCells = document.querySelectorAll('td');
+            allCells.forEach(cell => cell.classList.remove('highlight'));
+        }
+
+        // Инициализация при загрузке
+        window.onload = initTables;
+    </script>
+</body>
+</html>

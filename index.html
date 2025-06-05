@@ -1,83 +1,366 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>4D Tessaract Encryptor/Decryptor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional 4D Tessaract Cipher</title>
     <style>
-        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { padding: 8px 15px; margin-right: 10px; }
-        .cube { display: inline-block; margin: 10px; vertical-align: top; }
-        table { border-collapse: collapse; }
-        td { width: 25px; height: 25px; border: 1px solid #000; text-align: center; font-size: 12px; }
-        .highlight { background-color: yellow; }
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --light: #ecf0f1;
+            --dark: #34495e;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: var(--secondary);
+            margin-top: 0;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+        button.secondary {
+            background-color: var(--secondary);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+        }
+        .cube-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .cube {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 200px;
+        }
+        .layer {
+            margin-bottom: 15px;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        td {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+        td:hover {
+            background-color: #e3f2fd;
+        }
+        .active-cell {
+            background-color: #fffde7;
+            box-shadow: 0 0 0 2px #ffc107;
+        }
+        .settings-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .output {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            border-left: 4px solid var(--primary);
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+        .coord-info {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
-    <h2>4D Tessaract Encryptor/Decryptor</h2>
+    <h1>Professional 4D Tessaract Cipher</h1>
     
-    <div>
-        <textarea id="input" placeholder="Enter text"></textarea><br>
-        <button onclick="encrypt()">Encrypt</button>
-        <button onclick="decrypt()">Decrypt</button>
-        <button onclick="clearAll()">Clear</button>
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('encrypt')">Encrypt/Decrypt</div>
+        <div class="tab" onclick="showTab('settings')">Settings</div>
+        <div class="tab" onclick="showTab('visualization')">Visualization</div>
     </div>
     
-    <div>
-        <strong>Result:</strong>
-        <div id="output"></div>
+    <div class="container">
+        <div id="encrypt-tab" class="panel">
+            <h2>Text Transformation</h2>
+            <textarea id="input-text" placeholder="Enter text to encrypt/decrypt..."></textarea>
+            <div>
+                <button onclick="encrypt()">Encrypt</button>
+                <button onclick="decrypt()">Decrypt</button>
+                <button class="secondary" onclick="clearText()">Clear</button>
+            </div>
+            <div class="output" id="output"></div>
+            <div class="coord-info">
+                <strong>Coordinates:</strong>
+                <div id="coordinates"></div>
+            </div>
+        </div>
+        
+        <div id="settings-tab" class="panel" style="display:none;">
+            <h2>Cipher Settings</h2>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="cipher-key">Cipher Key:</label>
+                    <input type="text" id="cipher-key" value="4321">
+                </div>
+                <div class="form-group">
+                    <label for="cipher-mode">Cipher Mode:</label>
+                    <select id="cipher-mode">
+                        <option value="xyzw">X⇄Y, Z⇄W</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cube1-name">Cube 1 Name:</label>
+                    <input type="text" id="cube1-name" value="Latin">
+                </div>
+                <div class="form-group">
+                    <label for="cube2-name">Cube 2 Name:</label>
+                    <input type="text" id="cube2-name" value="Cyrillic">
+                </div>
+                <div class="form-group">
+                    <label for="cube3-name">Cube 3 Name:</label>
+                    <input type="text" id="cube3-name" value="Symbols">
+                </div>
+            </div>
+            <button onclick="saveSettings()">Save Settings</button>
+            <button class="secondary" onclick="resetSettings()">Reset to Default</button>
+        </div>
+        
+        <div id="visualization-tab" class="panel" style="display:none;">
+            <h2>4D Tessaract Visualization</h2>
+            <div class="cube-container" id="cube-container"></div>
+        </div>
     </div>
-    
-    <div id="cubes"></div>
 
     <script>
-        // Alphabet definition
-        const cubes = [
-            [ // Latin (W=1)
-                ['A','B','C','D','E','F','G','H','I'], // Z=1
-                ['J','K','L','M','N','O','P','Q','R'], // Z=2
-                ['S','T','U','V','W','X','Y','Z',' ']  // Z=3
-            ],
-            [ // Cyrillic (W=2)
-                ['А','Б','В','Г','Д','Е','Ж','З','И'],
-                ['Й','К','Л','М','Н','О','П','Р','С'],
-                ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
-            ],
-            [ // Symbols (W=3)
-                ['1','2','3','4','5','6','7','8','9'],
-                ['!','@','#','$','%','^','&','*','('],
-                [')','-','+','=','/','?','|','~','§']
+        // Default settings
+        const defaultSettings = {
+            key: "4321",
+            mode: "xyzw",
+            cubeNames: ["Latin", "Cyrillic", "Symbols"],
+            cubes: [
+                [ // Latin
+                    ['A','B','C','D','E','F','G','H','I'],
+                    ['J','K','L','M','N','O','P','Q','R'],
+                    ['S','T','U','V','W','X','Y','Z',' ']
+                ],
+                [ // Cyrillic
+                    ['А','Б','В','Г','Д','Е','Ж','З','И'],
+                    ['Й','К','Л','М','Н','О','П','Р','С'],
+                    ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
+                ],
+                [ // Symbols
+                    ['1','2','3','4','5','6','7','8','9'],
+                    ['!','@','#','$','%','^','&','*','('],
+                    [')','-','+','=','/','?','|','~','§']
+                ]
             ]
-        ];
+        };
 
-        // Initialize cubes
-        function initCubes() {
-            let html = '';
-            for (let w = 0; w < 3; w++) {
-                html += `<div class="cube"><h3>Cube W=${w+1}</h3>`;
-                for (let z = 0; z < 3; z++) {
-                    html += `<div>Layer Z=${z+1}<table id="w${w+1}z${z+1}">`;
-                    for (let y = 0; y < 3; y++) {
-                        html += '<tr>';
-                        for (let x = 0; x < 3; x++) {
-                            const char = cubes[w][z][y*3 + x];
-                            html += `<td onclick="showCoords(${x+1},${y+1},${z+1},${w+1})">${char}</td>`;
-                        }
-                        html += '</tr>';
-                    }
-                    html += '</table></div>';
-                }
-                html += '</div>';
-            }
-            document.getElementById('cubes').innerHTML = html;
+        // Current settings
+        let settings = JSON.parse(JSON.stringify(defaultSettings));
+        
+        // Initialize
+        function init() {
+            loadSettings();
+            renderCubes();
         }
 
-        // Find character coordinates
-        function findChar(c) {
+        // Tab navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('tessaractSettings');
+            if (savedSettings) {
+                settings = JSON.parse(savedSettings);
+                document.getElementById('cipher-key').value = settings.key;
+                document.getElementById('cipher-mode').value = settings.mode;
+                document.getElementById('cube1-name').value = settings.cubeNames[0];
+                document.getElementById('cube2-name').value = settings.cubeNames[1];
+                document.getElementById('cube3-name').value = settings.cubeNames[2];
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            settings.key = document.getElementById('cipher-key').value;
+            settings.mode = document.getElementById('cipher-mode').value;
+            settings.cubeNames = [
+                document.getElementById('cube1-name').value,
+                document.getElementById('cube2-name').value,
+                document.getElementById('cube3-name').value
+            ];
+            
+            localStorage.setItem('tessaractSettings', JSON.stringify(settings));
+            alert('Settings saved successfully!');
+            renderCubes();
+        }
+
+        // Reset to default settings
+        function resetSettings() {
+            if (confirm('Reset all settings to default?')) {
+                settings = JSON.parse(JSON.stringify(defaultSettings));
+                localStorage.removeItem('tessaractSettings');
+                document.getElementById('cipher-key').value = settings.key;
+                document.getElementById('cipher-mode').value = settings.mode;
+                document.getElementById('cube1-name').value = settings.cubeNames[0];
+                document.getElementById('cube2-name').value = settings.cubeNames[1];
+                document.getElementById('cube3-name').value = settings.cubeNames[2];
+                renderCubes();
+            }
+        }
+
+        // Render 3D cubes visualization
+        function renderCubes() {
+            const container = document.getElementById('cube-container');
+            container.innerHTML = '';
+            
+            for (let w = 0; w < 3; w++) {
+                const cubeDiv = document.createElement('div');
+                cubeDiv.className = 'cube';
+                cubeDiv.innerHTML = `<h3>${settings.cubeNames[w]} (W=${w+1})</h3>`;
+                
+                for (let z = 0; z < 3; z++) {
+                    const layerDiv = document.createElement('div');
+                    layerDiv.className = 'layer';
+                    layerDiv.innerHTML = `<h4>Layer Z=${z+1}</h4>`;
+                    
+                    const table = document.createElement('table');
+                    table.id = `w${w+1}z${z+1}`;
+                    
+                    for (let y = 0; y < 3; y++) {
+                        const row = table.insertRow();
+                        for (let x = 0; x < 3; x++) {
+                            const cell = row.insertCell();
+                            const char = settings.cubes[w][z][y*3 + x];
+                            cell.textContent = char;
+                            cell.title = `${char} (${x+1},${y+1},${z+1},${w+1})`;
+                            
+                            cell.onclick = function() {
+                                highlightCell(x+1, y+1, z+1, w+1);
+                                document.getElementById('coordinates').textContent = 
+                                    `${char} → (${x+1},${y+1},${z+1},${w+1})`;
+                            };
+                        }
+                    }
+                    
+                    layerDiv.appendChild(table);
+                    cubeDiv.appendChild(layerDiv);
+                }
+                
+                container.appendChild(cubeDiv);
+            }
+        }
+
+        // Highlight specific cell
+        function highlightCell(x, y, z, w) {
+            document.querySelectorAll('td').forEach(cell => {
+                cell.classList.remove('active-cell');
+            });
+            
+            const table = document.getElementById(`w${w}z${z}`);
+            if (table && table.rows[y-1] && table.rows[y-1].cells[x-1]) {
+                table.rows[y-1].cells[x-1].classList.add('active-cell');
+            }
+        }
+
+        // Find character in cubes
+        function findChar(char) {
             for (let w = 0; w < 3; w++) {
                 for (let z = 0; z < 3; z++) {
                     for (let y = 0; y < 3; y++) {
                         for (let x = 0; x < 3; x++) {
-                            if (cubes[w][z][y*3 + x] === c) {
+                            if (settings.cubes[w][z][y*3 + x] === char) {
                                 return { x: x+1, y: y+1, z: z+1, w: w+1 };
                             }
                         }
@@ -89,19 +372,80 @@
 
         // Get character from coordinates
         function getChar(x, y, z, w) {
-            return cubes[w-1][z-1][(y-1)*3 + (x-1)] || '?';
+            if (w < 1 || w > 3 || z < 1 || z > 3 || x < 1 || x > 3 || y < 1 || y > 3) {
+                return '?';
+            }
+            return settings.cubes[w-1][z-1][(y-1)*3 + (x-1)];
         }
 
-        // Encryption: (x,y,z,w) → (y,w,x,z)
+        // Transform coordinates based on cipher mode
+        function transformCoords(x, y, z, w) {
+            const key = settings.key;
+            let newX, newY, newZ, newW;
+            
+            switch(settings.mode) {
+                case 'xyzw':
+                    // Default: swap X↔Y and Z↔W
+                    newX = y;
+                    newY = x;
+                    newZ = w;
+                    newW = z;
+                    break;
+                case 'custom':
+                    // Custom transformation based on key
+                    newX = (x + parseInt(key[0])) % 3 || 3;
+                    newY = (y + parseInt(key[1])) % 3 || 3;
+                    newZ = (z + parseInt(key[2])) % 3 || 3;
+                    newW = (w + parseInt(key[3])) % 3 || 3;
+                    break;
+                default:
+                    newX = x; newY = y; newZ = z; newW = w;
+            }
+            
+            return { x: newX, y: newY, z: newZ, w: newW };
+        }
+
+        // Reverse transform coordinates
+        function reverseTransformCoords(x, y, z, w) {
+            const key = settings.key;
+            let newX, newY, newZ, newW;
+            
+            switch(settings.mode) {
+                case 'xyzw':
+                    // Reverse of swap X↔Y and Z↔W
+                    newX = y;
+                    newY = x;
+                    newZ = w;
+                    newW = z;
+                    break;
+                case 'custom':
+                    // Reverse custom transformation
+                    newX = (x - parseInt(key[0]) + 3) % 3 || 3;
+                    newY = (y - parseInt(key[1]) + 3) % 3 || 3;
+                    newZ = (z - parseInt(key[2]) + 3) % 3 || 3;
+                    newW = (w - parseInt(key[3]) + 3) % 3 || 3;
+                    break;
+                default:
+                    newX = x; newY = y; newZ = z; newW = w;
+            }
+            
+            return { x: newX, y: newY, z: newZ, w: newW };
+        }
+
+        // Encrypt text
         function encrypt() {
-            const input = document.getElementById('input').value.toUpperCase();
+            const input = document.getElementById('input-text').value;
             let output = '';
             
-            for (const char of input) {
+            for (let i = 0; i < input.length; i++) {
+                const char = input[i].toUpperCase();
                 const coords = findChar(char);
+                
                 if (coords) {
-                    const encrypted = getChar(coords.y, coords.w, coords.x, coords.z);
-                    output += encrypted;
+                    const transformed = transformCoords(coords.x, coords.y, coords.z, coords.w);
+                    const encryptedChar = getChar(transformed.x, transformed.y, transformed.z, transformed.w);
+                    output += encryptedChar;
+                    highlightCell(transformed.x, transformed.y, transformed.z, transformed.w);
                 } else {
                     output += '?';
                 }
@@ -110,16 +454,20 @@
             document.getElementById('output').textContent = output;
         }
 
-        // Decryption: (y,w,x,z) → (x,y,z,w)
+        // Decrypt text
         function decrypt() {
-            const input = document.getElementById('input').value;
+            const input = document.getElementById('input-text').value;
             let output = '';
             
-            for (const char of input) {
+            for (let i = 0; i < input.length; i++) {
+                const char = input[i];
                 const coords = findChar(char);
+                
                 if (coords) {
-                    const decrypted = getChar(coords.z, coords.x, coords.w, coords.y);
-                    output += decrypted;
+                    const reversed = reverseTransformCoords(coords.x, coords.y, coords.z, coords.w);
+                    const decryptedChar = getChar(reversed.x, reversed.y, reversed.z, reversed.w);
+                    output += decryptedChar;
+                    highlightCell(reversed.x, reversed.y, reversed.z, reversed.w);
                 } else {
                     output += '?';
                 }
@@ -128,19 +476,18 @@
             document.getElementById('output').textContent = output;
         }
 
-        // Clear all
-        function clearAll() {
-            document.getElementById('input').value = '';
+        // Clear text
+        function clearText() {
+            document.getElementById('input-text').value = '';
             document.getElementById('output').textContent = '';
+            document.getElementById('coordinates').textContent = '';
+            document.querySelectorAll('td').forEach(cell => {
+                cell.classList.remove('active-cell');
+            });
         }
 
-        // Show coordinates
-        function showCoords(x, y, z, w) {
-            alert(`Char: ${getChar(x,y,z,w)}\nCoords: (${x},${y},${z},${w})`);
-        }
-
-        // Initialize
-        window.onload = initCubes;
+        // Initialize on load
+        window.onload = init;
     </script>
 </body>
 </html>

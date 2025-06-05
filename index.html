@@ -1,86 +1,560 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>4D Trifid Cipher (Group Encryption)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced 4D Trifid Cipher</title>
     <style>
-        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { padding: 8px 15px; margin-right: 10px; }
-        .cube { display: inline-block; margin: 10px; vertical-align: top; }
-        table { border-collapse: collapse; }
-        td { width: 25px; height: 25px; border: 1px solid #000; text-align: center; font-size: 12px; }
-        .highlight { background-color: yellow; }
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --error-color: #d32f2f;
+            --success-color: #388e3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .cube-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .cube {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .cube h4 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            min-width: 25px;
+            height: 25px;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .success {
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .setting-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .validation-summary {
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h2>4D Trifid Cipher (Group Encryption)</h2>
+    <h1>Advanced 4D Trifid Cipher</h1>
     
-    <div>
-        <textarea id="input" placeholder="Enter text"></textarea><br>
-        <button onclick="encrypt()">Encrypt</button>
-        <button onclick="decrypt()">Decrypt</button>
-        <button onclick="clearAll()">Clear</button>
+    <div class="container">
+        <div class="panel">
+            <h2>Encryption/Decryption</h2>
+            
+            <div class="tab-container">
+                <div class="tab active" onclick="switchTab('encrypt')">Encrypt</div>
+                <div class="tab" onclick="switchTab('decrypt')">Decrypt</div>
+                <div class="tab" onclick="switchTab('settings')">Settings</div>
+            </div>
+            
+            <div id="encrypt-tab" class="tab-content active">
+                <label for="plaintext">Plaintext:</label>
+                <textarea id="plaintext" placeholder="Enter text to encrypt"></textarea>
+                
+                <button onclick="encryptText()">Encrypt</button>
+                <button class="secondary" onclick="clearText('plaintext')">Clear</button>
+                
+                <label for="ciphertext">Ciphertext:</label>
+                <textarea id="ciphertext" readonly></textarea>
+                
+                <div id="encrypt-status" class="status"></div>
+            </div>
+            
+            <div id="decrypt-tab" class="tab-content">
+                <label for="encrypted-text">Ciphertext:</label>
+                <textarea id="encrypted-text" placeholder="Enter text to decrypt"></textarea>
+                
+                <button onclick="decryptText()">Decrypt</button>
+                <button class="secondary" onclick="clearText('encrypted-text')">Clear</button>
+                
+                <label for="decrypted-text">Plaintext:</label>
+                <textarea id="decrypted-text" readonly></textarea>
+                
+                <div id="decrypt-status" class="status"></div>
+            </div>
+            
+            <div id="settings-tab" class="tab-content">
+                <h3>Cipher Settings</h3>
+                
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label for="group-size">Group Size:</label>
+                        <input type="number" id="group-size" min="1" max="10" value="3">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="padding-char">Padding Character:</label>
+                        <select id="padding-char">
+                            <option value=" ">Space</option>
+                            <option value="X">X</option>
+                            <option value="Z">Z</option>
+                            <option value="*">*</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h3>Alphabet Configuration</h3>
+                
+                <div class="cube-display" id="cube-settings">
+                    <!-- Dynamically generated -->
+                </div>
+                
+                <div class="validation-summary">
+                    <h4>Alphabet Validation</h4>
+                    <div id="alphabet-validation"></div>
+                </div>
+                
+                <button onclick="saveSettings()">Save Settings</button>
+                <button class="secondary" onclick="resetToDefaults()">Reset to Defaults</button>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2>Cipher Visualization</h2>
+            <div class="cube-display" id="cube-visualization">
+                <!-- Dynamically generated -->
+            </div>
+            
+            <h3>How It Works</h3>
+            <ol>
+                <li>Text is divided into groups (trigrams by default)</li>
+                <li>Each character is mapped to 4D coordinates (x,y,z,w)</li>
+                <li>Coordinates are shuffled across the group</li>
+                <li>New coordinates are mapped back to characters</li>
+                <li>Process is reversed for decryption</li>
+            </ol>
+            
+            <h3>Validation Tests</h3>
+            <button onclick="runValidationTests()">Run Tests</button>
+            <div id="test-results"></div>
+        </div>
     </div>
-    
-    <div>
-        <strong>Result:</strong>
-        <div id="output"></div>
-    </div>
-    
-    <div id="cubes"></div>
 
     <script>
-        // Alphabet definition (4D cubes)
-        const cubes = [
-            [ // Latin (W=1)
-                ['A','B','C','D','E','F','G','H','I'], // Z=1
-                ['J','K','L','M','N','O','P','Q','R'], // Z=2
-                ['S','T','U','V','W','X','Y','Z',' ']  // Z=3
-            ],
-            [ // Cyrillic (W=2)
-                ['А','Б','В','Г','Д','Е','Ж','З','И'],
-                ['Й','К','Л','М','Н','О','П','Р','С'],
-                ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
-            ],
-            [ // Symbols (W=3)
-                ['1','2','3','4','5','6','7','8','9'],
-                ['!','@','#','$','%','^','&','*','('],
-                [')','-','+','=','/','?','|','~','§']
-            ]
+        // Default alphabet configuration
+        const defaultCubes = [
+            { 
+                name: "Latin",
+                layers: [
+                    ['A','B','C','D','E','F','G','H','I'],
+                    ['J','K','L','M','N','O','P','Q','R'],
+                    ['S','T','U','V','W','X','Y','Z',' ']
+                ]
+            },
+            { 
+                name: "Cyrillic",
+                layers: [
+                    ['А','Б','В','Г','Д','Е','Ж','З','И'],
+                    ['Й','К','Л','М','Н','О','П','Р','С'],
+                    ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
+                ]
+            },
+            { 
+                name: "Symbols",
+                layers: [
+                    ['1','2','3','4','5','6','7','8','9'],
+                    ['!','@','#','$','%','^','&','*','('],
+                    [')','-','+','=','/','?','|','~','§']
+                ]
+            }
         ];
 
-        // Group size (лучше 3-5 для Trifid-эффекта)
-        const GROUP_SIZE = 5; 
+        // Current settings
+        let currentCubes = JSON.parse(JSON.stringify(defaultCubes));
+        let groupSize = 3;
+        let paddingChar = ' ';
 
-        // Initialize cubes
-        function initCubes() {
-            let html = '';
-            for (let w = 0; w < 3; w++) {
-                html += `<div class="cube"><h3>Cube W=${w+1}</h3>`;
-                for (let z = 0; z < 3; z++) {
-                    html += `<div>Layer Z=${z+1}<table id="w${w+1}z${z+1}">`;
-                    for (let y = 0; y < 3; y++) {
-                        html += '<tr>';
-                        for (let x = 0; x < 3; x++) {
-                            const char = cubes[w][z][y*3 + x];
-                            html += `<td onclick="showCoords(${x+1},${y+1},${z+1},${w+1})">${char}</td>`;
-                        }
-                        html += '</tr>';
-                    }
-                    html += '</table></div>';
-                }
-                html += '</div>';
+        // Initialize the application
+        function init() {
+            loadSettings();
+            renderCubeVisualization();
+            renderCubeSettings();
+            validateAlphabet();
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('trifidSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                currentCubes = settings.cubes || currentCubes;
+                groupSize = settings.groupSize || groupSize;
+                paddingChar = settings.paddingChar || paddingChar;
+                
+                document.getElementById('group-size').value = groupSize;
+                document.getElementById('padding-char').value = paddingChar;
             }
-            document.getElementById('cubes').innerHTML = html;
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            groupSize = parseInt(document.getElementById('group-size').value) || 3;
+            paddingChar = document.getElementById('padding-char').value || ' ';
+            
+            const settings = {
+                cubes: currentCubes,
+                groupSize: groupSize,
+                paddingChar: paddingChar
+            };
+            
+            localStorage.setItem('trifidSettings', JSON.stringify(settings));
+            showStatus('Settings saved successfully!', 'success', 'encrypt-status');
+            validateAlphabet();
+        }
+
+        // Reset to default settings
+        function resetToDefaults() {
+            currentCubes = JSON.parse(JSON.stringify(defaultCubes));
+            groupSize = 3;
+            paddingChar = ' ';
+            
+            document.getElementById('group-size').value = groupSize;
+            document.getElementById('padding-char').value = paddingChar;
+            
+            renderCubeSettings();
+            saveSettings();
+        }
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Clear text area
+        function clearText(textareaId) {
+            document.getElementById(textareaId).value = '';
+        }
+
+        // Show status message
+        function showStatus(message, type, elementId = 'encrypt-status') {
+            const statusElement = document.getElementById(elementId);
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            
+            setTimeout(() => {
+                statusElement.textContent = '';
+                statusElement.className = 'status';
+            }, 5000);
+        }
+
+        // Render cube visualization
+        function renderCubeVisualization() {
+            const container = document.getElementById('cube-visualization');
+            container.innerHTML = '';
+            
+            currentCubes.forEach((cube, w) => {
+                const cubeElement = document.createElement('div');
+                cubeElement.className = 'cube';
+                cubeElement.innerHTML = `<h4>${cube.name} (W=${w+1})</h4>`;
+                
+                cube.layers.forEach((layer, z) => {
+                    const table = document.createElement('table');
+                    const caption = document.createElement('caption');
+                    caption.textContent = `Layer Z=${z+1}`;
+                    table.appendChild(caption);
+                    
+                    for (let y = 0; y < 3; y++) {
+                        const row = document.createElement('tr');
+                        
+                        for (let x = 0; x < 3; x++) {
+                            const cell = document.createElement('td');
+                            cell.textContent = layer[y * 3 + x] || ' ';
+                            cell.title = `(${x+1},${y+1},${z+1},${w+1})`;
+                            row.appendChild(cell);
+                        }
+                        
+                        table.appendChild(row);
+                    }
+                    
+                    cubeElement.appendChild(table);
+                });
+                
+                container.appendChild(cubeElement);
+            });
+        }
+
+        // Render cube settings for editing
+        function renderCubeSettings() {
+            const container = document.getElementById('cube-settings');
+            container.innerHTML = '';
+            
+            currentCubes.forEach((cube, w) => {
+                const cubeElement = document.createElement('div');
+                cubeElement.className = 'cube';
+                cubeElement.innerHTML = `<h4>${cube.name} (W=${w+1})</h4>`;
+                
+                cube.layers.forEach((layer, z) => {
+                    const table = document.createElement('table');
+                    const caption = document.createElement('caption');
+                    caption.textContent = `Layer Z=${z+1}`;
+                    table.appendChild(caption);
+                    
+                    for (let y = 0; y < 3; y++) {
+                        const row = document.createElement('tr');
+                        
+                        for (let x = 0; x < 3; x++) {
+                            const cell = document.createElement('td');
+                            const index = y * 3 + x;
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.maxLength = 1;
+                            input.value = layer[index] || ' ';
+                            input.style.width = '25px';
+                            input.style.textAlign = 'center';
+                            input.style.border = 'none';
+                            input.onchange = function() {
+                                currentCubes[w].layers[z][index] = this.value || ' ';
+                                validateAlphabet();
+                            };
+                            cell.appendChild(input);
+                            row.appendChild(cell);
+                        }
+                        
+                        table.appendChild(row);
+                    }
+                    
+                    cubeElement.appendChild(table);
+                });
+                
+                container.appendChild(cubeElement);
+            });
+        }
+
+        // Validate the alphabet configuration
+        function validateAlphabet() {
+            const validationElement = document.getElementById('alphabet-validation');
+            validationElement.innerHTML = '';
+            
+            let isValid = true;
+            const allChars = new Set();
+            const duplicateChars = new Set();
+            
+            // Check for duplicates
+            currentCubes.forEach(cube => {
+                cube.layers.forEach(layer => {
+                    layer.forEach(char => {
+                        if (char && char !== ' ') {
+                            if (allChars.has(char)) {
+                                duplicateChars.add(char);
+                                isValid = false;
+                            }
+                            allChars.add(char);
+                        }
+                    });
+                });
+            });
+            
+            // Check for empty cells
+            let emptyCells = 0;
+            currentCubes.forEach(cube => {
+                cube.layers.forEach(layer => {
+                    layer.forEach(char => {
+                        if (!char || char === ' ') {
+                            emptyCells++;
+                        }
+                    });
+                });
+            });
+            
+            if (!isValid) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error';
+                errorMsg.innerHTML = `
+                    <strong>Validation Error:</strong> 
+                    Duplicate characters found: ${Array.from(duplicateChars).join(', ')}.
+                    Each character must be unique across all cubes.
+                `;
+                validationElement.appendChild(errorMsg);
+            }
+            
+            if (emptyCells > 0) {
+                const warningMsg = document.createElement('div');
+                warningMsg.className = 'error';
+                warningMsg.innerHTML = `
+                    <strong>Warning:</strong> 
+                    ${emptyCells} empty cells found. These will be treated as spaces.
+                `;
+                validationElement.appendChild(warningMsg);
+            }
+            
+            if (isValid && emptyCells === 0) {
+                const successMsg = document.createElement('div');
+                successMsg.className = 'success';
+                successMsg.innerHTML = `
+                    <strong>Validation Passed:</strong> 
+                    Alphabet configuration is valid with ${allChars.size} unique characters.
+                `;
+                validationElement.appendChild(successMsg);
+            }
+            
+            return isValid;
         }
 
         // Find character coordinates
         function findChar(c) {
-            for (let w = 0; w < 3; w++) {
-                for (let z = 0; z < 3; z++) {
+            for (let w = 0; w < currentCubes.length; w++) {
+                for (let z = 0; z < currentCubes[w].layers.length; z++) {
                     for (let y = 0; y < 3; y++) {
                         for (let x = 0; x < 3; x++) {
-                            if (cubes[w][z][y*3 + x] === c) {
+                            const char = currentCubes[w].layers[z][y * 3 + x];
+                            if (char === c) {
                                 return { x: x+1, y: y+1, z: z+1, w: w+1 };
                             }
                         }
@@ -92,116 +566,261 @@
 
         // Get character from coordinates
         function getChar(x, y, z, w) {
-            return cubes[w-1][z-1][(y-1)*3 + (x-1)] || '?';
+            if (w < 1 || w > currentCubes.length) return '?';
+            if (z < 1 || z > currentCubes[w-1].layers.length) return '?';
+            
+            const layer = currentCubes[w-1].layers[z-1];
+            const index = (y-1) * 3 + (x-1);
+            
+            return index >= 0 && index < layer.length ? layer[index] || ' ' : '?';
         }
 
-        // Encrypt a group of characters (Trifid-style)
+        // Encrypt text using 4D Trifid Cipher
+        function encryptText() {
+            const plaintext = document.getElementById('plaintext').value;
+            if (!plaintext.trim()) {
+                showStatus('Please enter text to encrypt', 'error');
+                return;
+            }
+            
+            if (!validateAlphabet()) {
+                showStatus('Cannot encrypt with invalid alphabet configuration', 'error');
+                return;
+            }
+            
+            try {
+                // Convert to uppercase and remove invalid characters
+                const cleanedText = plaintext.toUpperCase().split('').filter(c => {
+                    return findChar(c) || c === ' ';
+                }).join('');
+                
+                // Pad the text to make it divisible by groupSize
+                const paddedLength = Math.ceil(cleanedText.length / groupSize) * groupSize;
+                const paddedText = cleanedText.padEnd(paddedLength, paddingChar);
+                
+                let ciphertext = '';
+                
+                // Process each group
+                for (let i = 0; i < paddedText.length; i += groupSize) {
+                    const group = paddedText.substr(i, groupSize);
+                    ciphertext += encryptGroup(group);
+                }
+                
+                document.getElementById('ciphertext').value = ciphertext;
+                showStatus('Encryption successful!', 'success');
+                
+                // Run self-test to verify decryptability
+                const decrypted = decryptTextInternal(ciphertext);
+                if (decrypted.replace(/ /g, '') !== cleanedText.replace(/ /g, '')) {
+                    showStatus('Warning: Self-test failed - decryption mismatch', 'error');
+                }
+            } catch (error) {
+                showStatus(`Encryption error: ${error.message}`, 'error');
+            }
+        }
+
+        // Encrypt a single group
         function encryptGroup(group) {
             let coords = [];
             
-            // Step 1: Extract all coordinates
+            // Get coordinates for each character in the group
             for (const char of group) {
-                const c = findChar(char);
-                if (c) {
-                    coords.push(c.x, c.y, c.z, c.w);
-                } else {
-                    coords.push(1, 1, 1, 1); // Fallback for unknown chars
+                const c = findChar(char) || { x:1, y:1, z:1, w:1 };
+                coords.push(c.x, c.y, c.z, c.w);
+            }
+            
+            // Trifid-style coordinate shuffling
+            const shuffled = [];
+            for (let i = 0; i < 4; i++) { // For each coordinate (x,y,z,w)
+                for (let j = 0; j < groupSize; j++) { // For each character in group
+                    shuffled.push(coords[j * 4 + i]);
                 }
             }
             
-            // Step 2: Permute coordinates (Trifid-style)
-            // В классическом Trifid: (x,y,z) → (y,z,x)
-            // Здесь: (x,y,z,w) → (y,w,x,z)
-            const permuted = [];
-            for (let i = 0; i < coords.length; i += 4) {
-                const [x, y, z, w] = coords.slice(i, i+4);
-                permuted.push(y, w, x, z);
+            // Split into 4-coordinate chunks and map to characters
+            let result = '';
+            for (let i = 0; i < shuffled.length; i += 4) {
+                const chunk = shuffled.slice(i, i+4);
+                if (chunk.length === 4) {
+                    result += getChar(chunk[0], chunk[1], chunk[2], chunk[3]) || '?';
+                }
             }
             
-            // Step 3: Split into new 4D coordinates and get new chars
-            let encrypted = '';
-            for (let i = 0; i < permuted.length; i += 4) {
-                const [x, y, z, w] = permuted.slice(i, i+4);
-                encrypted += getChar(x, y, z, w);
-            }
-            
-            return encrypted;
+            return result;
         }
 
-        // Decrypt a group (reverse of encryption)
+        // Decrypt text
+        function decryptText() {
+            const ciphertext = document.getElementById('encrypted-text').value;
+            if (!ciphertext.trim()) {
+                showStatus('Please enter text to decrypt', 'error', 'decrypt-status');
+                return;
+            }
+            
+            if (!validateAlphabet()) {
+                showStatus('Cannot decrypt with invalid alphabet configuration', 'error', 'decrypt-status');
+                return;
+            }
+            
+            try {
+                const decrypted = decryptTextInternal(ciphertext);
+                document.getElementById('decrypted-text').value = decrypted;
+                showStatus('Decryption successful!', 'success', 'decrypt-status');
+            } catch (error) {
+                showStatus(`Decryption error: ${error.message}`, 'error', 'decrypt-status');
+            }
+        }
+
+        // Internal decryption function
+        function decryptTextInternal(ciphertext) {
+            // Calculate the expected ciphertext length
+            const expectedLength = Math.ceil(ciphertext.length / (groupSize * 4)) * (groupSize * 4);
+            if (ciphertext.length % (groupSize * 4) !== 0) {
+                throw new Error(`Ciphertext length must be a multiple of ${groupSize * 4} for group size ${groupSize}`);
+            }
+            
+            let plaintext = '';
+            
+            // Process each encrypted group
+            for (let i = 0; i < ciphertext.length; i += groupSize * 4) {
+                const group = ciphertext.substr(i, groupSize * 4);
+                plaintext += decryptGroup(group);
+            }
+            
+            // Remove padding
+            return plaintext.trim();
+        }
+
+        // Decrypt a single group
         function decryptGroup(group) {
             let coords = [];
             
-            // Step 1: Extract all coordinates
+            // Get coordinates for each character in the encrypted group
             for (const char of group) {
-                const c = findChar(char);
-                if (c) {
-                    coords.push(c.x, c.y, c.z, c.w);
-                } else {
-                    coords.push(1, 1, 1, 1);
+                const c = findChar(char) || { x:1, y:1, z:1, w:1 };
+                coords.push(c.x, c.y, c.z, c.w);
+            }
+            
+            // Reconstruct original coordinate order
+            const originalCoords = [];
+            const groupLength = group.length / 4; // Original group size
+            
+            for (let i = 0; i < groupLength; i++) {
+                for (let j = 0; j < 4; j++) {
+                    originalCoords.push(coords[j * groupLength + i]);
                 }
             }
             
-            // Step 2: Reverse permutation (y,w,x,z) → (x,y,z,w)
-            const reversed = [];
-            for (let i = 0; i < coords.length; i += 4) {
-                const [y, w, x, z] = coords.slice(i, i+4);
-                reversed.push(x, y, z, w);
+            // Split into 4-coordinate chunks and map to characters
+            let result = '';
+            for (let i = 0; i < originalCoords.length; i += 4) {
+                const chunk = originalCoords.slice(i, i+4);
+                if (chunk.length === 4) {
+                    result += getChar(chunk[0], chunk[1], chunk[2], chunk[3]) || '?';
+                }
             }
             
-            // Step 3: Get original chars
-            let decrypted = '';
-            for (let i = 0; i < reversed.length; i += 4) {
-                const [x, y, z, w] = reversed.slice(i, i+4);
-                decrypted += getChar(x, y, z, w);
+            return result;
+        }
+
+        // Run validation tests
+        function runValidationTests() {
+            const testResults = document.getElementById('test-results');
+            testResults.innerHTML = '';
+            
+            if (!validateAlphabet()) {
+                testResults.innerHTML = '<div class="error">Cannot run tests with invalid alphabet configuration</div>';
+                return;
             }
             
-            return decrypted;
+            const tests = [
+                { input: 'HELLO', description: 'Basic English text' },
+                { input: 'ПРИВЕТ', description: 'Cyrillic text' },
+                { input: 'ABC123!@#', description: 'Mixed characters' },
+                { input: 'A', description: 'Single character' },
+                { input: '   ', description: 'Spaces only' }
+            ];
+            
+            let allPassed = true;
+            const resultsList = document.createElement('div');
+            
+            tests.forEach(test => {
+                const testElement = document.createElement('div');
+                testElement.style.marginBottom = '15px';
+                testElement.style.padding = '10px';
+                testElement.style.borderLeft = '3px solid #ddd';
+                
+                try {
+                    // Encrypt
+                    const encrypted = encryptTextInternal(test.input);
+                    
+                    // Decrypt
+                    const decrypted = decryptTextInternal(encrypted);
+                    
+                    // Compare (ignore padding)
+                    const inputClean = test.input.toUpperCase().replace(/ /g, '');
+                    const outputClean = decrypted.replace(/ /g, '');
+                    
+                    const passed = inputClean === outputClean;
+                    allPassed = allPassed && passed;
+                    
+                    testElement.innerHTML = `
+                        <strong>${test.description}:</strong> "${test.input}" → "${encrypted}" → "${decrypted}"
+                        <br><strong>Result:</strong> <span style="color: ${passed ? 'green' : 'red'}">${
+                            passed ? 'PASSED' : 'FAILED'
+                        }</span>
+                    `;
+                    
+                    if (!passed) {
+                        testElement.style.borderLeftColor = 'red';
+                        testElement.style.backgroundColor = '#ffebee';
+                    }
+                } catch (error) {
+                    allPassed = false;
+                    testElement.innerHTML = `
+                        <strong>${test.description}:</strong> ERROR - ${error.message}
+                    `;
+                    testElement.style.borderLeftColor = 'red';
+                    testElement.style.backgroundColor = '#ffebee';
+                }
+                
+                resultsList.appendChild(testElement);
+            });
+            
+            testResults.appendChild(resultsList);
+            
+            const summary = document.createElement('div');
+            summary.className = allPassed ? 'success' : 'error';
+            summary.style.marginTop = '10px';
+            summary.style.padding = '10px';
+            summary.innerHTML = `<strong>Test Summary:</strong> ${
+                allPassed ? 'All tests passed!' : 'Some tests failed!'
+            }`;
+            
+            testResults.appendChild(summary);
         }
 
-        // Encrypt full text (split into groups)
-        function encrypt() {
-            const input = document.getElementById('input').value.toUpperCase();
-            let output = '';
+        // Internal encryption function for testing
+        function encryptTextInternal(text) {
+            const cleanedText = text.toUpperCase().split('').filter(c => {
+                return findChar(c) || c === ' ';
+            }).join('');
             
-            // Pad input to multiple of GROUP_SIZE
-            const padded = input + ' '.repeat((GROUP_SIZE - (input.length % GROUP_SIZE)) % GROUP_SIZE);
+            const paddedLength = Math.ceil(cleanedText.length / groupSize) * groupSize;
+            const paddedText = cleanedText.padEnd(paddedLength, paddingChar);
             
-            // Process each group
-            for (let i = 0; i < padded.length; i += GROUP_SIZE) {
-                const group = padded.substr(i, GROUP_SIZE);
-                output += encryptGroup(group);
+            let ciphertext = '';
+            
+            for (let i = 0; i < paddedText.length; i += groupSize) {
+                const group = paddedText.substr(i, groupSize);
+                ciphertext += encryptGroup(group);
             }
             
-            document.getElementById('output').textContent = output;
+            return ciphertext;
         }
 
-        // Decrypt full text
-        function decrypt() {
-            const input = document.getElementById('input').value;
-            let output = '';
-            
-            for (let i = 0; i < input.length; i += GROUP_SIZE) {
-                const group = input.substr(i, GROUP_SIZE);
-                output += decryptGroup(group);
-            }
-            
-            document.getElementById('output').textContent = output.trim();
-        }
-
-        // Clear all
-        function clearAll() {
-            document.getElementById('input').value = '';
-            document.getElementById('output').textContent = '';
-        }
-
-        // Show coordinates
-        function showCoords(x, y, z, w) {
-            alert(`Char: ${getChar(x,y,z,w)}\nCoords: (${x},${y},${z},${w})`);
-        }
-
-        // Initialize
-        window.onload = initCubes;
+        // Initialize the application when the page loads
+        window.onload = init;
     </script>
 </body>
 </html>

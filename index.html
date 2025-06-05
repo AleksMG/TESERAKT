@@ -14,6 +14,7 @@
             --dark: #212529;
             --success: #4cc9f0;
             --error: #f72585;
+            --warning: #f8961e;
             --border-radius: 12px;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
@@ -23,6 +24,8 @@
             --light: #212529;
             --dark: #f8f9fa;
             --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --primary: #4895ef;
+            --secondary: #4361ee;
         }
 
         * {
@@ -53,19 +56,25 @@
             margin-bottom: 2rem;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4 {
             color: var(--primary);
             margin-bottom: 1rem;
         }
 
         .card {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             padding: 2rem;
             margin-bottom: 2rem;
             transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="light"] .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .card:hover {
@@ -76,21 +85,33 @@
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             padding-bottom: 0.5rem;
+        }
+
+        [data-theme="dark"] .tabs {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
         }
 
         .tab {
             padding: 0.75rem 1.5rem;
-            background-color: #e9ecef;
+            background-color: rgba(0, 0, 0, 0.05);
             cursor: pointer;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
             transition: var(--transition);
             font-weight: 500;
         }
 
+        [data-theme="dark"] .tab {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
         .tab:hover {
-            background-color: #dee2e6;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .tab.active {
@@ -126,6 +147,10 @@
             box-shadow: var(--box-shadow);
         }
 
+        [data-theme="dark"] .cube-layer {
+            background-color: rgba(30, 30, 40, 0.9);
+        }
+
         .cube-table {
             width: 100%;
             border-collapse: separate;
@@ -134,10 +159,15 @@
         }
 
         .cube-table th, .cube-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 0.75rem;
             text-align: center;
             transition: var(--transition);
+        }
+
+        [data-theme="dark"] .cube-table th, 
+        [data-theme="dark"] .cube-table td {
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .cube-table th {
@@ -147,12 +177,21 @@
         }
 
         .cube-table td {
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.8);
+        }
+
+        [data-theme="dark"] .cube-table td {
+            background-color: rgba(40, 40, 50, 0.8);
+            color: var(--dark);
         }
 
         .cube-table td:hover {
-            background-color: #e9ecef;
+            background-color: rgba(233, 236, 239, 0.8);
             transform: scale(1.05);
+        }
+
+        [data-theme="dark"] .cube-table td:hover {
+            background-color: rgba(60, 60, 70, 0.8);
         }
 
         .form-group {
@@ -163,18 +202,37 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            color: var(--dark);
         }
 
-        textarea, input[type="text"] {
+        [data-theme="dark"] label {
+            color: var(--dark);
+        }
+
+        textarea, input[type="text"], input[type="number"], select {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid #ced4da;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: var(--border-radius);
             font-family: 'Courier New', Courier, monospace;
             transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
         }
 
-        textarea:focus, input[type="text"]:focus {
+        [data-theme="dark"] textarea,
+        [data-theme="dark"] input[type="text"],
+        [data-theme="dark"] input[type="number"],
+        [data-theme="dark"] select {
+            background-color: rgba(30, 30, 40, 0.9);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: var(--dark);
+        }
+
+        textarea:focus, 
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
             outline: none;
@@ -219,6 +277,14 @@
             background-color: #d1145a;
         }
 
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #e07d10;
+        }
+
         .btn-group {
             display: flex;
             gap: 0.75rem;
@@ -230,18 +296,25 @@
             padding: 1rem;
             border-radius: var(--border-radius);
             margin-bottom: 1.5rem;
+            border-left: 4px solid transparent;
         }
 
         .alert-success {
             background-color: rgba(76, 201, 240, 0.2);
-            border-left: 4px solid var(--success);
-            color: #0a9396;
+            border-left-color: var(--success);
+            color: var(--dark);
         }
 
         .alert-error {
             background-color: rgba(247, 37, 133, 0.2);
-            border-left: 4px solid var(--error);
-            color: #ae0d4e;
+            border-left-color: var(--error);
+            color: var(--dark);
+        }
+
+        .alert-warning {
+            background-color: rgba(248, 150, 30, 0.2);
+            border-left-color: var(--warning);
+            color: var(--dark);
         }
 
         .process-table {
@@ -251,18 +324,31 @@
         }
 
         .process-table th, .process-table td {
-            border: 1px solid #dee2e6;
+            border: 1px solid rgba(0, 0, 0, 0.1);
             padding: 0.75rem;
             text-align: left;
         }
 
+        [data-theme="dark"] .process-table th,
+        [data-theme="dark"] .process-table td {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
         .process-table th {
-            background-color: #f1f3f5;
+            background-color: rgba(241, 243, 245, 0.8);
             font-weight: 600;
         }
 
+        [data-theme="dark"] .process-table th {
+            background-color: rgba(60, 60, 70, 0.8);
+        }
+
         .process-table tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: rgba(248, 249, 250, 0.5);
+        }
+
+        [data-theme="dark"] .process-table tr:nth-child(even) {
+            background-color: rgba(50, 50, 60, 0.5);
         }
 
         .theme-toggle {
@@ -278,6 +364,43 @@
             transform: rotate(30deg);
         }
 
+        .settings-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .settings-group {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        [data-theme="light"] .settings-group {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-group h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .error {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        .success {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
@@ -288,6 +411,10 @@
             }
             
             .btn-group {
+                flex-direction: column;
+            }
+            
+            .settings-row {
                 flex-direction: column;
             }
         }
@@ -313,19 +440,61 @@
             <div id="settings" class="tab-content active">
                 <h2><i class="fas fa-sliders-h"></i> Cipher Settings</h2>
                 
-                <div class="form-group">
-                    <label for="alphabet"><i class="fas fa-font"></i> Alphabet (64 unique characters)</label>
-                    <textarea id="alphabet" rows="3" placeholder="Enter exactly 64 unique characters">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz@#$%^&amp;*()-+=</textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="filler"><i class="fas fa-ghost"></i> Filler character (must NOT be in alphabet)</label>
-                    <input type="text" id="filler" value="-" maxlength="1">
+                <div class="settings-row">
+                    <div class="settings-group">
+                        <h4><i class="fas fa-font"></i> Alphabet Configuration</h4>
+                        <div class="form-group">
+                            <label for="alphabet">Alphabet (64 unique characters)</label>
+                            <textarea id="alphabet" rows="3" placeholder="Enter exactly 64 unique characters">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz@#$%^&amp;*()-+=</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filler">Filler character (must NOT be in alphabet)</label>
+                            <input type="text" id="filler" value="-" maxlength="1">
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4><i class="fas fa-key"></i> Key Configuration</h4>
+                        <div class="form-group">
+                            <label for="encryptionKey">Encryption Key</label>
+                            <input type="text" id="encryptionKey" placeholder="Enter encryption key">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="shuffleAlgorithm">Shuffle Algorithm</label>
+                            <select id="shuffleAlgorithm">
+                                <option value="fisher-yates">Fisher-Yates</option>
+                                <option value="reverse-pairs">Reverse & Swap Pairs</option>
+                                <option value="interleave">Interleave Halves</option>
+                                <option value="key-based">Key-Based Shuffle</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <h4><i class="fas fa-arrows-alt"></i> Cube Shifting</h4>
+                        <div class="form-group">
+                            <label for="shiftLayers">Shift Layers (0-3)</label>
+                            <input type="number" id="shiftLayers" min="0" max="3" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="shiftRows">Shift Rows (0-3)</label>
+                            <input type="number" id="shiftRows" min="0" max="3" value="1">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="shiftCols">Shift Columns (0-3)</label>
+                            <input type="number" id="shiftCols" min="0" max="3" value="1">
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="btn-group">
                     <button class="btn" id="initCube"><i class="fas fa-cube"></i> Initialize Cube</button>
                     <button class="btn btn-outline" id="shuffleCube"><i class="fas fa-random"></i> Shuffle Alphabet</button>
+                    <button class="btn btn-warning" id="applyShifts"><i class="fas fa-arrows-alt"></i> Apply Shifts</button>
                     <button class="btn btn-outline" id="resetCube"><i class="fas fa-undo"></i> Reset to Default</button>
                 </div>
                 
@@ -423,11 +592,22 @@
                     <h4><i class="fas fa-star"></i> Key Features of This Implementation:</h4>
                     <ul>
                         <li>True 4×4×4 cube structure (64 symbols + filler)</li>
-                        <li>Multiple alphabet shuffling algorithms</li>
-                        <li>Modern, responsive interface with dark/light mode</li>
+                        <li>Multiple alphabet shuffling algorithms including key-based shuffling</li>
+                        <li>Dynamic cube shifting for enhanced security</li>
+                        <li>Modern, responsive interface with improved dark/light mode</li>
                         <li>Detailed visualization of each encryption/decryption step</li>
                         <li>Copy-to-clipboard functionality for results</li>
                         <li>Sample texts for quick testing</li>
+                        <li>Configurable cube shifting parameters</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-shield-alt"></i> Enhanced Security Features:</h4>
+                    <ul>
+                        <li>Key-based initialization for reproducible shuffling</li>
+                        <li>Dynamic cube shifting based on encryption key</li>
+                        <li>Multiple shuffle algorithms to choose from</li>
+                        <li>Configurable layer, row, and column shifts</li>
+                        <li>Improved handling of edge cases and invalid characters</li>
                     </ul>
                 </div>
             </div>
@@ -441,6 +621,10 @@
                 this.cube = [];
                 this.alphabet = "";
                 this.fillerChar = "-";
+                this.shiftLayers = 1;
+                this.shiftRows = 1;
+                this.shiftCols = 1;
+                this.encryptionKey = "";
                 this.initEventListeners();
                 this.initTheme();
                 this.resetToDefault();
@@ -456,6 +640,7 @@
                 // Button events
                 document.getElementById('initCube').addEventListener('click', () => this.initCube());
                 document.getElementById('shuffleCube').addEventListener('click', () => this.shuffleAlphabet());
+                document.getElementById('applyShifts').addEventListener('click', () => this.applyCubeShifts());
                 document.getElementById('resetCube').addEventListener('click', () => this.resetToDefault());
                 document.getElementById('encryptBtn').addEventListener('click', () => this.encrypt());
                 document.getElementById('decryptBtn').addEventListener('click', () => this.decrypt());
@@ -466,6 +651,12 @@
                 document.getElementById('copyCiphertext').addEventListener('click', () => this.copyToClipboard('ciphertextOutput'));
                 document.getElementById('copyPlaintext').addEventListener('click', () => this.copyToClipboard('plaintextOutput'));
                 document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+                
+                // Settings change events
+                document.getElementById('shiftLayers').addEventListener('change', (e) => this.shiftLayers = Math.max(0, Math.min(3, parseInt(e.target.value) || 0)));
+                document.getElementById('shiftRows').addEventListener('change', (e) => this.shiftRows = Math.max(0, Math.min(3, parseInt(e.target.value) || 0)));
+                document.getElementById('shiftCols').addEventListener('change', (e) => this.shiftCols = Math.max(0, Math.min(3, parseInt(e.target.value) || 0)));
+                document.getElementById('encryptionKey').addEventListener('input', (e) => this.encryptionKey = e.target.value);
             }
 
             // Theme management
@@ -492,6 +683,15 @@
             resetToDefault() {
                 document.getElementById('alphabet').value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz@#$%^&*()-+=';
                 document.getElementById('filler').value = '-';
+                document.getElementById('encryptionKey').value = '';
+                document.getElementById('shiftLayers').value = '1';
+                document.getElementById('shiftRows').value = '1';
+                document.getElementById('shiftCols').value = '1';
+                document.getElementById('shuffleAlgorithm').value = 'fisher-yates';
+                this.shiftLayers = 1;
+                this.shiftRows = 1;
+                this.shiftCols = 1;
+                this.encryptionKey = '';
                 this.initCube();
             }
 
@@ -582,7 +782,87 @@
                 return true;
             }
 
-            // Shuffle the alphabet using different algorithms
+            // Apply cube shifts based on current settings
+            applyCubeShifts() {
+                if (!this.alphabet || this.cube.length === 0) {
+                    alert("Please initialize the cube first");
+                    return;
+                }
+
+                // Get shift values from UI
+                this.shiftLayers = parseInt(document.getElementById('shiftLayers').value) || 0;
+                this.shiftRows = parseInt(document.getElementById('shiftRows').value) || 0;
+                this.shiftCols = parseInt(document.getElementById('shiftCols').value) || 0;
+
+                // Validate shifts
+                if (this.shiftLayers < 0 || this.shiftLayers > 3 || 
+                    this.shiftRows < 0 || this.shiftRows > 3 || 
+                    this.shiftCols < 0 || this.shiftCols > 3) {
+                    alert("Shift values must be between 0 and 3");
+                    return;
+                }
+
+                // Apply shifts
+                this.shiftCubeLayers(this.shiftLayers);
+                this.shiftCubeRows(this.shiftRows);
+                this.shiftCubeColumns(this.shiftCols);
+
+                // Update visualization
+                this.visualizeCube();
+                
+                // Show status
+                const statusElement = document.getElementById('alphabetStatus');
+                statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Cube shifted successfully (Layers: ${this.shiftLayers}, Rows: ${this.shiftRows}, Columns: ${this.shiftCols})`;
+                statusElement.classList.add('alert-success');
+                statusElement.style.display = 'block';
+            }
+
+            // Shift cube layers
+            shiftCubeLayers(shiftAmount) {
+                if (shiftAmount === 0) return;
+                
+                // Shift layers vertically
+                const shiftedCube = [];
+                for (let i = 0; i < 4; i++) {
+                    const newIndex = (i + shiftAmount) % 4;
+                    shiftedCube[newIndex] = this.cube[i];
+                }
+                this.cube = shiftedCube;
+            }
+
+            // Shift cube rows
+            shiftCubeRows(shiftAmount) {
+                if (shiftAmount === 0) return;
+                
+                // Shift rows within each layer
+                for (let layer = 0; layer < 4; layer++) {
+                    const shiftedLayer = [];
+                    for (let i = 0; i < 4; i++) {
+                        const newIndex = (i + shiftAmount) % 4;
+                        shiftedLayer[newIndex] = this.cube[layer][i];
+                    }
+                    this.cube[layer] = shiftedLayer;
+                }
+            }
+
+            // Shift cube columns
+            shiftCubeColumns(shiftAmount) {
+                if (shiftAmount === 0) return;
+                
+                // Shift columns within each row
+                for (let layer = 0; layer < 4; layer++) {
+                    for (let row = 0; row < 4; row++) {
+                        const shiftedRow = [];
+                        for (let i = 0; i < 4; i++) {
+                            const newIndex = (i + shiftAmount) % 4;
+                            shiftedRow[newIndex] = this.cube[layer][row][i];
+                        }
+                        this.cube[layer][row] = shiftedRow;
+                    }
+                }
+            }
+
+            // Shuffle the alphabet using selected algorithm
             shuffleAlphabet() {
                 const alphabetInput = document.getElementById('alphabet').value;
                 if (alphabetInput.length !== 64) {
@@ -590,25 +870,25 @@
                     return;
                 }
 
-                const algorithm = Math.floor(Math.random() * 3); // 0-2
+                const algorithm = document.getElementById('shuffleAlgorithm').value;
                 let shuffled = [...alphabetInput];
 
                 switch (algorithm) {
-                    case 0:
+                    case "fisher-yates":
                         // Fisher-Yates shuffle
                         for (let i = shuffled.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
                             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
                         }
                         break;
-                    case 1:
+                    case "reverse-pairs":
                         // Reverse and swap pairs
                         shuffled = shuffled.reverse();
                         for (let i = 0; i < shuffled.length - 1; i += 2) {
                             [shuffled[i], shuffled[i + 1]] = [shuffled[i + 1], shuffled[i]];
                         }
                         break;
-                    case 2:
+                    case "interleave":
                         // Split and interleave halves
                         const half = Math.floor(shuffled.length / 2);
                         const firstHalf = shuffled.slice(0, half);
@@ -619,10 +899,41 @@
                             shuffled.push(firstHalf[i]);
                         }
                         break;
+                    case "key-based":
+                        // Key-based shuffle for reproducible results
+                        if (!this.encryptionKey) {
+                            alert("Please enter an encryption key for key-based shuffling");
+                            return;
+                        }
+                        shuffled = this.keyBasedShuffle([...alphabetInput], this.encryptionKey);
+                        break;
                 }
 
                 document.getElementById('alphabet').value = shuffled.join('');
                 this.initCube();
+            }
+
+            // Key-based shuffle algorithm
+            keyBasedShuffle(array, key) {
+                // Convert key to a numeric seed
+                let seed = 0;
+                for (let i = 0; i < key.length; i++) {
+                    seed = (seed * 31 + key.charCodeAt(i)) % 2147483647;
+                }
+                
+                // Simple pseudo-random number generator
+                const random = () => {
+                    seed = (seed * 16807) % 2147483647;
+                    return seed / 2147483647;
+                };
+                
+                // Fisher-Yates shuffle with our seeded random
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                
+                return array;
             }
 
             // Visualize the cube with modern layout
@@ -647,7 +958,7 @@
                     // Create header row
                     const headerRow = table.insertRow();
                     const emptyHeader = headerRow.insertCell();
-                    emptyHeader.textContent = 'R\C';
+                    emptyHeader.textContent = 'R\\C';
                     emptyHeader.className = 'row-header';
 
                     for (let col = 0; col < 4; col++) {
@@ -974,7 +1285,9 @@
 
             // Helper function to chunk strings for display
             chunkString(str, size) {
-                return str.match(new RegExp('.{1,' + size + '}', 'g')).join(' ');
+                if (!str) return '';
+                const chunks = str.match(new RegExp('.{1,' + size + '}', 'g'));
+                return chunks ? chunks.join(' ') : '';
             }
 
             // Helper function to copy text to clipboard

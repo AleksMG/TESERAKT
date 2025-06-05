@@ -208,8 +208,9 @@
         <h1>4D Tessaract Cryptosystem</h1>
         
         <div class="key-input">
-            <h3>Encryption Key</h3>
+            <h3>Encryption Key (Optional)</h3>
             <input type="text" id="key" placeholder="Enter encryption key (word or phrase)">
+            <p><small>The key will shift the alphabets before encryption/decryption</small></p>
         </div>
         
         <div class="alphabet-container">
@@ -259,117 +260,77 @@
     <script>
         // Global variables
         let cubes = [];
-        let shiftedCubes = [];
+        let currentAlphabets = ["", "", ""];
         
         // Initialize the application
         function init() {
             updateAlphabets();
             renderCubes();
             
-            // Add event listeners to alphabet inputs
+            // Add event listeners
             document.getElementById('alphabet1').addEventListener('input', updateAlphabets);
             document.getElementById('alphabet2').addEventListener('input', updateAlphabets);
             document.getElementById('alphabet3').addEventListener('input', updateAlphabets);
+            document.getElementById('key').addEventListener('input', updateAlphabets);
         }
         
         // Update alphabets from input fields
         function updateAlphabets() {
-            const alphabet1 = document.getElementById('alphabet1').value.padEnd(27, ' ').substring(0, 27);
-            const alphabet2 = document.getElementById('alphabet2').value.padEnd(27, ' ').substring(0, 27);
-            const alphabet3 = document.getElementById('alphabet3').value.padEnd(27, ' ').substring(0, 27);
-            
-            // Update the input fields with padded values
-            document.getElementById('alphabet1').value = alphabet1;
-            document.getElementById('alphabet2').value = alphabet2;
-            document.getElementById('alphabet3').value = alphabet3;
-            
-            // Rebuild the cubes structure
-            cubes = [
-                buildCube(alphabet1, 1),
-                buildCube(alphabet2, 2),
-                buildCube(alphabet3, 3)
+            currentAlphabets = [
+                document.getElementById('alphabet1').value.padEnd(27, ' ').substring(0, 27),
+                document.getElementById('alphabet2').value.padEnd(27, ' ').substring(0, 27),
+                document.getElementById('alphabet3').value.padEnd(27, ' ').substring(0, 27)
             ];
             
-            // Apply key shift if key exists
-            const key = document.getElementById('key').value;
-            if (key) {
-                applyKeyShift(key);
-            } else {
-                shiftedCubes = JSON.parse(JSON.stringify(cubes));
-            }
+            // Update the input fields with padded values
+            document.getElementById('alphabet1').value = currentAlphabets[0];
+            document.getElementById('alphabet2').value = currentAlphabets[1];
+            document.getElementById('alphabet3').value = currentAlphabets[2];
             
+            // Rebuild the cubes structure with optional key shift
+            rebuildCubes();
             renderCubes();
             showStatus('Alphabets updated successfully', 'success');
         }
         
-        // Build a 3x3x3 cube from an alphabet string
-        function buildCube(alphabet, cubeNum) {
-            const cube = [];
-            
-            // Split the alphabet into 3 layers
-            for (let z = 0; z < 3; z++) {
-                const layer = [];
-                const startIdx = z * 9;
-                const layerChars = alphabet.substring(startIdx, startIdx + 9);
-                
-                // Split layer into 3 rows
-                for (let y = 0; y < 3; y++) {
-                    const row = [];
-                    const rowStart = y * 3;
-                    const rowChars = layerChars.substring(rowStart, rowStart + 3);
-                    
-                    // Add each character to the row
-                    for (let x = 0; x < 3; x++) {
-                        row.push(rowChars[x] || ' ');
-                    }
-                    
-                    layer.push(row);
-                }
-                
-                cube.push(layer);
-            }
-            
-            return cube;
-        }
-        
-        // Apply key-based shift to the alphabets
-        function applyKeyShift(key) {
-            if (!key) return;
-            
-            shiftedCubes = JSON.parse(JSON.stringify(cubes));
-            const keyUpper = key.toUpperCase();
+        // Rebuild cubes with optional key-based shift
+        function rebuildCubes() {
+            cubes = [];
+            const key = document.getElementById('key').value;
             
             for (let w = 0; w < 3; w++) {
-                const cube = shiftedCubes[w];
-                const keyChar = keyUpper[w % keyUpper.length];
-                const shiftAmount = keyChar.charCodeAt(0) % 27;
+                let alphabet = currentAlphabets[w];
                 
-                // Flatten the cube to shift all characters
-                let flatCube = [];
-                for (let z = 0; z < 3; z++) {
-                    for (let y = 0; y < 3; y++) {
-                        for (let x = 0; x < 3; x++) {
-                            flatCube.push(cube[z][y][x]);
-                        }
-                    }
+                // Apply key shift if key exists
+                if (key && key.length > 0) {
+                    const keyChar = key.toUpperCase()[w % key.length];
+                    const shiftAmount = keyChar.charCodeAt(0) % 27;
+                    alphabet = alphabet.slice(shiftAmount) + alphabet.slice(0, shiftAmount);
                 }
                 
-                // Perform the shift
-                flatCube = [...flatCube.slice(shiftAmount), ...flatCube.slice(0, shiftAmount)];
-                
-                // Rebuild the cube structure
-                let idx = 0;
+                // Build cube layers
+                const cube = [];
                 for (let z = 0; z < 3; z++) {
+                    const layer = [];
+                    const startIdx = z * 9;
+                    const layerChars = alphabet.substring(startIdx, startIdx + 9);
+                    
+                    // Build cube rows
                     for (let y = 0; y < 3; y++) {
+                        const row = [];
+                        const rowStart = y * 3;
+                        const rowChars = layerChars.substring(rowStart, rowStart + 3);
+                        
+                        // Add characters to row
                         for (let x = 0; x < 3; x++) {
-                            cube[z][y][x] = flatCube[idx++];
+                            row.push(rowChars[x] || ' ');
                         }
+                        layer.push(row);
                     }
+                    cube.push(layer);
                 }
+                cubes.push(cube);
             }
-            
-            showStatus(`Alphabets shifted with key: ${key}`, 'success');
-            renderCubes();
         }
         
         // Render the 3D cubes visualization
@@ -385,7 +346,7 @@
                     for (let y = 0; y < 3; y++) {
                         html += '<tr>';
                         for (let x = 0; x < 3; x++) {
-                            const char = shiftedCubes[w] ? shiftedCubes[w][z][y][x] : ' ';
+                            const char = cubes[w][z][y][x];
                             html += `<td onclick="showCoords(${x+1},${y+1},${z+1},${w+1})">${char}</td>`;
                         }
                         html += '</tr>';
@@ -400,13 +361,13 @@
             document.getElementById('cubes').innerHTML = html;
         }
         
-        // Find character coordinates in the shifted cubes
+        // Find character coordinates in the cubes
         function findChar(c) {
             for (let w = 0; w < 3; w++) {
                 for (let z = 0; z < 3; z++) {
                     for (let y = 0; y < 3; y++) {
                         for (let x = 0; x < 3; x++) {
-                            if (shiftedCubes[w][z][y][x] === c) {
+                            if (cubes[w][z][y][x] === c) {
                                 return { x: x+1, y: y+1, z: z+1, w: w+1 };
                             }
                         }
@@ -416,32 +377,21 @@
             return null;
         }
         
-        // Get character from coordinates in the original cubes
+        // Get character from coordinates
         function getChar(x, y, z, w) {
             return cubes[w-1][z-1][y-1][x-1] || '?';
-        }
-        
-        // Get character from coordinates in the shifted cubes
-        function getShiftedChar(x, y, z, w) {
-            return shiftedCubes[w-1][z-1][y-1][x-1] || '?';
         }
         
         // Encryption: (x,y,z,w) → (y,w,x,z)
         function encrypt() {
             const input = document.getElementById('input').value;
-            const key = document.getElementById('key').value;
             
             if (!input) {
                 showStatus('Please enter text to encrypt', 'error');
                 return;
             }
             
-            if (key) {
-                applyKeyShift(key);
-            } else {
-                shiftedCubes = JSON.parse(JSON.stringify(cubes));
-            }
-            
+            rebuildCubes(); // Ensure cubes are up-to-date
             let output = '';
             
             for (const char of input) {
@@ -449,7 +399,7 @@
                 const coords = findChar(upperChar);
                 
                 if (coords) {
-                    // Encryption transformation
+                    // Original encryption transformation
                     const encrypted = getChar(coords.y, coords.w, coords.x, coords.z);
                     output += encrypted;
                 } else {
@@ -464,19 +414,13 @@
         // Decryption: (y,w,x,z) → (x,y,z,w)
         function decrypt() {
             const input = document.getElementById('input').value;
-            const key = document.getElementById('key').value;
             
             if (!input) {
                 showStatus('Please enter text to decrypt', 'error');
                 return;
             }
             
-            if (key) {
-                applyKeyShift(key);
-            } else {
-                shiftedCubes = JSON.parse(JSON.stringify(cubes));
-            }
-            
+            rebuildCubes(); // Ensure cubes are up-to-date
             let output = '';
             
             for (const char of input) {
@@ -484,7 +428,7 @@
                 const coords = findChar(upperChar);
                 
                 if (coords) {
-                    // Decryption transformation
+                    // Original decryption transformation
                     const decrypted = getChar(coords.z, coords.x, coords.w, coords.y);
                     output += decrypted;
                 } else {
@@ -501,12 +445,11 @@
             document.getElementById('input').value = '';
             document.getElementById('output').textContent = '';
             document.getElementById('status').className = 'status';
-            showStatus('All fields cleared', 'success');
         }
         
         // Show coordinates when a cube cell is clicked
         function showCoords(x, y, z, w) {
-            const char = getShiftedChar(x, y, z, w);
+            const char = getChar(x, y, z, w);
             alert(`Character: ${char}\nCoordinates: (X=${x}, Y=${y}, Z=${z}, W=${w})`);
         }
         
@@ -516,7 +459,6 @@
             statusEl.textContent = message;
             statusEl.className = `status ${type}`;
             
-            // Hide after 5 seconds
             setTimeout(() => {
                 if (statusEl.textContent === message) {
                     statusEl.className = 'status';

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>4D Tessaract Encryptor/Decryptor</title>
+    <title>4D Trifid Cipher (Group Encryption)</title>
     <style>
         body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
         textarea { width: 100%; height: 100px; margin-bottom: 10px; }
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h2>4D Tessaract Encryptor/Decryptor</h2>
+    <h2>4D Trifid Cipher (Group Encryption)</h2>
     
     <div>
         <textarea id="input" placeholder="Enter text"></textarea><br>
@@ -30,7 +30,7 @@
     <div id="cubes"></div>
 
     <script>
-        // Alphabet definition
+        // Alphabet definition (4D cubes)
         const cubes = [
             [ // Latin (W=1)
                 ['A','B','C','D','E','F','G','H','I'], // Z=1
@@ -48,6 +48,9 @@
                 [')','-','+','=','/','?','|','~','§']
             ]
         ];
+
+        // Group size (лучше 3-5 для Trifid-эффекта)
+        const GROUP_SIZE = 5; 
 
         // Initialize cubes
         function initCubes() {
@@ -92,40 +95,98 @@
             return cubes[w-1][z-1][(y-1)*3 + (x-1)] || '?';
         }
 
-        // Encryption: (x,y,z,w) → (y,w,x,z)
+        // Encrypt a group of characters (Trifid-style)
+        function encryptGroup(group) {
+            let coords = [];
+            
+            // Step 1: Extract all coordinates
+            for (const char of group) {
+                const c = findChar(char);
+                if (c) {
+                    coords.push(c.x, c.y, c.z, c.w);
+                } else {
+                    coords.push(1, 1, 1, 1); // Fallback for unknown chars
+                }
+            }
+            
+            // Step 2: Permute coordinates (Trifid-style)
+            // В классическом Trifid: (x,y,z) → (y,z,x)
+            // Здесь: (x,y,z,w) → (y,w,x,z)
+            const permuted = [];
+            for (let i = 0; i < coords.length; i += 4) {
+                const [x, y, z, w] = coords.slice(i, i+4);
+                permuted.push(y, w, x, z);
+            }
+            
+            // Step 3: Split into new 4D coordinates and get new chars
+            let encrypted = '';
+            for (let i = 0; i < permuted.length; i += 4) {
+                const [x, y, z, w] = permuted.slice(i, i+4);
+                encrypted += getChar(x, y, z, w);
+            }
+            
+            return encrypted;
+        }
+
+        // Decrypt a group (reverse of encryption)
+        function decryptGroup(group) {
+            let coords = [];
+            
+            // Step 1: Extract all coordinates
+            for (const char of group) {
+                const c = findChar(char);
+                if (c) {
+                    coords.push(c.x, c.y, c.z, c.w);
+                } else {
+                    coords.push(1, 1, 1, 1);
+                }
+            }
+            
+            // Step 2: Reverse permutation (y,w,x,z) → (x,y,z,w)
+            const reversed = [];
+            for (let i = 0; i < coords.length; i += 4) {
+                const [y, w, x, z] = coords.slice(i, i+4);
+                reversed.push(x, y, z, w);
+            }
+            
+            // Step 3: Get original chars
+            let decrypted = '';
+            for (let i = 0; i < reversed.length; i += 4) {
+                const [x, y, z, w] = reversed.slice(i, i+4);
+                decrypted += getChar(x, y, z, w);
+            }
+            
+            return decrypted;
+        }
+
+        // Encrypt full text (split into groups)
         function encrypt() {
             const input = document.getElementById('input').value.toUpperCase();
             let output = '';
             
-            for (const char of input) {
-                const coords = findChar(char);
-                if (coords) {
-                    const encrypted = getChar(coords.y, coords.w, coords.x, coords.z);
-                    output += encrypted;
-                } else {
-                    output += '?';
-                }
+            // Pad input to multiple of GROUP_SIZE
+            const padded = input + ' '.repeat((GROUP_SIZE - (input.length % GROUP_SIZE)) % GROUP_SIZE);
+            
+            // Process each group
+            for (let i = 0; i < padded.length; i += GROUP_SIZE) {
+                const group = padded.substr(i, GROUP_SIZE);
+                output += encryptGroup(group);
             }
             
             document.getElementById('output').textContent = output;
         }
 
-        // Decryption: (y,w,x,z) → (x,y,z,w)
+        // Decrypt full text
         function decrypt() {
             const input = document.getElementById('input').value;
             let output = '';
             
-            for (const char of input) {
-                const coords = findChar(char);
-                if (coords) {
-                    const decrypted = getChar(coords.z, coords.x, coords.w, coords.y);
-                    output += decrypted;
-                } else {
-                    output += '?';
-                }
+            for (let i = 0; i < input.length; i += GROUP_SIZE) {
+                const group = input.substr(i, GROUP_SIZE);
+                output += decryptGroup(group);
             }
             
-            document.getElementById('output').textContent = output;
+            document.getElementById('output').textContent = output.trim();
         }
 
         // Clear all

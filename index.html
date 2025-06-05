@@ -3,364 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional 4D Tessaract Cipher</title>
+    <title>4D Tessaract Cryptosystem</title>
     <style>
         :root {
-            --primary: #3498db;
-            --secondary: #2c3e50;
-            --light: #ecf0f1;
-            --dark: #34495e;
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
         }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f7fa;
         }
+        
         .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .panel {
-            background: white;
+            background-color: white;
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
         }
+        
         h1, h2, h3 {
-            color: var(--secondary);
+            color: var(--primary-color);
             margin-top: 0;
         }
-        textarea {
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7328d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        textarea, input {
             width: 100%;
-            min-height: 100px;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            resize: vertical;
-            font-family: 'Courier New', monospace;
-        }
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin: 5px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        button:hover {
-            background-color: #2980b9;
-            transform: translateY(-1px);
-        }
-        button.secondary {
-            background-color: var(--secondary);
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-        }
-        .tab.active {
-            border-bottom: 3px solid var(--primary);
-            font-weight: bold;
-        }
-        .cube-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .cube {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 200px;
-        }
-        .layer {
+            font-size: 16px;
             margin-bottom: 15px;
+            transition: border 0.3s;
         }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        textarea:focus, input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+        
+        .alphabet-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .alphabet-box {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .alphabet-box h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .alphabet-input {
+            font-family: monospace;
+            font-size: 16px;
+            letter-spacing: 1px;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cube-container {
+            margin-top: 30px;
+        }
+        
+        .cube {
+            display: inline-block;
+            margin: 15px;
+            vertical-align: top;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
         table {
             border-collapse: collapse;
-            margin: 0 auto;
+            margin: 10px 0;
         }
+        
         td {
             width: 30px;
             height: 30px;
             border: 1px solid #ddd;
             text-align: center;
-            vertical-align: middle;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 12px;
         }
+        
         td:hover {
-            background-color: #e3f2fd;
+            background-color: #e9ecef;
         }
-        .active-cell {
-            background-color: #fffde7;
-            box-shadow: 0 0 0 2px #ffc107;
-        }
-        .settings-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
+        
+        .highlight {
+            background-color: #fff3cd;
             font-weight: bold;
         }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        
+        .key-input {
+            margin-bottom: 20px;
         }
-        .output {
-            background-color: #e8f4f8;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            border-left: 4px solid var(--primary);
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-        }
-        .coord-info {
-            background-color: var(--secondary);
-            color: white;
+        
+        .status {
             padding: 10px;
             border-radius: 4px;
-            margin-top: 15px;
-            font-family: monospace;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
         }
     </style>
 </head>
 <body>
-    <h1>Professional 4D Tessaract Cipher</h1>
-    
-    <div class="tabs">
-        <div class="tab active" onclick="showTab('encrypt')">Encrypt/Decrypt</div>
-        <div class="tab" onclick="showTab('settings')">Settings</div>
-        <div class="tab" onclick="showTab('visualization')">Visualization</div>
-    </div>
-    
     <div class="container">
-        <div id="encrypt-tab" class="panel">
-            <h2>Text Transformation</h2>
-            <textarea id="input-text" placeholder="Enter text to encrypt/decrypt..."></textarea>
+        <h1>4D Tessaract Cryptosystem</h1>
+        
+        <div class="key-input">
+            <h3>Encryption Key</h3>
+            <input type="text" id="key" placeholder="Enter encryption key (word or phrase)">
+        </div>
+        
+        <div class="alphabet-container">
+            <div class="alphabet-box">
+                <h3>Alphabet 1 (27 characters)</h3>
+                <input type="text" class="alphabet-input" id="alphabet1" 
+                       value="ABCDEFGHIJKLMNOPQRSTUVWXYZ " maxlength="27">
+            </div>
+            
+            <div class="alphabet-box">
+                <h3>Alphabet 2 (27 characters)</h3>
+                <input type="text" class="alphabet-input" id="alphabet2" 
+                       value="АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" maxlength="27">
+            </div>
+            
+            <div class="alphabet-box">
+                <h3>Alphabet 3 (27 characters)</h3>
+                <input type="text" class="alphabet-input" id="alphabet3" 
+                       value="123456789!@#$%^&*()-+=/?|~§<>" maxlength="27">
+            </div>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div>
+            <h3>Input Text</h3>
+            <textarea id="input" placeholder="Enter text to encrypt or decrypt"></textarea>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="encrypt()">Encrypt</button>
+                <button class="btn btn-secondary" onclick="decrypt()">Decrypt</button>
+                <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+            </div>
+            
             <div>
-                <button onclick="encrypt()">Encrypt</button>
-                <button onclick="decrypt()">Decrypt</button>
-                <button class="secondary" onclick="clearText()">Clear</button>
-            </div>
-            <div class="output" id="output"></div>
-            <div class="coord-info">
-                <strong>Coordinates:</strong>
-                <div id="coordinates"></div>
+                <h3>Result</h3>
+                <div class="result-box" id="output"></div>
             </div>
         </div>
         
-        <div id="settings-tab" class="panel" style="display:none;">
-            <h2>Cipher Settings</h2>
-            <div class="settings-form">
-                <div class="form-group">
-                    <label for="cipher-key">Cipher Key:</label>
-                    <input type="text" id="cipher-key" value="4321">
-                </div>
-                <div class="form-group">
-                    <label for="cipher-mode">Cipher Mode:</label>
-                    <select id="cipher-mode">
-                        <option value="xyzw">X⇄Y, Z⇄W</option>
-                        <option value="custom">Custom</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="cube1-name">Cube 1 Name:</label>
-                    <input type="text" id="cube1-name" value="Latin">
-                </div>
-                <div class="form-group">
-                    <label for="cube2-name">Cube 2 Name:</label>
-                    <input type="text" id="cube2-name" value="Cyrillic">
-                </div>
-                <div class="form-group">
-                    <label for="cube3-name">Cube 3 Name:</label>
-                    <input type="text" id="cube3-name" value="Symbols">
-                </div>
-            </div>
-            <button onclick="saveSettings()">Save Settings</button>
-            <button class="secondary" onclick="resetSettings()">Reset to Default</button>
-        </div>
-        
-        <div id="visualization-tab" class="panel" style="display:none;">
+        <div class="cube-container">
             <h2>4D Tessaract Visualization</h2>
-            <div class="cube-container" id="cube-container"></div>
+            <div id="cubes"></div>
         </div>
     </div>
 
     <script>
-        // Default settings
-        const defaultSettings = {
-            key: "4321",
-            mode: "xyzw",
-            cubeNames: ["Latin", "Cyrillic", "Symbols"],
-            cubes: [
-                [ // Latin
-                    ['A','B','C','D','E','F','G','H','I'],
-                    ['J','K','L','M','N','O','P','Q','R'],
-                    ['S','T','U','V','W','X','Y','Z',' ']
-                ],
-                [ // Cyrillic
-                    ['А','Б','В','Г','Д','Е','Ж','З','И'],
-                    ['Й','К','Л','М','Н','О','П','Р','С'],
-                    ['Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ']
-                ],
-                [ // Symbols
-                    ['1','2','3','4','5','6','7','8','9'],
-                    ['!','@','#','$','%','^','&','*','('],
-                    [')','-','+','=','/','?','|','~','§']
-                ]
-            ]
-        };
-
-        // Current settings
-        let settings = JSON.parse(JSON.stringify(defaultSettings));
+        // Global variables
+        let cubes = [];
+        let shiftedCubes = [];
         
-        // Initialize
+        // Initialize the application
         function init() {
-            loadSettings();
+            updateAlphabets();
             renderCubes();
-        }
-
-        // Tab navigation
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.panel').forEach(panel => {
-                panel.style.display = 'none';
-            });
             
-            event.currentTarget.classList.add('active');
-            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            // Add event listeners to alphabet inputs
+            document.getElementById('alphabet1').addEventListener('input', updateAlphabets);
+            document.getElementById('alphabet2').addEventListener('input', updateAlphabets);
+            document.getElementById('alphabet3').addEventListener('input', updateAlphabets);
         }
-
-        // Load settings from localStorage
-        function loadSettings() {
-            const savedSettings = localStorage.getItem('tessaractSettings');
-            if (savedSettings) {
-                settings = JSON.parse(savedSettings);
-                document.getElementById('cipher-key').value = settings.key;
-                document.getElementById('cipher-mode').value = settings.mode;
-                document.getElementById('cube1-name').value = settings.cubeNames[0];
-                document.getElementById('cube2-name').value = settings.cubeNames[1];
-                document.getElementById('cube3-name').value = settings.cubeNames[2];
-            }
-        }
-
-        // Save settings to localStorage
-        function saveSettings() {
-            settings.key = document.getElementById('cipher-key').value;
-            settings.mode = document.getElementById('cipher-mode').value;
-            settings.cubeNames = [
-                document.getElementById('cube1-name').value,
-                document.getElementById('cube2-name').value,
-                document.getElementById('cube3-name').value
+        
+        // Update alphabets from input fields
+        function updateAlphabets() {
+            const alphabet1 = document.getElementById('alphabet1').value.padEnd(27, ' ').substring(0, 27);
+            const alphabet2 = document.getElementById('alphabet2').value.padEnd(27, ' ').substring(0, 27);
+            const alphabet3 = document.getElementById('alphabet3').value.padEnd(27, ' ').substring(0, 27);
+            
+            // Update the input fields with padded values
+            document.getElementById('alphabet1').value = alphabet1;
+            document.getElementById('alphabet2').value = alphabet2;
+            document.getElementById('alphabet3').value = alphabet3;
+            
+            // Rebuild the cubes structure
+            cubes = [
+                buildCube(alphabet1, 1),
+                buildCube(alphabet2, 2),
+                buildCube(alphabet3, 3)
             ];
             
-            localStorage.setItem('tessaractSettings', JSON.stringify(settings));
-            alert('Settings saved successfully!');
-            renderCubes();
-        }
-
-        // Reset to default settings
-        function resetSettings() {
-            if (confirm('Reset all settings to default?')) {
-                settings = JSON.parse(JSON.stringify(defaultSettings));
-                localStorage.removeItem('tessaractSettings');
-                document.getElementById('cipher-key').value = settings.key;
-                document.getElementById('cipher-mode').value = settings.mode;
-                document.getElementById('cube1-name').value = settings.cubeNames[0];
-                document.getElementById('cube2-name').value = settings.cubeNames[1];
-                document.getElementById('cube3-name').value = settings.cubeNames[2];
-                renderCubes();
+            // Apply key shift if key exists
+            const key = document.getElementById('key').value;
+            if (key) {
+                applyKeyShift(key);
+            } else {
+                shiftedCubes = JSON.parse(JSON.stringify(cubes));
             }
-        }
-
-        // Render 3D cubes visualization
-        function renderCubes() {
-            const container = document.getElementById('cube-container');
-            container.innerHTML = '';
             
-            for (let w = 0; w < 3; w++) {
-                const cubeDiv = document.createElement('div');
-                cubeDiv.className = 'cube';
-                cubeDiv.innerHTML = `<h3>${settings.cubeNames[w]} (W=${w+1})</h3>`;
+            renderCubes();
+            showStatus('Alphabets updated successfully', 'success');
+        }
+        
+        // Build a 3x3x3 cube from an alphabet string
+        function buildCube(alphabet, cubeNum) {
+            const cube = [];
+            
+            // Split the alphabet into 3 layers
+            for (let z = 0; z < 3; z++) {
+                const layer = [];
+                const startIdx = z * 9;
+                const layerChars = alphabet.substring(startIdx, startIdx + 9);
                 
-                for (let z = 0; z < 3; z++) {
-                    const layerDiv = document.createElement('div');
-                    layerDiv.className = 'layer';
-                    layerDiv.innerHTML = `<h4>Layer Z=${z+1}</h4>`;
+                // Split layer into 3 rows
+                for (let y = 0; y < 3; y++) {
+                    const row = [];
+                    const rowStart = y * 3;
+                    const rowChars = layerChars.substring(rowStart, rowStart + 3);
                     
-                    const table = document.createElement('table');
-                    table.id = `w${w+1}z${z+1}`;
-                    
-                    for (let y = 0; y < 3; y++) {
-                        const row = table.insertRow();
-                        for (let x = 0; x < 3; x++) {
-                            const cell = row.insertCell();
-                            const char = settings.cubes[w][z][y*3 + x];
-                            cell.textContent = char;
-                            cell.title = `${char} (${x+1},${y+1},${z+1},${w+1})`;
-                            
-                            cell.onclick = function() {
-                                highlightCell(x+1, y+1, z+1, w+1);
-                                document.getElementById('coordinates').textContent = 
-                                    `${char} → (${x+1},${y+1},${z+1},${w+1})`;
-                            };
-                        }
+                    // Add each character to the row
+                    for (let x = 0; x < 3; x++) {
+                        row.push(rowChars[x] || ' ');
                     }
                     
-                    layerDiv.appendChild(table);
-                    cubeDiv.appendChild(layerDiv);
+                    layer.push(row);
                 }
                 
-                container.appendChild(cubeDiv);
+                cube.push(layer);
             }
-        }
-
-        // Highlight specific cell
-        function highlightCell(x, y, z, w) {
-            document.querySelectorAll('td').forEach(cell => {
-                cell.classList.remove('active-cell');
-            });
             
-            const table = document.getElementById(`w${w}z${z}`);
-            if (table && table.rows[y-1] && table.rows[y-1].cells[x-1]) {
-                table.rows[y-1].cells[x-1].classList.add('active-cell');
-            }
+            return cube;
         }
-
-        // Find character in cubes
-        function findChar(char) {
+        
+        // Apply key-based shift to the alphabets
+        function applyKeyShift(key) {
+            if (!key) return;
+            
+            shiftedCubes = JSON.parse(JSON.stringify(cubes));
+            const keyUpper = key.toUpperCase();
+            
+            for (let w = 0; w < 3; w++) {
+                const cube = shiftedCubes[w];
+                const keyChar = keyUpper[w % keyUpper.length];
+                const shiftAmount = keyChar.charCodeAt(0) % 27;
+                
+                // Flatten the cube to shift all characters
+                let flatCube = [];
+                for (let z = 0; z < 3; z++) {
+                    for (let y = 0; y < 3; y++) {
+                        for (let x = 0; x < 3; x++) {
+                            flatCube.push(cube[z][y][x]);
+                        }
+                    }
+                }
+                
+                // Perform the shift
+                flatCube = [...flatCube.slice(shiftAmount), ...flatCube.slice(0, shiftAmount)];
+                
+                // Rebuild the cube structure
+                let idx = 0;
+                for (let z = 0; z < 3; z++) {
+                    for (let y = 0; y < 3; y++) {
+                        for (let x = 0; x < 3; x++) {
+                            cube[z][y][x] = flatCube[idx++];
+                        }
+                    }
+                }
+            }
+            
+            showStatus(`Alphabets shifted with key: ${key}`, 'success');
+            renderCubes();
+        }
+        
+        // Render the 3D cubes visualization
+        function renderCubes() {
+            let html = '';
+            
+            for (let w = 0; w < 3; w++) {
+                html += `<div class="cube"><h3>Dimension W=${w+1}</h3>`;
+                
+                for (let z = 0; z < 3; z++) {
+                    html += `<div>Layer Z=${z+1}<table id="w${w+1}z${z+1}">`;
+                    
+                    for (let y = 0; y < 3; y++) {
+                        html += '<tr>';
+                        for (let x = 0; x < 3; x++) {
+                            const char = shiftedCubes[w] ? shiftedCubes[w][z][y][x] : ' ';
+                            html += `<td onclick="showCoords(${x+1},${y+1},${z+1},${w+1})">${char}</td>`;
+                        }
+                        html += '</tr>';
+                    }
+                    
+                    html += '</table></div>';
+                }
+                
+                html += '</div>';
+            }
+            
+            document.getElementById('cubes').innerHTML = html;
+        }
+        
+        // Find character coordinates in the shifted cubes
+        function findChar(c) {
             for (let w = 0; w < 3; w++) {
                 for (let z = 0; z < 3; z++) {
                     for (let y = 0; y < 3; y++) {
                         for (let x = 0; x < 3; x++) {
-                            if (settings.cubes[w][z][y*3 + x] === char) {
+                            if (shiftedCubes[w][z][y][x] === c) {
                                 return { x: x+1, y: y+1, z: z+1, w: w+1 };
                             }
                         }
@@ -369,124 +415,116 @@
             }
             return null;
         }
-
-        // Get character from coordinates
+        
+        // Get character from coordinates in the original cubes
         function getChar(x, y, z, w) {
-            if (w < 1 || w > 3 || z < 1 || z > 3 || x < 1 || x > 3 || y < 1 || y > 3) {
-                return '?';
-            }
-            return settings.cubes[w-1][z-1][(y-1)*3 + (x-1)];
+            return cubes[w-1][z-1][y-1][x-1] || '?';
         }
-
-        // Transform coordinates based on cipher mode
-        function transformCoords(x, y, z, w) {
-            const key = settings.key;
-            let newX, newY, newZ, newW;
-            
-            switch(settings.mode) {
-                case 'xyzw':
-                    // Default: swap X↔Y and Z↔W
-                    newX = y;
-                    newY = x;
-                    newZ = w;
-                    newW = z;
-                    break;
-                case 'custom':
-                    // Custom transformation based on key
-                    newX = (x + parseInt(key[0])) % 3 || 3;
-                    newY = (y + parseInt(key[1])) % 3 || 3;
-                    newZ = (z + parseInt(key[2])) % 3 || 3;
-                    newW = (w + parseInt(key[3])) % 3 || 3;
-                    break;
-                default:
-                    newX = x; newY = y; newZ = z; newW = w;
-            }
-            
-            return { x: newX, y: newY, z: newZ, w: newW };
+        
+        // Get character from coordinates in the shifted cubes
+        function getShiftedChar(x, y, z, w) {
+            return shiftedCubes[w-1][z-1][y-1][x-1] || '?';
         }
-
-        // Reverse transform coordinates
-        function reverseTransformCoords(x, y, z, w) {
-            const key = settings.key;
-            let newX, newY, newZ, newW;
-            
-            switch(settings.mode) {
-                case 'xyzw':
-                    // Reverse of swap X↔Y and Z↔W
-                    newX = y;
-                    newY = x;
-                    newZ = w;
-                    newW = z;
-                    break;
-                case 'custom':
-                    // Reverse custom transformation
-                    newX = (x - parseInt(key[0]) + 3) % 3 || 3;
-                    newY = (y - parseInt(key[1]) + 3) % 3 || 3;
-                    newZ = (z - parseInt(key[2]) + 3) % 3 || 3;
-                    newW = (w - parseInt(key[3]) + 3) % 3 || 3;
-                    break;
-                default:
-                    newX = x; newY = y; newZ = z; newW = w;
-            }
-            
-            return { x: newX, y: newY, z: newZ, w: newW };
-        }
-
-        // Encrypt text
+        
+        // Encryption: (x,y,z,w) → (y,w,x,z)
         function encrypt() {
-            const input = document.getElementById('input-text').value;
+            const input = document.getElementById('input').value;
+            const key = document.getElementById('key').value;
+            
+            if (!input) {
+                showStatus('Please enter text to encrypt', 'error');
+                return;
+            }
+            
+            if (key) {
+                applyKeyShift(key);
+            } else {
+                shiftedCubes = JSON.parse(JSON.stringify(cubes));
+            }
+            
             let output = '';
             
-            for (let i = 0; i < input.length; i++) {
-                const char = input[i].toUpperCase();
-                const coords = findChar(char);
+            for (const char of input) {
+                const upperChar = char.toUpperCase();
+                const coords = findChar(upperChar);
                 
                 if (coords) {
-                    const transformed = transformCoords(coords.x, coords.y, coords.z, coords.w);
-                    const encryptedChar = getChar(transformed.x, transformed.y, transformed.z, transformed.w);
-                    output += encryptedChar;
-                    highlightCell(transformed.x, transformed.y, transformed.z, transformed.w);
+                    // Encryption transformation
+                    const encrypted = getChar(coords.y, coords.w, coords.x, coords.z);
+                    output += encrypted;
                 } else {
                     output += '?';
                 }
             }
             
             document.getElementById('output').textContent = output;
+            showStatus('Text encrypted successfully', 'success');
         }
-
-        // Decrypt text
+        
+        // Decryption: (y,w,x,z) → (x,y,z,w)
         function decrypt() {
-            const input = document.getElementById('input-text').value;
+            const input = document.getElementById('input').value;
+            const key = document.getElementById('key').value;
+            
+            if (!input) {
+                showStatus('Please enter text to decrypt', 'error');
+                return;
+            }
+            
+            if (key) {
+                applyKeyShift(key);
+            } else {
+                shiftedCubes = JSON.parse(JSON.stringify(cubes));
+            }
+            
             let output = '';
             
-            for (let i = 0; i < input.length; i++) {
-                const char = input[i];
-                const coords = findChar(char);
+            for (const char of input) {
+                const upperChar = char.toUpperCase();
+                const coords = findChar(upperChar);
                 
                 if (coords) {
-                    const reversed = reverseTransformCoords(coords.x, coords.y, coords.z, coords.w);
-                    const decryptedChar = getChar(reversed.x, reversed.y, reversed.z, reversed.w);
-                    output += decryptedChar;
-                    highlightCell(reversed.x, reversed.y, reversed.z, reversed.w);
+                    // Decryption transformation
+                    const decrypted = getChar(coords.z, coords.x, coords.w, coords.y);
+                    output += decrypted;
                 } else {
                     output += '?';
                 }
             }
             
             document.getElementById('output').textContent = output;
+            showStatus('Text decrypted successfully', 'success');
         }
-
-        // Clear text
-        function clearText() {
-            document.getElementById('input-text').value = '';
+        
+        // Clear all inputs and outputs
+        function clearAll() {
+            document.getElementById('input').value = '';
             document.getElementById('output').textContent = '';
-            document.getElementById('coordinates').textContent = '';
-            document.querySelectorAll('td').forEach(cell => {
-                cell.classList.remove('active-cell');
-            });
+            document.getElementById('status').className = 'status';
+            showStatus('All fields cleared', 'success');
         }
-
-        // Initialize on load
+        
+        // Show coordinates when a cube cell is clicked
+        function showCoords(x, y, z, w) {
+            const char = getShiftedChar(x, y, z, w);
+            alert(`Character: ${char}\nCoordinates: (X=${x}, Y=${y}, Z=${z}, W=${w})`);
+        }
+        
+        // Show status message
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                if (statusEl.textContent === message) {
+                    statusEl.className = 'status';
+                }
+            }, 5000);
+        }
+        
+        // Initialize when the page loads
         window.onload = init;
     </script>
 </body>

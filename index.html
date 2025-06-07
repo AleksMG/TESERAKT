@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Trifid Cipher</title>
+    <title>Secure Trifid Cipher</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -472,7 +472,7 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-cube"></i> Advanced Trifid Cipher</h1>
+            <h1><i class="fas fa-cube"></i> Secure Trifid Cipher</h1>
             <button class="theme-toggle" id="themeToggle">
                 <i class="fas fa-moon"></i>
             </button>
@@ -487,7 +487,7 @@
             </div>
 
             <div id="settings" class="tab-content active">
-                <h2><i class="fas fa-sliders-h"></i> Advanced Cipher Settings</h2>
+                <h2><i class="fas fa-sliders-h"></i> Cipher Settings</h2>
                 
                 <div class="settings-row">
                     <div class="settings-group">
@@ -526,12 +526,9 @@
                             <label for="shuffleAlgorithm">Shuffle Algorithm</label>
                             <select id="shuffleAlgorithm">
                                 <option value="fisher-yates">Fisher-Yates</option>
-                                <option value="reverse-pairs">Reverse & Swap Pairs</option>
-                                <option value="interleave">Interleave Halves</option>
                                 <option value="key-based">Key-Based Shuffle</option>
-                                <option value="mersenne-twister">Mersenne Twister</option>
-                                <option value="xorshift">Xorshift</option>
                                 <option value="sha-based">SHA-Based Shuffle</option>
+                                <option value="mersenne-twister">Mersenne Twister</option>
                             </select>
                         </div>
 
@@ -542,13 +539,12 @@
                     </div>
                     
                     <div class="settings-group">
-                        <h4><i class="fas fa-arrows-alt"></i> Advanced Shifting</h4>
+                        <h4><i class="fas fa-arrows-alt"></i> Advanced Options</h4>
                         <div class="form-group">
                             <label for="shiftMode">Shift Mode</label>
                             <select id="shiftMode">
                                 <option value="simple">Simple Shift</option>
                                 <option value="key-dependent">Key-Dependent Shift</option>
-                                <option value="nonlinear">Nonlinear Shift</option>
                                 <option value="round-dependent">Round-Dependent Shift</option>
                             </select>
                         </div>
@@ -567,16 +563,6 @@
                             <label for="shiftCols">Shift Columns (0-3)</label>
                             <input type="number" id="shiftCols" min="0" max="3" value="0" class="readonly-field" readonly>
                         </div>
-
-                        <div class="form-group">
-                            <label for="coordTransform">Coordinate Transform</label>
-                            <select id="coordTransform">
-                                <option value="none">None</option>
-                                <option value="xor">XOR with Key</option>
-                                <option value="permute">Permutation</option>
-                                <option value="affine">Affine Transform</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
                 
@@ -585,7 +571,7 @@
                     <button class="btn btn-outline" id="shuffleCube"><i class="fas fa-random"></i> Shuffle Alphabet</button>
                     <button class="btn btn-warning" id="applyShifts"><i class="fas fa-arrows-alt"></i> Apply Shifts</button>
                     <button class="btn btn-outline" id="resetCube"><i class="fas fa-undo"></i> Reset to Default</button>
-                    <input type="file" id="settingsFileInput" class="settings-file-input" accept=".txt,.json">
+                    <input type="file" id="settingsFileInput" class="settings-file-input" accept=".json">
                     <label for="settingsFileInput" class="settings-file-label" id="settingsFileLabel">
                         <i class="fas fa-file-import"></i> Load Settings
                     </label>
@@ -649,20 +635,19 @@
             </div>
 
             <div id="about" class="tab-content">
-                <h2><i class="fas fa-info-circle"></i> About the Advanced Trifid Cipher</h2>
+                <h2><i class="fas fa-info-circle"></i> About the Secure Trifid Cipher</h2>
                 
                 <div class="card">
-                    <h3><i class="fas fa-question-circle"></i> How the Advanced Trifid Cipher Works</h3>
+                    <h3><i class="fas fa-question-circle"></i> How the Secure Trifid Cipher Works</h3>
                     <p>This enhanced version of the Trifid cipher incorporates multiple security improvements while maintaining the core principles of the original cipher.</p>
                     
-                    <h4><i class="fas fa-lock"></i> Enhanced Security Features:</h4>
+                    <h4><i class="fas fa-lock"></i> Security Features:</h4>
                     <ul>
                         <li><strong>Multiple Shuffle Algorithms:</strong> Including cryptographically strong options like Mersenne Twister and SHA-based shuffling</li>
                         <li><strong>Advanced Key Handling:</strong> Complex key-dependent transformations and shift calculations</li>
-                        <li><strong>Nonlinear Coordinate Transforms:</strong> Additional transformations of coordinates during encryption</li>
                         <li><strong>Multiple Rounds:</strong> Configurable number of encryption rounds (1-10)</li>
                         <li><strong>Improved Non-Alphabet Handling:</strong> Options to preserve or remove characters not in the cube</li>
-                        <li><strong>Advanced Shift Modes:</strong> Including round-dependent and nonlinear shifting patterns</li>
+                        <li><strong>Advanced Shift Modes:</strong> Including round-dependent shifting patterns</li>
                     </ul>
                     
                     <h4><i class="fas fa-key"></i> Key Features:</h4>
@@ -670,7 +655,6 @@
                         <li>True 4×4×4 cube structure (64 symbols + filler)</li>
                         <li>Multiple cryptographically strong shuffling algorithms</li>
                         <li>Dynamic cube shifting based on encryption key and round number</li>
-                        <li>Nonlinear coordinate transformations</li>
                         <li>Configurable number of encryption rounds</li>
                         <li>Options for handling non-alphabet characters</li>
                         <li>Modern, responsive interface with dark/light mode</li>
@@ -683,7 +667,16 @@
     </div>
 
     <script>
-        class AdvancedTrifidCipher {
+        /**
+         * Secure Trifid Cipher Implementation
+         * 
+         * This implementation includes:
+         * - Proper encryption/decryption with multiple rounds
+         * - Secure key handling
+         * - Multiple shuffle algorithms
+         * - Detailed process visualization
+         */
+        class SecureTrifidCipher {
             constructor() {
                 this.cube = [];
                 this.alphabet = "";
@@ -695,22 +688,25 @@
                 this.shuffleAlgorithm = "fisher-yates";
                 this.rounds = 3;
                 this.shiftMode = "simple";
-                this.coordTransform = "none";
                 this.ignoreNonAlphabet = true;
                 this.removeNonAlphabet = false;
                 this.initialCubeState = null;
                 this.appliedKeyHash = null;
+                
                 this.initEventListeners();
                 this.initTheme();
                 this.setupTextPreviews();
                 this.resetToDefault();
             }
 
+            // Initialize all event listeners
             initEventListeners() {
+                // Tab switching
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
                 });
 
+                // Button event listeners
                 document.getElementById('initCube').addEventListener('click', () => this.initCube());
                 document.getElementById('shuffleCube').addEventListener('click', () => this.shuffleAlphabet());
                 document.getElementById('applyShifts').addEventListener('click', () => this.applyCubeShifts());
@@ -746,9 +742,6 @@
                 document.getElementById('shiftMode').addEventListener('change', (e) => {
                     this.shiftMode = e.target.value;
                 });
-                document.getElementById('coordTransform').addEventListener('change', (e) => {
-                    this.coordTransform = e.target.value;
-                });
                 document.getElementById('ignoreNonAlphabet').addEventListener('change', (e) => {
                     this.ignoreNonAlphabet = e.target.checked;
                     if (e.target.checked) {
@@ -765,6 +758,7 @@
                 });
             }
 
+            // Set up text preview functionality
             setupTextPreviews() {
                 document.getElementById('plaintext').addEventListener('input', (e) => {
                     this.updateTextPreview(e.target.value, 'plaintextPreview');
@@ -774,6 +768,7 @@
                 });
             }
 
+            // Update the character preview with highlighting
             updateTextPreview(text, elementId) {
                 if (!this.alphabet || this.cube.length === 0) {
                     document.getElementById(elementId).innerHTML = '<span class="warning">Please initialize the cube first</span>';
@@ -792,18 +787,21 @@
                 document.getElementById(elementId).innerHTML = previewHtml || '<span class="warning">No characters to preview</span>';
             }
 
+            // Escape HTML for safe display
             escapeHtml(text) {
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
             }
 
+            // Initialize theme from localStorage
             initTheme() {
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.body.setAttribute('data-theme', savedTheme);
                 this.updateThemeIcon(savedTheme);
             }
 
+            // Toggle between light/dark theme
             toggleTheme() {
                 const currentTheme = document.body.getAttribute('data-theme') || 'light';
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -812,11 +810,13 @@
                 this.updateThemeIcon(newTheme);
             }
 
+            // Update theme icon based on current theme
             updateThemeIcon(theme) {
                 const icon = document.querySelector('#themeToggle i');
                 icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
             }
 
+            // Reset all settings to default values
             resetToDefault() {
                 document.getElementById('alphabet').value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz×+';
                 document.getElementById('filler').value = '-';
@@ -824,7 +824,6 @@
                 document.getElementById('shuffleAlgorithm').value = 'fisher-yates';
                 document.getElementById('rounds').value = '3';
                 document.getElementById('shiftMode').value = 'simple';
-                document.getElementById('coordTransform').value = 'none';
                 document.getElementById('ignoreNonAlphabet').checked = true;
                 document.getElementById('removeNonAlphabet').checked = false;
                 
@@ -833,7 +832,6 @@
                 this.shiftCols = 0;
                 this.rounds = 3;
                 this.shiftMode = 'simple';
-                this.coordTransform = 'none';
                 this.ignoreNonAlphabet = true;
                 this.removeNonAlphabet = false;
                 
@@ -843,6 +841,7 @@
                 this.initCube();
             }
 
+            // Save current settings to a JSON file
             saveSettingsToFile() {
                 if (!this.alphabet || this.cube.length === 0) {
                     alert("Please initialize the cube first");
@@ -856,7 +855,6 @@
                     shuffleAlgorithm: this.shuffleAlgorithm,
                     rounds: this.rounds,
                     shiftMode: this.shiftMode,
-                    coordTransform: this.coordTransform,
                     ignoreNonAlphabet: this.ignoreNonAlphabet,
                     removeNonAlphabet: this.removeNonAlphabet,
                     shiftLayers: this.shiftLayers,
@@ -869,13 +867,14 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'advanced_trifid_cipher_settings.json';
+                a.download = 'secure_trifid_cipher_settings.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             }
 
+            // Load settings from a JSON file
             loadSettingsFromFile(event) {
                 const file = event.target.files[0];
                 if (!file) return;
@@ -886,24 +885,24 @@
                         const settings = JSON.parse(e.target.result);
                         
                         if (!settings.alphabet || settings.alphabet.length !== 64) {
-                            throw new Error("Invalid alphabet in settings file");
+                            throw new Error("Invalid alphabet in settings file - must be exactly 64 characters");
                         }
                         
                         if (!settings.fillerChar || settings.fillerChar.length !== 1) {
-                            throw new Error("Invalid filler character in settings file");
+                            throw new Error("Invalid filler character in settings file - must be exactly 1 character");
                         }
-                        
+
                         if (settings.alphabet.includes(settings.fillerChar)) {
                             throw new Error("Filler character must not be in alphabet");
                         }
 
+                        // Apply loaded settings
                         document.getElementById('alphabet').value = settings.alphabet;
                         document.getElementById('filler').value = settings.fillerChar;
                         document.getElementById('encryptionKey').value = settings.encryptionKey || '';
                         document.getElementById('shuffleAlgorithm').value = settings.shuffleAlgorithm || 'fisher-yates';
                         document.getElementById('rounds').value = settings.rounds || 3;
                         document.getElementById('shiftMode').value = settings.shiftMode || 'simple';
-                        document.getElementById('coordTransform').value = settings.coordTransform || 'none';
                         document.getElementById('ignoreNonAlphabet').checked = settings.ignoreNonAlphabet !== false;
                         document.getElementById('removeNonAlphabet').checked = settings.removeNonAlphabet || false;
                         
@@ -911,14 +910,13 @@
                         this.shuffleAlgorithm = settings.shuffleAlgorithm || 'fisher-yates';
                         this.rounds = settings.rounds || 3;
                         this.shiftMode = settings.shiftMode || 'simple';
-                        this.coordTransform = settings.coordTransform || 'none';
                         this.ignoreNonAlphabet = settings.ignoreNonAlphabet !== false;
                         this.removeNonAlphabet = settings.removeNonAlphabet || false;
                         
                         this.initCube();
                         
                         const statusElement = document.getElementById('alphabetStatus');
-                        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Advanced settings loaded successfully from file`;
+                        statusElement.innerHTML = `<i class="fas fa-check-circle"></i> Settings loaded successfully from file`;
                         statusElement.classList.add('alert-success');
                         statusElement.style.display = 'block';
                         
@@ -930,13 +928,20 @@
                         console.error("Error loading settings:", error);
                     }
                 };
+                reader.onerror = () => {
+                    const statusElement = document.getElementById('alphabetStatus');
+                    statusElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> Error reading file`;
+                    statusElement.classList.add('alert-error');
+                    statusElement.style.display = 'block';
+                };
                 reader.readAsText(file);
                 event.target.value = '';
             }
 
+            // Load sample text for testing
             loadSampleText(type) {
                 const samples = {
-                    plain: "This is a secret message to encrypt using the Advanced Trifid cipher! It contains numbers 123 and symbols +.",
+                    plain: "This is a secret message to encrypt using the Secure Trifid cipher! It contains numbers 123 and symbols +.",
                     cipher: ""
                 };
 
@@ -950,6 +955,7 @@
                 this.updateTextPreview(samples[type], previewId);
             }
 
+            // Initialize the cube with current alphabet and filler
             initCube() {
                 const alphabetInput = document.getElementById('alphabet').value;
                 const newFiller = document.getElementById('filler').value.trim();
@@ -993,6 +999,7 @@
                 this.cube = [];
                 let charIndex = 0;
 
+                // Build 4x4x4 cube
                 for (let layer = 0; layer < 4; layer++) {
                     const currentLayer = [];
                     for (let row = 0; row < 4; row++) {
@@ -1019,6 +1026,7 @@
                 return true;
             }
 
+            // Apply shifts to the cube based on current key
             applyCubeShifts() {
                 if (!this.alphabet || this.cube.length === 0) {
                     alert("Please initialize the cube first");
@@ -1035,6 +1043,7 @@
 
                 this.calculateShiftsFromKey(currentKey);
 
+                // Reset to initial state before applying new shifts
                 if (this.initialCubeState) {
                     this.cube = JSON.parse(JSON.stringify(this.initialCubeState));
                 }
@@ -1058,12 +1067,12 @@
                 statusElement.style.display = 'block';
             }
 
+            // Calculate a hash from the key for shift calculations
             calculateKeyHash(key) {
-                // Enhanced hash function with better distribution
                 let hash = 0;
                 if (!key) return hash;
                 
-                // Use a more complex hash calculation
+                // Enhanced hash calculation
                 for (let i = 0; i < key.length; i++) {
                     const char = key.charCodeAt(i);
                     hash = ((hash << 5) - hash) + char;
@@ -1078,6 +1087,7 @@
                 return hash;
             }
 
+            // Calculate shifts based on key and current mode
             calculateShiftsFromKey(key) {
                 const hash = this.calculateKeyHash(key);
                 
@@ -1089,18 +1099,10 @@
                         break;
                         
                     case "key-dependent":
-                        // More complex key-dependent shifts
                         const keySum = key.split('').reduce((sum, c) => sum + c.charCodeAt(0), 0);
                         this.shiftLayers = (hash + keySum) % 4;
                         this.shiftRows = (hash * keySum) % 4;
                         this.shiftCols = (hash ^ keySum) % 4;
-                        break;
-                        
-                    case "nonlinear":
-                        // Nonlinear transformations
-                        this.shiftLayers = ((hash * 2654435761) >>> 16) % 4;
-                        this.shiftRows = ((hash * 2246822519) >>> 16) % 4;
-                        this.shiftCols = ((hash * 3266489917) >>> 16) % 4;
                         break;
                         
                     case "round-dependent":
@@ -1119,12 +1121,14 @@
                 this.updateShiftFields();
             }
 
+            // Update the shift fields in the UI
             updateShiftFields() {
                 document.getElementById('shiftLayers').value = this.shiftLayers;
                 document.getElementById('shiftRows').value = this.shiftRows;
                 document.getElementById('shiftCols').value = this.shiftCols;
             }
 
+            // Shift cube layers by specified amount
             shiftCubeLayers(shiftAmount) {
                 if (shiftAmount === 0) return;
                 
@@ -1136,6 +1140,7 @@
                 this.cube = shiftedCube;
             }
 
+            // Shift cube rows by specified amount
             shiftCubeRows(shiftAmount) {
                 if (shiftAmount === 0) return;
                 
@@ -1149,6 +1154,7 @@
                 }
             }
 
+            // Shift cube columns by specified amount
             shiftCubeColumns(shiftAmount) {
                 if (shiftAmount === 0) return;
                 
@@ -1164,7 +1170,8 @@
                 }
             }
 
-            shuffleAlphabet() {
+            // Shuffle the alphabet using selected algorithm
+            async shuffleAlphabet() {
                 const alphabetInput = document.getElementById('alphabet').value;
                 if (alphabetInput.length !== 64) {
                     alert("Please initialize with a valid 64-character alphabet first");
@@ -1183,28 +1190,7 @@
                         }
                         break;
                         
-                    case "reverse-pairs":
-                        // Reverse and swap pairs
-                        shuffled = shuffled.reverse();
-                        for (let i = 0; i < shuffled.length - 1; i += 2) {
-                            [shuffled[i], shuffled[i + 1]] = [shuffled[i + 1], shuffled[i]];
-                        }
-                        break;
-                        
-                    case "interleave":
-                        // Interleave halves
-                        const half = Math.floor(shuffled.length / 2);
-                        const firstHalf = shuffled.slice(0, half);
-                        const secondHalf = shuffled.slice(half);
-                        shuffled = [];
-                        for (let i = 0; i < half; i++) {
-                            shuffled.push(secondHalf[i]);
-                            shuffled.push(firstHalf[i]);
-                        }
-                        break;
-                        
                     case "key-based":
-                        // Key-based shuffle using simple PRNG
                         if (!this.encryptionKey) {
                             alert("Please enter an encryption key for key-based shuffling");
                             return;
@@ -1212,23 +1198,16 @@
                         shuffled = this.keyBasedShuffle([...alphabetInput], this.encryptionKey);
                         break;
                         
-                    case "mersenne-twister":
-                        // Mersenne Twister implementation
-                        shuffled = this.mersenneTwisterShuffle([...alphabetInput], this.encryptionKey);
-                        break;
-                        
-                    case "xorshift":
-                        // Xorshift implementation
-                        shuffled = this.xorshiftShuffle([...alphabetInput], this.encryptionKey);
-                        break;
-                        
                     case "sha-based":
-                        // SHA-based shuffle (cryptographically stronger)
                         if (!this.encryptionKey) {
                             alert("Please enter an encryption key for SHA-based shuffling");
                             return;
                         }
-                        shuffled = this.shaBasedShuffle([...alphabetInput], this.encryptionKey);
+                        shuffled = await this.shaBasedShuffle([...alphabetInput], this.encryptionKey);
+                        break;
+                        
+                    case "mersenne-twister":
+                        shuffled = this.mersenneTwisterShuffle([...alphabetInput], this.encryptionKey);
                         break;
                 }
 
@@ -1236,6 +1215,7 @@
                 this.initCube();
             }
 
+            // Key-based shuffle using a simple PRNG
             keyBasedShuffle(array, key) {
                 let seed = 0;
                 for (let i = 0; i < key.length; i++) {
@@ -1255,8 +1235,8 @@
                 return array;
             }
 
+            // Mersenne Twister shuffle implementation
             mersenneTwisterShuffle(array, seedKey) {
-                // Initialize Mersenne Twister with seed from key
                 let seed = 0;
                 for (let i = 0; i < seedKey.length; i++) {
                     seed = (seed * 65599 + seedKey.charCodeAt(i)) >>> 0;
@@ -1264,7 +1244,6 @@
                 
                 const mt = new MersenneTwister(seed);
                 
-                // Fisher-Yates shuffle using MT random numbers
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(mt.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
@@ -1273,92 +1252,34 @@
                 return array;
             }
 
-            xorshiftShuffle(array, seedKey) {
-                // Initialize xorshift state from key
-                let state = 0;
-                for (let i = 0; i < seedKey.length; i++) {
-                    state = (state << 5) - state + seedKey.charCodeAt(i);
-                    state |= 0; // Convert to 32-bit integer
-                }
-                
-                if (state === 0) state = 1; // Can't be zero
-                
-                const random = () => {
-                    state ^= state << 13;
-                    state ^= state >>> 17;
-                    state ^= state << 5;
-                    return (state >>> 0) / 4294967296;
-                };
-                
-                // Fisher-Yates shuffle using xorshift random numbers
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                
-                return array;
-            }
-
+            // SHA-based cryptographically strong shuffle
             async shaBasedShuffle(array, key) {
-                // Create a hash from the key
-                const msgBuffer = new TextEncoder().encode(key);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                
-                // Use hash bytes to seed the shuffle
-                for (let i = array.length - 1; i > 0; i--) {
-                    // Get a random index from the hash bytes
-                    const hashIndex = (array.length - i - 1) % hashArray.length;
-                    const randByte = hashArray[hashIndex];
-                    const j = Math.floor((randByte / 256) * (i + 1));
+                try {
+                    // Create a hash from the key
+                    const msgBuffer = new TextEncoder().encode(key);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
                     
-                    [array[i], array[j]] = [array[j], array[i]];
+                    // Use hash bytes to seed the shuffle
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const hashIndex = (array.length - i - 1) % hashArray.length;
+                        const randByte = hashArray[hashIndex];
+                        const j = Math.floor((randByte / 256) * (i + 1));
+                        
+                        [array[i], array[j]] = [array[j], array[i]];
+                        
+                        // Mix the hash for next iteration
+                        hashArray[hashIndex] ^= (i * j) & 0xFF;
+                    }
                     
-                    // Mix the hash for next iteration
-                    hashArray[hashIndex] ^= (i * j) & 0xFF;
-                }
-                
-                return array;
-            }
-
-            transformCoordinates(layer, row, col, round = 0) {
-                switch (this.coordTransform) {
-                    case "xor":
-                        // XOR with key-derived values
-                        const keyVal = this.encryptionKey.charCodeAt(round % Math.max(1, this.encryptionKey.length)) || 1;
-                        return {
-                            layer: ((layer - 1) ^ keyVal) % 4 + 1,
-                            row: ((row - 1) ^ (keyVal >> 8)) % 4 + 1,
-                            col: ((col - 1) ^ (keyVal >> 16)) % 4 + 1
-                        };
-                        
-                    case "permute":
-                        // Permute coordinates based on round
-                        const permutations = [
-                            [0, 1, 2], [0, 2, 1], [1, 0, 2], 
-                            [1, 2, 0], [2, 0, 1], [2, 1, 0]
-                        ];
-                        const perm = permutations[round % permutations.length];
-                        const coords = [layer, row, col];
-                        return {
-                            layer: coords[perm[0]],
-                            row: coords[perm[1]],
-                            col: coords[perm[2]]
-                        };
-                        
-                    case "affine":
-                        // Simple affine transform
-                        return {
-                            layer: (layer * 2 + row) % 4 + 1,
-                            row: (row * 2 + col) % 4 + 1,
-                            col: (col * 2 + layer) % 4 + 1
-                        };
-                        
-                    default:
-                        return { layer, row, col };
+                    return array;
+                } catch (error) {
+                    console.error("SHA-based shuffle failed:", error);
+                    return array; // Fallback to original array if crypto API fails
                 }
             }
 
+            // Visualize the current cube state
             visualizeCube() {
                 const container = document.getElementById('cubeLayers');
                 container.innerHTML = '';
@@ -1408,6 +1329,7 @@
                 });
             }
 
+            // Find coordinates of a character in the cube
             findCoordinates(char) {
                 for (let layer = 0; layer < 4; layer++) {
                     for (let row = 0; row < 4; row++) {
@@ -1421,6 +1343,7 @@
                 return null;
             }
 
+            // Get character from specific coordinates
             getCharFromCoordinates(layer, row, col) {
                 if (layer < 1 || layer > 4 || row < 1 || row > 4 || col < 1 || col > 4) {
                     return this.fillerChar;
@@ -1428,6 +1351,7 @@
                 return this.cube[layer - 1][row - 1][col - 1];
             }
 
+            // Main encryption method
             async encrypt() {
                 const plaintext = document.getElementById('plaintext').value;
                 if (!plaintext) {
@@ -1446,7 +1370,6 @@
                         <p><strong>Original plaintext:</strong> ${this.escapeHtml(plaintext)}</p>
                         <p>Processing each character...</p>
                         <p><strong>Encryption rounds:</strong> ${this.rounds}</p>
-                        <p><strong>Coordinate transform:</strong> ${this.coordTransform}</p>
                         <p><strong>Non-alphabet chars:</strong> ${this.ignoreNonAlphabet ? 'Preserved' : this.removeNonAlphabet ? 'Removed' : 'Unknown'}</p>
                     </div>
                 `;
@@ -1466,10 +1389,8 @@
                         if (this.ignoreNonAlphabet) {
                             charMap.push({ type: 'non-alphabet', char, index: i });
                         } else if (!this.removeNonAlphabet) {
-                            // Default to preserve if neither option is selected
                             charMap.push({ type: 'non-alphabet', char, index: i });
                         }
-                        // If removeNonAlphabet is true, just skip the character
                     }
                 }
 
@@ -1534,16 +1455,6 @@
                 
                 // Perform multiple encryption rounds
                 for (let round = 0; round < this.rounds; round++) {
-                    const roundCoords = [];
-                    for (let char of intermediateResult) {
-                        const coord = this.findCoordinates(char);
-                        if (coord) {
-                            // Apply coordinate transformation
-                            const transformed = this.transformCoordinates(coord.layer, coord.row, coord.col, round);
-                            roundCoords.push(transformed);
-                        }
-                    }
-
                     // Apply round-dependent shifts if configured
                     if (this.shiftMode === "round-dependent") {
                         const roundHash = this.calculateKeyHash(this.encryptionKey + round);
@@ -1551,17 +1462,27 @@
                         this.shiftRows = (roundHash ^ (round + 1)) % 4;
                         this.shiftCols = ((roundHash >> 8) + round) % 4;
                         
-                        // Apply shifts to a copy of the initial cube
+                        // Reset to initial state before applying round shifts
                         const roundCube = JSON.parse(JSON.stringify(this.initialCubeState));
                         this.shiftCubeLayers(this.shiftLayers);
                         this.shiftCubeRows(this.shiftRows);
                         this.shiftCubeColumns(this.shiftCols);
                     }
 
-                    let layersStream = roundCoords.map(c => c.layer).join('');
-                    let rowsStream = roundCoords.map(c => c.row).join('');
-                    let colsStream = roundCoords.map(c => c.col).join('');
-                    let combinedStream = layersStream + rowsStream + colsStream;
+                    // Convert characters to coordinates
+                    const roundCoords = [];
+                    for (let char of intermediateResult) {
+                        const coord = this.findCoordinates(char);
+                        if (coord) {
+                            roundCoords.push(coord);
+                        }
+                    }
+
+                    // Create coordinate streams
+                    const layersStream = roundCoords.map(c => c.layer).join('');
+                    const rowsStream = roundCoords.map(c => c.row).join('');
+                    const colsStream = roundCoords.map(c => c.col).join('');
+                    const combinedStream = layersStream + rowsStream + colsStream;
 
                     stepsHTML += `
                         <div class="card">
@@ -1570,7 +1491,6 @@
                             ${this.shiftMode === "round-dependent" ? `
                                 <p><strong>Round shifts:</strong> Layers=${this.shiftLayers}, Rows=${this.shiftRows}, Cols=${this.shiftCols}</p>
                             ` : ''}
-                            <p><strong>Coordinate transform:</strong> ${this.coordTransform}</p>
                             <p><strong>Layers stream:</strong> ${this.chunkString(layersStream, 5)}</p>
                             <p><strong>Rows stream:</strong> ${this.chunkString(rowsStream, 5)}</p>
                             <p><strong>Columns stream:</strong> ${this.chunkString(colsStream, 5)}</p>
@@ -1578,6 +1498,7 @@
                         </div>
                     `;
 
+                    // Regroup into triplets and get new characters
                     let roundResult = '';
                     let tripletTable = `
                         <div class="card">
@@ -1659,6 +1580,7 @@
                 this.updateTextPreview(ciphertext, 'ciphertextPreview');
             }
 
+            // Main decryption method
             async decrypt() {
                 const ciphertext = document.getElementById('ciphertext').value;
                 if (!ciphertext) {
@@ -1677,7 +1599,6 @@
                         <p><strong>Original ciphertext:</strong> ${this.escapeHtml(ciphertext)}</p>
                         <p>Processing each character...</p>
                         <p><strong>Encryption rounds:</strong> ${this.rounds}</p>
-                        <p><strong>Coordinate transform:</strong> ${this.coordTransform}</p>
                         <p><strong>Non-alphabet chars:</strong> ${this.ignoreNonAlphabet ? 'Preserved' : this.removeNonAlphabet ? 'Removed' : 'Unknown'}</p>
                     </div>
                 `;
@@ -1697,10 +1618,8 @@
                         if (this.ignoreNonAlphabet) {
                             charMap.push({ type: 'non-alphabet', char, index: i });
                         } else if (!this.removeNonAlphabet) {
-                            // Default to preserve if neither option is selected
                             charMap.push({ type: 'non-alphabet', char, index: i });
                         }
-                        // If removeNonAlphabet is true, just skip the character
                     }
                 }
 
@@ -1715,7 +1634,7 @@
                         this.shiftRows = (roundHash ^ (round + 1)) % 4;
                         this.shiftCols = ((roundHash >> 8) + round) % 4;
                         
-                        // Apply shifts to a copy of the initial cube
+                        // Reset to initial state before applying round shifts
                         const roundCube = JSON.parse(JSON.stringify(this.initialCubeState));
                         this.shiftCubeLayers(this.shiftLayers);
                         this.shiftCubeRows(this.shiftRows);
@@ -1723,7 +1642,7 @@
                     }
 
                     // Convert characters to coordinates
-                    let coordinates = [];
+                    const coordinates = [];
                     let coordTable = `
                         <div class="card">
                             <h3><i class="fas fa-map-marked-alt"></i> Round ${this.rounds - round}: Convert Characters to Coordinates</h3>
@@ -1756,7 +1675,7 @@
                     coordTable += `</tbody></table></div>`;
                     stepsHTML += coordTable;
 
-                    // Create coordinate sequence
+                    // Create coordinate sequence from characters
                     let coordSequence = '';
                     for (let coord of coordinates) {
                         coordSequence += coord.layer + '' + coord.row + '' + coord.col;
@@ -1769,11 +1688,11 @@
                         </div>
                     `;
 
-                    // Split into three parts
+                    // Split into three equal parts (layers, rows, columns)
                     const partLength = Math.floor(coordSequence.length / 3);
                     const layersPart = coordSequence.substring(0, partLength);
                     const rowsPart = coordSequence.substring(partLength, 2 * partLength);
-                    const colsPart = coordSequence.substring(2 * partLength);
+                    const colsPart = coordSequence.substring(2 * partLength, 3 * partLength);
 
                     stepsHTML += `
                         <div class="card">
@@ -1807,23 +1726,15 @@
                         const row = parseInt(rowsPart[i]);
                         const col = parseInt(colsPart[i]);
                         
-                        // Reverse the coordinate transformation
-                        let transformed = { layer, row, col };
-                        if (this.coordTransform !== "none") {
-                            // For decryption, we need to reverse the transform
-                            // This is a simplified approach - in practice would need proper inverse functions
-                            transformed = this.reverseTransformCoordinates(layer, row, col, round);
-                        }
-                        
-                        const char = this.getCharFromCoordinates(transformed.layer, transformed.row, transformed.col);
+                        const char = this.getCharFromCoordinates(layer, row, col);
                         roundResult += char;
                         
                         reconstructionTable += `
                             <tr>
                                 <td>${i + 1}</td>
-                                <td>${transformed.layer}</td>
-                                <td>${transformed.row}</td>
-                                <td>${transformed.col}</td>
+                                <td>${layer}</td>
+                                <td>${row}</td>
+                                <td>${col}</td>
                                 <td>${this.escapeHtml(char)}</td>
                             </tr>
                         `;
@@ -1876,46 +1787,7 @@
                 this.updateTextPreview(plaintext, 'plaintextPreview');
             }
 
-            reverseTransformCoordinates(layer, row, col, round) {
-                // This is a simplified inverse transform - in a real implementation
-                // you would need proper inverse functions for each transform type
-                switch (this.coordTransform) {
-                    case "xor":
-                        const keyVal = this.encryptionKey.charCodeAt(round % Math.max(1, this.encryptionKey.length)) || 1;
-                        return {
-                            layer: ((layer - 1) ^ keyVal) % 4 + 1,
-                            row: ((row - 1) ^ (keyVal >> 8)) % 4 + 1,
-                            col: ((col - 1) ^ (keyVal >> 16)) % 4 + 1
-                        };
-                        
-                    case "permute":
-                        const permutations = [
-                            [0, 1, 2], [0, 2, 1], [1, 0, 2], 
-                            [1, 2, 0], [2, 0, 1], [2, 1, 0]
-                        ];
-                        const perm = permutations[round % permutations.length];
-                        const coords = [layer, row, col];
-                        // Find inverse permutation
-                        const inversePerm = [0, 1, 2].map(i => perm.indexOf(i));
-                        return {
-                            layer: coords[inversePerm[0]],
-                            row: coords[inversePerm[1]],
-                            col: coords[inversePerm[2]]
-                        };
-                        
-                    case "affine":
-                        // Simplified inverse - in practice would need matrix inversion
-                        return {
-                            layer: (layer * 2 + 4 - row) % 4 + 1,
-                            row: (row * 2 + 4 - col) % 4 + 1,
-                            col: (col * 2 + 4 - layer) % 4 + 1
-                        };
-                        
-                    default:
-                        return { layer, row, col };
-                }
-            }
-
+            // Generate ciphertext for sample text
             generateCiphertext(text) {
                 let ciphertext = '';
                 const coordinates = [];
@@ -1945,12 +1817,14 @@
                 return ciphertext;
             }
 
+            // Helper to chunk strings for display
             chunkString(str, size) {
                 if (!str) return '';
                 const chunks = str.match(new RegExp('.{1,' + size + '}', 'g'));
                 return chunks ? chunks.join(' ') : '';
             }
 
+            // Copy text to clipboard
             copyToClipboard(elementId) {
                 const text = document.getElementById(elementId).textContent;
                 navigator.clipboard.writeText(text).then(() => {
@@ -1961,9 +1835,12 @@
                     setTimeout(() => {
                         button.innerHTML = `<i class="${originalText}"></i> Copy to Clipboard`;
                     }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
                 });
             }
 
+            // Switch between tabs
             switchTab(tabId) {
                 document.querySelectorAll('.tab').forEach(tab => {
                     tab.classList.remove('active');
@@ -1977,7 +1854,10 @@
             }
         }
 
-        // Mersenne Twister implementation (simplified)
+        /**
+         * Mersenne Twister implementation
+         * A pseudorandom number generator with better statistical properties than Math.random()
+         */
         class MersenneTwister {
             constructor(seed) {
                 this.N = 624;
@@ -2041,8 +1921,9 @@
             }
         }
 
+        // Initialize the cipher when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            const advancedTrifidCipher = new AdvancedTrifidCipher();
+            const secureTrifidCipher = new SecureTrifidCipher();
         });
     </script>
 </body>

@@ -1736,81 +1736,87 @@
                 };
             }
 
-            decrypt() {
-                const startTime = performance.now();
-                const ciphertext = document.getElementById('ciphertext').value;
-                if (!ciphertext) {
-                    alert("Please enter some text to decrypt");
-                    return;
-                }
+decrypt() {
+    const startTime = performance.now();
+    const ciphertext = document.getElementById('ciphertext').value;
+    if (!ciphertext) {
+        alert("Please enter some text to decrypt");
+        return;
+    }
 
-                if (!this.alphabet || this.cube.length === 0) {
-                    alert("Please initialize the cube first");
-                    return;
-                }
+    if (!this.alphabet || this.cube.length === 0) {
+        alert("Please initialize the cube first");
+        return;
+    }
 
-                const paddingMode = document.getElementById('decryptPadding').value;
-                const chunkSize = parseInt(document.getElementById('decryptChunkSize').value) || 100;
-                
-                document.getElementById('decryptionProgress').style.display = 'block';
-                document.getElementById('decryptionProgressBar').style.width = '0%';
-                
-                setTimeout(() => {
-                    try {
-                        let plaintext = '';
-                        let stepsHTML = '';
-                        let roundCubes = this.prepareRoundCubes();
-                        
-                        // Process rounds in reverse order
-                        for (let round = this.rounds; round >= 1; round--) {
-                            const roundStartTime = performance.now();
-                            const currentCube = roundCubes[round - 1];
-                            
-                            stepsHTML += this.createRoundHeader(round, `Decryption (Round ${this.rounds - round + 1} of ${this.rounds})`);
-                            stepsHTML += this.visualizeCubeStep(currentCube);
-                            
-                            // Process the text in chunks for large inputs
-                            const chunks = this.chunkString(ciphertext, chunkSize);
-                            let roundPlaintext = '';
-                            
-                            for (let i = 0; i < chunks.length; i++) {
-                                const chunk = chunks[i];
-                                const chunkResult = this.processDecryptionChunk(chunk, currentCube, paddingMode);
-                                roundPlaintext += chunkResult.plaintext;
-                                
-                                // Update progress
-                                const progress = ((i + 1) / chunks.length) * 100;
-                                document.getElementById('decryptionProgressBar').style.width = `${progress}%`;
-                                
-                                // Only show steps for first chunk to avoid too much output
-                                if (i === 0) {
-                                    stepsHTML += chunkResult.steps;
-                                }
-                            }
-                            
-                            plaintext = roundPlaintext;
-                            ciphertext = plaintext; // For next round processing
-                            
-                            const roundTime = performance.now() - roundStartTime;
-                            stepsHTML += `<p><strong>Round ${round} completed in ${roundTime.toFixed(2)} ms</strong></p>`;
-                        }
-                        
-                        const totalTime = performance.now() - startTime;
-                        
-                        document.getElementById('decryptionResult').style.display = 'block';
-                        document.getElementById('plaintextOutput').textContent = plaintext;
-                        document.getElementById('decryptionTime').textContent = totalTime.toFixed(2);
-                        document.getElementById('decryptionSteps').innerHTML = stepsHTML;
-                        this.updateTextPreview(plaintext, 'plaintextPreview');
-                        
-                        document.getElementById('decryptionProgressBar').style.width = '100%';
-                        
-                    } catch (error) {
-                        console.error("Decryption error:", error);
-                        alert(`Decryption failed: ${error.message}`);
-                    }
-                }, 100);
+    const paddingMode = document.getElementById('decryptPadding').value;
+    const chunkSize = parseInt(document.getElementById('decryptChunkSize').value) || 100;
+    
+    document.getElementById('decryptionProgress').style.display = 'block';
+    document.getElementById('decryptionProgressBar').style.width = '0%';
+    
+    setTimeout(() => {
+        try {
+            let plaintext = '';
+            let stepsHTML = '';
+            const roundCubes = this.prepareRoundCubes();
+
+            // Process chunks
+            const chunks = [];
+            for (let i = 0; i < ciphertext.length; i += chunkSize) {
+                chunks.push(ciphertext.substr(i, chunkSize));
             }
+
+            // Process each round
+            let intermediateText = ciphertext;
+            for (let round = this.rounds; round >= 1; round--) {
+                const roundStartTime = performance.now();
+                const currentCube = roundCubes[round - 1];
+                
+                stepsHTML += this.createRoundHeader(round, `Decryption (Round ${this.rounds - round + 1} of ${this.rounds})`);
+                stepsHTML += this.visualizeCubeStep(currentCube);
+                
+                // Process all chunks for this round
+                let roundOutput = '';
+                for (let i = 0; i < chunks.length; i++) {
+                    const chunkResult = this.processDecryptionChunk(
+                        intermediateText.substr(i * chunkSize, chunkSize), 
+                        currentCube, 
+                        paddingMode
+                    );
+                    roundOutput += chunkResult.plaintext;
+                    
+                    // Update progress
+                    const progress = ((i + 1) / chunks.length) * 50 + 
+                                    (this.rounds - round) / this.rounds * 50;
+                    document.getElementById('decryptionProgressBar').style.width = `${progress}%`;
+                    
+                    if (i === 0) stepsHTML += chunkResult.steps;
+                }
+                
+                intermediateText = roundOutput;
+                plaintext = intermediateText;
+                
+                const roundTime = performance.now() - roundStartTime;
+                stepsHTML += `<p><strong>Round ${round} completed in ${roundTime.toFixed(2)} ms</strong></p>`;
+            }
+            
+            const totalTime = performance.now() - startTime;
+            
+            document.getElementById('decryptionResult').style.display = 'block';
+            document.getElementById('plaintextOutput').textContent = plaintext;
+            document.getElementById('decryptionTime').textContent = totalTime.toFixed(2);
+            document.getElementById('decryptionSteps').innerHTML = stepsHTML;
+            this.updateTextPreview(plaintext, 'plaintextPreview');
+            
+            document.getElementById('decryptionProgressBar').style.width = '100%';
+            
+        } catch (error) {
+            console.error("Decryption error:", error);
+            alert(`Decryption failed: ${error.message}`);
+        }
+    }, 100);
+}
 
             processDecryptionChunk(text, cube, paddingMode) {
                 let stepsHTML = '';

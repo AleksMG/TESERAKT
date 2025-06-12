@@ -3,164 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4D Шифр: Двойной куб</title>
+    <title>4D Шифр: Полная реализация</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         body {
             font-family: 'Courier New', monospace;
-            max-width: 900px;
+            margin: 0;
+            padding: 20px;
+            background-color: #111;
+            color: #eee;
+        }
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
         }
-        h1, h2, h3 {
-            color: #d9534f;
-        }
-        .cubes-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-        }
-        .cube {
-            border: 2px solid #333;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-            width: 45%;
-        }
-        .cube h3 {
+        h1 {
+            color: #f44;
             text-align: center;
-            margin-top: 0;
         }
-        .controls {
-            background-color: #eee;
+        .control-panel {
+            background-color: #222;
             padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        textarea, input, select, button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #444;
             border-radius: 5px;
-            margin-bottom: 30px;
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
         }
         button {
-            background-color: #d9534f;
-            color: white;
-            border: none;
-            padding: 10px 15px;
+            background-color: #d33;
             cursor: pointer;
-            border-radius: 5px;
             font-weight: bold;
+            transition: all 0.3s;
         }
         button:hover {
-            background-color: #c9302c;
-        }
-        textarea, input {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            background-color: #f55;
         }
         .result {
-            background-color: #e7f3fe;
+            background-color: #222;
             padding: 15px;
-            border-left: 5px solid #31708f;
+            border-radius: 10px;
             margin: 20px 0;
+            white-space: pre-wrap;
         }
         .visualization {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
+            gap: 20px;
+            margin-top: 30px;
         }
-        .cell {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #333;
-            font-weight: bold;
+        .cube-container {
+            flex: 1;
+            min-width: 400px;
+            height: 400px;
+            background-color: #000;
+            border-radius: 10px;
+            position: relative;
         }
-        .cube1-cell {
-            background-color: #ffcccc;
+        .info-panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: #222;
+            padding: 15px;
+            border-radius: 10px;
         }
-        .cube2-cell {
-            background-color: #ccccff;
+        .coord-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        .common-cell {
-            background-color: #ddbbff;
+        .coord-table th, .coord-table td {
+            border: 1px solid #444;
+            padding: 5px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>🔐 4D Шифр: Двойной куб (3×3×3 × 2)</h1>
-    
-    <div class="controls">
-        <h2>🔧 Управление</h2>
-        <label for="text-input">Текст для шифрования:</label>
-        <textarea id="text-input" rows="3">HELLO</textarea>
+    <div class="container">
+        <h1>🔐 4D Шифр: Полная реализация (3×3×3 × 2)</h1>
         
-        <label for="key1">Ключ для Куба 1:</label>
-        <input type="text" id="key1" value="секрет1">
-        
-        <label for="key2">Ключ для Куба 2:</label>
-        <input type="text" id="key2" value="секрет2">
-        
-        <button onclick="encrypt()">Зашифровать</button>
-        <button onclick="decrypt()">Расшифровать</button>
-    </div>
-    
-    <div class="result">
-        <h3>Результат:</h3>
-        <div id="output"></div>
-    </div>
-    
-    <h2>🎲 Визуализация кубов</h2>
-    <div class="cubes-container">
-        <div class="cube">
-            <h3>Куб 1</h3>
-            <div id="cube1-vis" class="visualization"></div>
+        <div class="control-panel">
+            <h2>⚙️ Управление</h2>
+            <label>Текст для обработки:</label>
+            <textarea id="text-input" rows="3">HELLO WORLD</textarea>
+            
+            <div style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Ключ для Куба 1:</label>
+                    <input type="text" id="key1" value="секрет1">
+                </div>
+                <div style="flex: 1;">
+                    <label>Ключ для Куба 2:</label>
+                    <input type="text" id="key2" value="секрет2">
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="encrypt()" style="flex: 1;">Зашифровать</button>
+                <button onclick="decrypt()" style="flex: 1;">Расшифровать</button>
+                <button onclick="initCubes()" style="flex: 1;">Обновить кубы</button>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                <label>Метод кодирования:</label>
+                <select id="encoding-method">
+                    <option value="concat">Конкатенация координат</option>
+                    <option value="compare">Сравнение координат</option>
+                    <option value="math">Математические операции</option>
+                </select>
+            </div>
         </div>
-        <div class="cube">
-            <h3>Куб 2</h3>
-            <div id="cube2-vis" class="visualization"></div>
+        
+        <div class="result">
+            <h3>📊 Результат:</h3>
+            <div id="output"></div>
+        </div>
+        
+        <h2>🎲 4D Визуализация (два 3D-куба)</h2>
+        <div class="visualization">
+            <div class="cube-container" id="cube1-vis"></div>
+            <div class="cube-container" id="cube2-vis"></div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>🔍 Текущие координаты символов</h3>
+            <table class="coord-table">
+                <tr>
+                    <th>Символ</th>
+                    <th>Куб1 (x,y,z)</th>
+                    <th>Куб2 (x,y,z)</th>
+                    <th>4D-код</th>
+                </tr>
+                <tbody id="coord-table-body"></tbody>
+            </table>
+            
+            <h3 style="margin-top: 20px;">📝 Алгоритм работы:</h3>
+            <ol>
+                <li>Создаем два 3D-куба 3×3×3 с разными перемешиваниями</li>
+                <li>Для шифрования находим символ в обоих кубах</li>
+                <li>Объединяем координаты по выбранному методу</li>
+                <li>Дешифровка выполняется обратным преобразованием</li>
+            </ol>
         </div>
     </div>
-    
-    <h2>📝 Пример работы шифра</h2>
-    <p>Буква <strong>H</strong> → (1,1,1) в Куб1 и (2,0,1) в Куб2 → Шифротекст: "1,1,1,2,0,1"</p>
-    <p>Альтернативное кодирование: "1,2,1,0,1,1" (перемешанные координаты)</p>
-    
-    <h2>⚙️ Алгоритм</h2>
-    <ol>
-        <li>Создаем два 3D-куба 3×3×3 (27 символов каждый)</li>
-        <li>Заполняем их символами A-Z и спецсимволами</li>
-        <li>Перемешиваем с помощью HMAC-SHA256 на основе разных ключей</li>
-        <li>Для шифрования находим символ в обоих кубах и объединяем координаты</li>
-    </ol>
 
     <script>
-        // Инициализация кубов
-        let cube1 = [];
-        let cube2 = [];
+        // Глобальные переменные
+        let cube1 = [], cube2 = [];
+        let scene1, scene2, camera1, camera2, renderer1, renderer2;
+        let cubeMeshes1 = [], cubeMeshes2 = [];
         
+        // Инициализация кубов и 3D сцены
         function initCubes() {
-            // Создаем алфавит A-Z + пробел
+            // Создаем алфавит A-Z + пробел + цифры + некоторые спецсимволы
             const alphabet = [];
-            for (let i = 65; i <= 90; i++) alphabet.push(String.fromCharCode(i));
-            alphabet.push(' ');
+            for (let i = 65; i <= 90; i++) alphabet.push(String.fromCharCode(i)); // A-Z
+            for (let i = 48; i <= 57; i++) alphabet.push(String.fromCharCode(i)); // 0-9
+            alphabet.push(' ', '.', ',', '!', '?');
             
-            // Заполняем кубы
+            // Создаем кубы с разными ключами
             cube1 = createCube(alphabet, document.getElementById('key1').value);
             cube2 = createCube(alphabet, document.getElementById('key2').value);
             
-            // Визуализация
-            visualizeCubes();
+            // Инициализируем 3D визуализацию
+            init3DVisualization();
+            
+            // Обновляем таблицу координат
+            updateCoordTable();
         }
         
-        // Создание куба с перемешиванием
+        // Создание 3D куба с перемешиванием
         function createCube(alphabet, key) {
-            // Простое перемешивание для демонстрации (в реальности нужно HMAC-SHA256)
+            // Перемешиваем алфавит с использованием ключа
             const shuffled = [...alphabet];
             for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor((i + key.length) * key.charCodeAt(i % key.length) / 256) % (i + 1);
+                const pseudoRandom = (key.charCodeAt(i % key.length) * key.length + i) % shuffled.length;
+                const j = pseudoRandom % (i + 1);
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
             
@@ -179,59 +204,184 @@
             return cube;
         }
         
-        // Визуализация кубов
-        function visualizeCubes() {
-            const cube1Vis = document.getElementById('cube1-vis');
-            const cube2Vis = document.getElementById('cube2-vis');
-            cube1Vis.innerHTML = '';
-            cube2Vis.innerHTML = '';
+        // Инициализация 3D визуализации
+        function init3DVisualization() {
+            // Очищаем предыдущие сцены
+            const container1 = document.getElementById('cube1-vis');
+            const container2 = document.getElementById('cube2-vis');
+            container1.innerHTML = '';
+            container2.innerHTML = '';
             
-            // Показываем первые 9 элементов для простоты визуализации
+            // Размеры контейнеров
+            const width = container1.clientWidth;
+            const height = container1.clientHeight;
+            
+            // Сцена для первого куба
+            scene1 = new THREE.Scene();
+            camera1 = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            renderer1 = new THREE.WebGLRenderer({ antialias: true });
+            renderer1.setSize(width, height);
+            container1.appendChild(renderer1.domElement);
+            
+            // Сцена для второго куба
+            scene2 = new THREE.Scene();
+            camera2 = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            renderer2 = new THREE.WebGLRenderer({ antialias: true });
+            renderer2.setSize(width, height);
+            container2.appendChild(renderer2.domElement);
+            
+            // Позиция камеры
+            camera1.position.set(4, 4, 4);
+            camera1.lookAt(0, 0, 0);
+            camera2.position.set(4, 4, 4);
+            camera2.lookAt(0, 0, 0);
+            
+            // Освещение
+            const light1 = new THREE.DirectionalLight(0xffcccc, 1);
+            light1.position.set(1, 1, 1);
+            scene1.add(light1);
+            scene1.add(new THREE.AmbientLight(0x333333));
+            
+            const light2 = new THREE.DirectionalLight(0xccccff, 1);
+            light2.position.set(1, 1, 1);
+            scene2.add(light2);
+            scene2.add(new THREE.AmbientLight(0x333333));
+            
+            // Оси координат (для ориентира)
+            const axesHelper1 = new THREE.AxesHelper(2);
+            scene1.add(axesHelper1);
+            const axesHelper2 = new THREE.AxesHelper(2);
+            scene2.add(axesHelper2);
+            
+            // Очищаем предыдущие кубы
+            cubeMeshes1 = [];
+            cubeMeshes2 = [];
+            
+            // Создаем визуализацию кубов
+            createCubeVisualization(scene1, cube1, cubeMeshes1, 0xff6666);
+            createCubeVisualization(scene2, cube2, cubeMeshes2, 0x6666ff);
+            
+            // Анимация
+            animate();
+        }
+        
+        // Создание 3D визуализации куба
+        function createCubeVisualization(scene, cube, meshArray, color) {
+            const size = 0.9;
+            const gap = 0.1;
+            
+            // Материал для кубиков
+            const material = new THREE.MeshPhongMaterial({ 
+                color: color,
+                specular: 0x111111,
+                shininess: 30,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            // Создаем 27 кубиков (3x3x3)
             for (let x = 0; x < 3; x++) {
                 for (let y = 0; y < 3; y++) {
-                    const cell1 = document.createElement('div');
-                    cell1.className = 'cell cube1-cell';
-                    cell1.textContent = cube1[x][y][0];
-                    cube1Vis.appendChild(cell1);
+                    for (let z = 0; z < 3; z++) {
+                        const geometry = new THREE.BoxGeometry(size, size, size);
+                        const cubeMesh = new THREE.Mesh(geometry, material.clone());
+                        
+                        // Позиционируем кубик
+                        cubeMesh.position.set(
+                            x - 1 + (x - 1) * gap,
+                            y - 1 + (y - 1) * gap,
+                            z - 1 + (z - 1) * gap
+                        );
+                        
+                        // Добавляем текст с символом
+                        const textGeometry = new THREE.TextGeometry(cube[x][y][z], {
+                            size: 0.4,
+                            height: 0.01,
+                            font: 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/fonts/helvetiker_regular.typeface.json'
+                        });
+                        const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+                        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                        
+                        // Центрируем текст на кубике
+                        textGeometry.computeBoundingBox();
+                        const textWidth = textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x;
+                        textMesh.position.set(-textWidth/2, -0.2, size/2 + 0.01);
+                        
+                        // Группируем кубик и текст
+                        const group = new THREE.Group();
+                        group.add(cubeMesh);
+                        group.add(textMesh);
+                        
+                        // Сохраняем оригинальный цвет
+                        group.userData.originalColor = color;
+                        group.userData.coords = {x, y, z};
+                        group.userData.char = cube[x][y][z];
+                        
+                        scene.add(group);
+                        meshArray.push(group);
+                    }
+                }
+            }
+        }
+        
+        // Анимация
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Вращаем кубы
+            cubeMeshes1.forEach(mesh => mesh.rotation.y += 0.005);
+            cubeMeshes2.forEach(mesh => mesh.rotation.x += 0.005);
+            
+            renderer1.render(scene1, camera1);
+            renderer2.render(scene2, camera2);
+        }
+        
+        // Обновление таблицы координат
+        function updateCoordTable() {
+            const tableBody = document.getElementById('coord-table-body');
+            tableBody.innerHTML = '';
+            
+            // Собираем все уникальные символы из обоих кубов
+            const allChars = new Set();
+            for (let x = 0; x < 3; x++) {
+                for (let y = 0; y < 3; y++) {
+                    for (let z = 0; z < 3; z++) {
+                        allChars.add(cube1[x][y][z]);
+                        allChars.add(cube2[x][y][z]);
+                    }
+                }
+            }
+            
+            // Заполняем таблицу
+            Array.from(allChars).sort().forEach(char => {
+                const coords1 = findCharInCube(char, cube1);
+                const coords2 = findCharInCube(char, cube2);
+                
+                if (coords1 && coords2) {
+                    const row = document.createElement('tr');
                     
-                    const cell2 = document.createElement('div');
-                    cell2.className = 'cell cube2-cell';
-                    cell2.textContent = cube2[x][y][0];
-                    cube2Vis.appendChild(cell2);
+                    const charCell = document.createElement('td');
+                    charCell.textContent = char;
+                    row.appendChild(charCell);
+                    
+                    const coords1Cell = document.createElement('td');
+                    coords1Cell.textContent = coords1.join(',');
+                    row.appendChild(coords1Cell);
+                    
+                    const coords2Cell = document.createElement('td');
+                    coords2Cell.textContent = coords2.join(',');
+                    row.appendChild(coords2Cell);
+                    
+                    const codeCell = document.createElement('td');
+                    codeCell.textContent = getEncodedCoords(char, 'concat');
+                    row.appendChild(codeCell);
+                    
+                    tableBody.appendChild(row);
                 }
-            }
+            });
         }
         
-        // Шифрование
-        function encrypt() {
-            initCubes();
-            const text = document.getElementById('text-input').value.toUpperCase();
-            let output = '';
-            
-            for (const char of text) {
-                const coords = findCharInCubes(char);
-                if (coords) {
-                    output += `${coords.join(',')} `;
-                } else {
-                    output += `[${char}?] `;
-                }
-            }
-            
-            document.getElementById('output').innerHTML = `<strong>Шифротекст:</strong> ${output}`;
-        }
-        
-        // Поиск символа в обоих кубах
-        function findCharInCubes(char) {
-            const coords1 = findCharInCube(char, cube1);
-            const coords2 = findCharInCube(char, cube2);
-            
-            if (coords1 && coords2) {
-                return [...coords1, ...coords2];
-            }
-            return null;
-        }
-        
-        // Поиск символа в одном кубе
+        // Поиск символа в кубе
         function findCharInCube(char, cube) {
             for (let x = 0; x < 3; x++) {
                 for (let y = 0; y < 3; y++) {
@@ -245,25 +395,175 @@
             return null;
         }
         
-        // Дешифрование
-        function decrypt() {
-            initCubes();
-            const text = document.getElementById('text-input').value;
-            const coordsList = text.split(' ');
+        // Получение закодированных координат
+        function getEncodedCoords(char, method) {
+            const coords1 = findCharInCube(char, cube1);
+            const coords2 = findCharInCube(char, cube2);
+            
+            if (!coords1 || !coords2) return null;
+            
+            switch (method) {
+                case 'concat':
+                    return coords1.concat(coords2).join(',');
+                
+                case 'compare':
+                    let code = '';
+                    for (let i = 0; i < 3; i++) {
+                        if (coords1[i] === coords2[i]) code += '=';
+                        else if (coords1[i] > coords2[i]) code += '>';
+                        else code += '<';
+                    }
+                    return code;
+                
+                case 'math':
+                    const [x1, y1, z1] = coords1;
+                    const [x2, y2, z2] = coords2;
+                    return String.fromCharCode(
+                        65 + ((x1 * x2 + y1 * y2 + z1 * z2) % 26)
+                    );
+                
+                default:
+                    return coords1.concat(coords2).join(',');
+            }
+        }
+        
+        // Шифрование текста
+        function encrypt() {
+            const text = document.getElementById('text-input').value.toUpperCase();
+            const method = document.getElementById('encoding-method").value;
             let output = '';
             
-            for (const coordsStr of coordsList) {
-                const coords = coordsStr.split(',').map(Number);
-                if (coords.length === 6) {
-                    const [x1, y1, z1, x2, y2, z2] = coords;
-                    const char = cube1[x1][y1][z1]; // или cube2[x2][y2][z2]
-                    output += char;
+            for (const char of text) {
+                const encoded = getEncodedCoords(char, method);
+                if (encoded) {
+                    output += encoded + ' ';
                 } else {
-                    output += '?';
+                    output += `[${char}?] `;
                 }
             }
             
-            document.getElementById('output').innerHTML = `<strong>Расшифрованный текст:</strong> ${output}`;
+            document.getElementById('output').innerHTML = `
+                <strong>Исходный текст:</strong> ${text}<br>
+                <strong>Метод кодирования:</strong> ${document.getElementById('encoding-method').options[document.getElementById('encoding-method').selectedIndex].text}<br>
+                <strong>Результат:</strong> ${output.trim()}
+            `;
+            
+            // Подсвечиваем активные символы
+            highlightChars(text);
+        }
+        
+        // Дешифрование текста
+        function decrypt() {
+            const input = document.getElementById('text-input').value.trim();
+            const method = document.getElementById('encoding-method").value;
+            let output = '';
+            
+            // Разбиваем входные данные на отдельные коды
+            const codes = input.split(/\s+/);
+            
+            for (const code of codes) {
+                let char = null;
+                
+                // Пытаемся найти символ по коду в зависимости от метода
+                switch (method) {
+                    case 'concat':
+                        const coords = code.split(',').map(Number);
+                        if (coords.length === 6) {
+                            const [x1, y1, z1, x2, y2, z2] = coords;
+                            if (x1 >= 0 && x1 < 3 && y1 >= 0 && y1 < 3 && z1 >= 0 && z1 < 3) {
+                                char = cube1[x1][y1][z1];
+                            }
+                        }
+                        break;
+                    
+                    case 'compare':
+                        // Для демонстрации просто берем первый подходящий символ
+                        for (let x = 0; x < 3; x++) {
+                            for (let y = 0; y < 3; y++) {
+                                for (let z = 0; z < 3; z++) {
+                                    const testChar = cube1[x][y][z];
+                                    const testCoords = findCharInCube(testChar, cube2);
+                                    if (testCoords) {
+                                        let testCode = '';
+                                        for (let i = 0; i < 3; i++) {
+                                            if ([x,y,z][i] === testCoords[i]) testCode += '=';
+                                            else if ([x,y,z][i] > testCoords[i]) testCode += '>';
+                                            else testCode += '<';
+                                        }
+                                        if (testCode === code) {
+                                            char = testChar;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (char) break;
+                            }
+                            if (char) break;
+                        }
+                        break;
+                    
+                    case 'math':
+                        const codeValue = code.charCodeAt(0) - 65;
+                        for (let x = 0; x < 3; x++) {
+                            for (let y = 0; y < 3; y++) {
+                                for (let z = 0; z < 3; z++) {
+                                    const testChar = cube1[x][y][z];
+                                    const testCoords = findCharInCube(testChar, cube2);
+                                    if (testCoords) {
+                                        const [x2, y2, z2] = testCoords;
+                                        if ((x * x2 + y * y2 + z * z2) % 26 === codeValue) {
+                                            char = testChar;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (char) break;
+                            }
+                            if (char) break;
+                        }
+                        break;
+                }
+                
+                output += char || '?';
+            }
+            
+            document.getElementById('output').innerHTML = `
+                <strong>Зашифрованный текст:</strong> ${input}<br>
+                <strong>Метод декодирования:</strong> ${document.getElementById('encoding-method').options[document.getElementById('encoding-method').selectedIndex].text}<br>
+                <strong>Результат:</strong> ${output}
+            `;
+            
+            // Подсвечиваем активные символы
+            highlightChars(output);
+        }
+        
+        // Подсветка символов в 3D кубах
+        function highlightChars(text) {
+            // Сбрасываем цвета всех кубиков
+            cubeMeshes1.forEach(mesh => {
+                mesh.children[0].material.color.setHex(mesh.userData.originalColor);
+            });
+            cubeMeshes2.forEach(mesh => {
+                mesh.children[0].material.color.setHex(mesh.userData.originalColor);
+            });
+            
+            // Подсвечиваем символы из текста
+            const uniqueChars = [...new Set(text.toUpperCase())];
+            uniqueChars.forEach(char => {
+                // В первом кубе
+                cubeMeshes1.forEach(mesh => {
+                    if (mesh.userData.char === char) {
+                        mesh.children[0].material.color.setHex(0x00ff00);
+                    }
+                });
+                
+                // Во втором кубе
+                cubeMeshes2.forEach(mesh => {
+                    if (mesh.userData.char === char) {
+                        mesh.children[0].material.color.setHex(0x00ff00);
+                    }
+                });
+            });
         }
         
         // Инициализация при загрузке

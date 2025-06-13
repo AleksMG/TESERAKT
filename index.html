@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4D Trifid Cipher Pro</title>
+    <title>Shadow Cube Cipher</title>
     <style>
         :root {
             --system-blue: #0a84ff;
@@ -75,61 +75,8 @@
             text-align: center;
         }
 
-        .traffic-lights {
-            display: flex;
-            gap: 8px;
-            position: absolute;
-        }
-
-        .traffic-light {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .traffic-light.close {
-            background-color: var(--system-red);
-        }
-
-        .traffic-light.minimize {
-            background-color: var(--system-orange);
-        }
-
-        .traffic-light.maximize {
-            background-color: var(--system-green);
-        }
-
         .content {
             padding: 20px;
-        }
-
-        .tab-bar {
-            display: flex;
-            border-bottom: 1px solid var(--system-border);
-            margin-bottom: 16px;
-        }
-
-        .tab {
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--system-secondary-text);
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .tab.active {
-            color: var(--accent-color);
-            border-bottom-color: var(--accent-color);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
         }
 
         .panel {
@@ -212,15 +159,6 @@
             background-color: #6e6e73;
         }
 
-        .btn-danger {
-            background-color: var(--system-red);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #d63430;
-        }
-
         .btn-group {
             display: flex;
             gap: 8px;
@@ -244,12 +182,6 @@
             background-color: rgba(255, 69, 58, 0.1);
             border-color: rgba(255, 69, 58, 0.3);
             color: var(--system-red);
-        }
-
-        .status.warning {
-            background-color: rgba(255, 159, 10, 0.1);
-            border-color: rgba(255, 159, 10, 0.3);
-            color: var(--system-orange);
         }
 
         .cubes-container {
@@ -371,62 +303,6 @@
             cursor: pointer;
         }
 
-        .alphabet-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 12px;
-        }
-
-        .alphabet-char {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 500;
-            background-color: var(--system-background);
-            border-radius: 4px;
-            border: 1px solid var(--system-border);
-        }
-
-        .alphabet-char.primary {
-            background-color: rgba(10, 132, 255, 0.1);
-        }
-
-        .alphabet-char.secondary {
-            background-color: rgba(48, 209, 88, 0.1);
-        }
-
-        .warning {
-            font-size: 12px;
-            color: var(--system-orange);
-            margin-top: 8px;
-        }
-
-        .log-container {
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid var(--system-border);
-            border-radius: var(--control-radius);
-            background-color: var(--system-card);
-            padding: 8px;
-            font-family: var(--font-mono);
-            font-size: 12px;
-        }
-
-        .log-entry {
-            margin-bottom: 4px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid var(--system-border);
-        }
-
-        .log-time {
-            color: var(--system-secondary-text);
-            font-size: 11px;
-        }
-
         .coords-table {
             width: 100%;
             border-collapse: collapse;
@@ -449,12 +325,6 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2col {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* macOS-style segmented control */
@@ -507,350 +377,115 @@
     <div class="container">
         <div class="window">
             <div class="titlebar">
-                <div class="traffic-lights">
-                    <div class="traffic-light close"></div>
-                    <div class="traffic-light minimize"></div>
-                    <div class="traffic-light maximize"></div>
-                </div>
-                <div class="title">4D Trifid Cipher Pro</div>
+                <div class="title">Shadow Cube Cipher</div>
             </div>
             
             <div class="content">
-                <div class="tab-bar">
-                    <div class="tab active" data-tab="cipher">Cipher Tool</div>
-                    <div class="tab" data-tab="cubes">Cube Visualization</div>
-                    <div class="tab" data-tab="alphabet">Alphabet Settings</div>
-                    <div class="tab" data-tab="logs">Operation Logs</div>
-                    <div class="tab" data-tab="about">About</div>
-                </div>
-                
-                <div class="tab-content active" id="cipher">
-                    <div class="grid-2col">
-                        <div class="panel">
-                            <h2 class="panel-title">Input</h2>
-                            <textarea id="inputText" placeholder="Enter your message here...">HELLO</textarea>
-                            
-                            <div class="form-group">
-                                <label for="key">Encryption Key:</label>
-                                <input type="text" id="key" placeholder="Enter secret key" value="SECRET">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rounds">Rounds:</label>
-                                <input type="number" id="rounds" min="1" max="10" value="3">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Action:</label>
-                                <div class="segmented-control">
-                                    <input type="radio" id="encrypt" name="action" value="encrypt" checked>
-                                    <label for="encrypt">Encrypt</label>
-                                    <input type="radio" id="decrypt" name="action" value="decrypt">
-                                    <label for="decrypt">Decrypt</label>
-                                </div>
-                            </div>
-                            
-                            <div class="btn-group">
-                                <button id="processBtn" class="btn btn-primary">Process</button>
-                                <button id="clearBtn" class="btn btn-secondary">Clear</button>
-                                <button id="exampleBtn" class="btn btn-secondary">Example</button>
-                            </div>
-                        </div>
-                        
-                        <div class="panel">
-                            <h2 class="panel-title">Output</h2>
-                            <textarea id="outputText" readonly placeholder="Result will appear here..."></textarea>
-                            
-                            <div class="form-group">
-                                <label>Status:</label>
-                                <div id="status" class="status">Ready</div>
-                            </div>
-                            
-                            <div class="btn-group">
-                                <button id="copyBtn" class="btn btn-secondary">Copy to Clipboard</button>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Character Coordinates:</label>
-                                <div id="charCoords"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="cubes">
+                <div class="grid-2col">
                     <div class="panel">
-                        <h2 class="panel-title">Cube Visualization</h2>
-                        <p>Visual representation of the 3D cubes used in the cipher.</p>
-                        
-                        <div class="controls-row">
-                            <div>
-                                <label>Round:</label>
-                                <select id="cubeRoundSelect">
-                                    <option value="0">Round 1</option>
-                                </select>
-                            </div>
-                            <div class="btn-group">
-                                <button id="rotateXCube" class="btn btn-secondary">Rotate X</button>
-                                <button id="rotateYCube" class="btn btn-secondary">Rotate Y</button>
-                                <button id="rotateZCube" class="btn btn-secondary">Rotate Z</button>
-                            </div>
-                        </div>
-                        
-                        <div class="slider-container">
-                            <input type="range" id="rotationSlider" class="slider" min="0" max="360" value="0">
-                        </div>
-                        
-                        <div class="cubes-container">
-                            <div>
-                                <h3 class="cube-title">Primary Cube (XYZ)</h3>
-                                <div class="cube" id="cube1">
-                                    <div class="cube-inner">
-                                        <div class="cube-face cube-face-front"></div>
-                                        <div class="cube-face cube-face-back"></div>
-                                        <div class="cube-face cube-face-right"></div>
-                                        <div class="cube-face cube-face-left"></div>
-                                        <div class="cube-face cube-face-top"></div>
-                                        <div class="cube-face cube-face-bottom"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <h3 class="cube-title">Secondary Cube (WX WY WZ)</h3>
-                                <div class="cube" id="cube2">
-                                    <div class="cube-inner">
-                                        <div class="cube-face cube-face-front"></div>
-                                        <div class="cube-face cube-face-back"></div>
-                                        <div class="cube-face cube-face-right"></div>
-                                        <div class="cube-face cube-face-left"></div>
-                                        <div class="cube-face cube-face-top"></div>
-                                        <div class="cube-face cube-face-bottom"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="tab-content" id="alphabet">
-                    <div class="panel">
-                        <h2 class="panel-title">Alphabet Settings</h2>
+                        <h2 class="panel-title">Input</h2>
+                        <textarea id="inputText" placeholder="Enter your message here...">HELLO</textarea>
                         
                         <div class="form-group">
-                            <label for="customAlphabet">Custom Alphabet (54 unique characters required):</label>
-                            <input type="text" id="customAlphabet" maxlength="54" 
-                                   value="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()">
+                            <label for="key">Encryption Key:</label>
+                            <input type="text" id="key" placeholder="Enter secret key" value="SECRET">
                         </div>
                         
-                        <div class="alphabet-preview" id="alphabetPreview"></div>
-                        <div id="alphabetWarning" class="warning"></div>
+                        <div class="form-group">
+                            <label>Action:</label>
+                            <div class="segmented-control">
+                                <input type="radio" id="encrypt" name="action" value="encrypt" checked>
+                                <label for="encrypt">Encrypt</label>
+                                <input type="radio" id="decrypt" name="action" value="decrypt">
+                                <label for="decrypt">Decrypt</label>
+                            </div>
+                        </div>
                         
                         <div class="btn-group">
-                            <button id="saveAlphabet" class="btn btn-primary">Save Alphabet</button>
-                            <button id="resetAlphabet" class="btn btn-secondary">Reset to Default</button>
+                            <button id="processBtn" class="btn btn-primary">Process</button>
+                            <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <h2 class="panel-title">Output</h2>
+                        <textarea id="outputText" readonly placeholder="Result will appear here..."></textarea>
+                        
+                        <div class="form-group">
+                            <label>Status:</label>
+                            <div id="status" class="status">Ready</div>
                         </div>
                         
-                        <div class="form-group" style="margin-top: 16px;">
-                            <label>Alphabet Requirements:</label>
-                            <ul style="font-size: 13px; color: var(--system-secondary-text);">
-                                <li>Must contain exactly 54 unique characters</li>
-                                <li>No duplicate characters allowed</li>
-                                <li>First 27 characters go to Primary Cube (XYZ)</li>
-                                <li>Last 27 characters go to Secondary Cube (WX WY WZ)</li>
-                            </ul>
+                        <div class="btn-group">
+                            <button id="copyBtn" class="btn btn-secondary">Copy to Clipboard</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="logs">
-                    <div class="panel">
-                        <h2 class="panel-title">Operation Logs</h2>
-                        
+                <div class="panel">
+                    <h2 class="panel-title">Cube Visualization</h2>
+                    
+                    <div class="controls-row">
                         <div class="btn-group">
-                            <button id="clearLogs" class="btn btn-danger">Clear Logs</button>
-                            <button id="exportLogs" class="btn btn-secondary">Export Logs</button>
+                            <button id="rotateXCube" class="btn btn-secondary">Rotate X</button>
+                            <button id="rotateYCube" class="btn btn-secondary">Rotate Y</button>
+                            <button id="rotateZCube" class="btn btn-secondary">Rotate Z</button>
+                        </div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <input type="range" id="rotationSlider" class="slider" min="0" max="360" value="0">
+                    </div>
+                    
+                    <div class="cubes-container">
+                        <div>
+                            <h3 class="cube-title">Primary Cube</h3>
+                            <div class="cube" id="primaryCube">
+                                <div class="cube-inner">
+                                    <div class="cube-face cube-face-front"></div>
+                                    <div class="cube-face cube-face-back"></div>
+                                    <div class="cube-face cube-face-right"></div>
+                                    <div class="cube-face cube-face-left"></div>
+                                    <div class="cube-face cube-face-top"></div>
+                                    <div class="cube-face cube-face-bottom"></div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="log-container" id="logContainer">
-                            <div class="log-entry">
-                                <div class="log-time">[System] Application started</div>
-                                <div>Welcome to 4D Trifid Cipher Pro</div>
+                        <div>
+                            <h3 class="cube-title">Shadow Cube</h3>
+                            <div class="cube" id="shadowCube">
+                                <div class="cube-inner">
+                                    <div class="cube-face cube-face-front"></div>
+                                    <div class="cube-face cube-face-back"></div>
+                                    <div class="cube-face cube-face-right"></div>
+                                    <div class="cube-face cube-face-left"></div>
+                                    <div class="cube-face cube-face-top"></div>
+                                    <div class="cube-face cube-face-bottom"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="tab-content" id="about">
-                    <div class="panel">
-                        <h2 class="panel-title">About 4D Trifid Cipher Pro</h2>
-                        
-                        <h3 style="font-size: 15px; margin-bottom: 8px;">Enhanced 4D Trifid Cipher</h3>
-                        <p style="font-size: 13px; margin-bottom: 12px; color: var(--system-secondary-text);">
-                            This implementation extends the classic Trifid cipher into four dimensions using two interlocked 3D cubes,
-                            providing significantly enhanced security.
-                        </p>
-                        
-                        <h3 style="font-size: 15px; margin-bottom: 8px;">Features</h3>
-                        <ul style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 12px; padding-left: 16px;">
-                            <li>Customizable 54-character alphabet</li>
-                            <li>Secure key derivation with PBKDF2</li>
-                            <li>Multiple encryption rounds</li>
-                            <li>Detailed operation logging</li>
-                            <li>Interactive 3D cube visualization</li>
-                            <li>Deterministic cube generation (same key = same cubes)</li>
-                        </ul>
-                        
-                        <h3 style="font-size: 15px; margin-bottom: 8px;">How It Works</h3>
-                        <ol style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 12px; padding-left: 16px;">
-                            <li>Two 3×3×3 cubes are generated from the alphabet (27 chars each)</li>
-                            <li>Each character has coordinates in both cubes (x,y,z and wx,wy,wz)</li>
-                            <li>Encryption interleaves coordinates (XWX YWY ZWZ) and maps back to characters</li>
-                            <li>Decryption reverses this process</li>
-                        </ol>
-                        
-                        <h3 style="font-size: 15px; margin-bottom: 8px;">Example</h3>
-                        <p style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 8px;">With default settings:</p>
-                        <pre style="font-family: var(--font-mono); font-size: 12px; background-color: var(--system-background); padding: 8px; border-radius: var(--control-radius); border: 1px solid var(--system-border); margin-bottom: 12px;">HELLO → GY5RD (encrypted)
-GY5RD → HELLO (decrypted)</pre>
-                        
-                        <h3 style="font-size: 15px; margin-bottom: 8px;">Security Features</h3>
-                        <ul style="font-size: 13px; color: var(--system-secondary-text); padding-left: 16px;">
-                            <li>256-bit key derivation with 10,000 PBKDF2 iterations</li>
-                            <li>Custom salt for each encryption</li>
-                            <li>Configurable number of rounds</li>
-                            <li>User-defined alphabet prevents known-plaintext attacks</li>
-                        </ul>
-                    </div>
+                <div class="panel">
+                    <h2 class="panel-title">Character Coordinates</h2>
+                    <div id="charCoords"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        class Trifid4D {
+        class ShadowCubeCipher {
             constructor() {
-                this.defaultAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()';
-                this.alphabet = this.defaultAlphabet;
-                this.fillerChar = 'X';
-                this.hypercubes = [];
-                this.currentRound = 0;
-                this.currentRotation = { cube1: { x: 0, y: 0, z: 0 }, cube2: { x: 0, y: 0, z: 0 } };
-                this.logs = ['[System] Application initialized'];
-                this.salt = null;
+                this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()-+=';
+                this.primaryCube = this.createCube(this.alphabet.substring(0, 27));
+                this.shadowCube = this.createCube(this.alphabet.substring(27));
+                this.currentRotation = { primary: { x: 0, y: 0, z: 0 }, shadow: { x: 0, y: 0, z: 0 } };
             }
             
-            log(message, type = 'info') {
-                const timestamp = new Date().toLocaleTimeString();
-                const entry = `[${timestamp}] ${message}`;
-                this.logs.push(entry);
-                return entry;
-            }
-            
-            async init(key, rounds) {
-                this.hypercubes = [];
-                this.salt = this.generateSalt();
-                const derivedKey = await this.deriveKey(key, this.salt);
-                this.log(`Initializing cipher with ${rounds} rounds using key: ${key}`);
-                
-                // Generate unique cubes for each round based on derived key segments
-                for (let i = 0; i < rounds; i++) {
-                    const roundKey = derivedKey.slice(i * 16, (i + 1) * 16); // 16 bytes per round
-                    const hypercube = await this.createHypercube(roundKey);
-                    this.hypercubes.push(hypercube);
-                    this.log(`Round ${i+1} cube initialized with key segment: ${roundKey.substring(0, 8)}...`);
-                }
-                
-                return this.hypercubes;
-            }
-            
-            generateSalt() {
-                const timestamp = Date.now().toString();
-                const random = window.crypto.getRandomValues(new Uint8Array(8));
-                return timestamp + Array.from(random).map(b => b.toString(16).padStart(2, '0')).join('');
-            }
-            
-            async deriveKey(key, salt) {
-                const encoder = new TextEncoder();
-                const keyMaterial = await crypto.subtle.importKey(
-                    'raw',
-                    encoder.encode(key),
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveBits']
-                );
-                
-                const derivedBits = await crypto.subtle.deriveBits(
-                    {
-                        name: 'PBKDF2',
-                        salt: encoder.encode(salt),
-                        iterations: 10000,
-                        hash: 'SHA-256'
-                    },
-                    keyMaterial,
-                    256 // 32 bytes * 8 rounds = 256 bits
-                );
-                
-                const derivedArray = Array.from(new Uint8Array(derivedBits));
-                return derivedArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            }
-            
-            async createHypercube(seed) {
-                const shuffled = await this.shuffleAlphabet(this.alphabet, seed);
-                const cube1 = this.fill3DCube(shuffled.substring(0, 27));
-                const cube2 = this.fill3DCube(shuffled.substring(27));
-                
-                return {
-                    cube1: cube1,
-                    cube2: cube2,
-                    coordinateMap: this.buildCoordinateMap(cube1, cube2)
-                };
-            }
-            
-            buildCoordinateMap(cube1, cube2) {
-                const map = {};
-                
-                // Build map for cube1 (XYZ)
-                for (let x = 0; x < 3; x++) {
-                    for (let y = 0; y < 3; y++) {
-                        for (let z = 0; z < 3; z++) {
-                            const char = cube1[x][y][z];
-                            if (!map[char]) map[char] = {};
-                            map[char].cube1 = { x, y, z };
-                        }
-                    }
-                }
-                
-                // Build map for cube2 (WX WY WZ)
-                for (let wx = 0; wx < 3; wx++) {
-                    for (let wy = 0; wy < 3; wy++) {
-                        for (let wz = 0; wz < 3; wz++) {
-                            const char = cube2[wx][wy][wz];
-                            if (!map[char]) map[char] = {};
-                            map[char].cube2 = { wx, wy, wz };
-                        }
-                    }
-                }
-                
-                return map;
-            }
-            
-            async shuffleAlphabet(alphabet, seed) {
-                const encoder = new TextEncoder();
-                const seedBuffer = encoder.encode(seed + this.alphabet);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', seedBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                
-                let shuffled = alphabet.split('');
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = hashArray[i % hashArray.length] % (i + 1);
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-                }
-                
-                return shuffled.join('');
-            }
-            
-            fill3DCube(chars) {
+            createCube(chars) {
                 const cube = [];
                 let pos = 0;
                 
@@ -865,178 +500,6 @@ GY5RD → HELLO (decrypted)</pre>
                 }
                 
                 return cube;
-            }
-            
-            findCharCoordinates(char, hypercube) {
-                const entry = hypercube.coordinateMap[char];
-                if (!entry || !entry.cube1 || !entry.cube2) {
-                    return null;
-                }
-                
-                return {
-                    x: entry.cube1.x,
-                    y: entry.cube1.y,
-                    z: entry.cube1.z,
-                    wx: entry.cube2.wx,
-                    wy: entry.cube2.wy,
-                    wz: entry.cube2.wz
-                };
-            }
-            
-            async process(text, rounds, isEncrypt) {
-                const startTime = performance.now();
-                let result = text.toUpperCase().replace(/[^A-Z0-9,.!?@#$%^&*()]/g, '');
-                
-                this.log(`${isEncrypt ? 'Encrypting' : 'Decrypting'}: "${text}" (${result.length} chars)`);
-                
-                // Process through each round sequentially
-                for (let round = 0; round < rounds; round++) {
-                    const roundStart = performance.now();
-                    result = this.processRound(result, round, isEncrypt);
-                    
-                    const roundTime = (performance.now() - roundStart).toFixed(2);
-                    this.log(`Round ${round+1} completed in ${roundTime}ms`);
-                }
-                
-                const totalTime = (performance.now() - startTime).toFixed(2);
-                this.log(`${isEncrypt ? 'Encryption' : 'Decryption'} completed in ${totalTime}ms. Result: "${result}"`);
-                
-                return result;
-            }
-            
-            processRound(text, round, isEncrypt) {
-                const hypercube = this.hypercubes[round];
-                let result = '';
-                
-                if (isEncrypt) {
-                    // Encryption process
-                    const allCoords = [];
-                    
-                    // Step 1: Convert each character to coordinates
-                    for (const char of text) {
-                        const coords = this.findCharCoordinates(char, hypercube);
-                        if (coords) {
-                            allCoords.push(coords);
-                        } else {
-                            // Use filler character if not found
-                            allCoords.push({ x: 0, y: 0, z: 0, wx: 0, wy: 0, wz: 0 });
-                        }
-                    }
-                    
-                    // Step 2: Create coordinate streams
-                    const xStream = [], yStream = [], zStream = [];
-                    const wxStream = [], wyStream = [], wzStream = [];
-                    
-                    allCoords.forEach(coord => {
-                        xStream.push(coord.x);
-                        yStream.push(coord.y);
-                        zStream.push(coord.z);
-                        wxStream.push(coord.wx);
-                        wyStream.push(coord.wy);
-                        wzStream.push(coord.wz);
-                    });
-                    
-                    // Step 3: Combine streams in XWX YWY ZWZ pattern
-                    const combinedStream = [
-                        ...xStream, ...wxStream,
-                        ...yStream, ...wyStream,
-                        ...zStream, ...wzStream
-                    ];
-                    
-                    // Step 4: Convert back to characters
-                    for (let i = 0; i < combinedStream.length; i += 3) {
-                        if (i + 2 < combinedStream.length) {
-                            const x = combinedStream[i];
-                            const y = combinedStream[i+1];
-                            const z = combinedStream[i+2];
-                            
-                            if (x !== undefined && y !== undefined && z !== undefined) {
-                                result += hypercube.cube1[x][y][z] || this.fillerChar;
-                            }
-                        }
-                    }
-                } else {
-                    // Decryption process
-                    const coordStream = [];
-                    
-                    // Step 1: Convert ciphertext back to coordinate stream
-                    for (const char of text) {
-                        const coords = this.findCharCoordinates(char, hypercube);
-                        if (coords) {
-                            coordStream.push(
-                                coords.x, coords.y, coords.z,
-                                coords.wx, coords.wy, coords.wz
-                            );
-                        } else {
-                            // Use zeros if character not found
-                            coordStream.push(0, 0, 0, 0, 0, 0);
-                        }
-                    }
-                    
-                    // Step 2: Split the stream into original coordinates
-                    const streamLength = coordStream.length;
-                    const splitPoint = Math.floor(streamLength / 2);
-                    
-                    const xyzStream = coordStream.slice(0, splitPoint);
-                    const wxwywzStream = coordStream.slice(splitPoint);
-                    
-                    // Step 3: Reconstruct original coordinates
-                    const xStream = [], yStream = [], zStream = [];
-                    const wxStream = [], wyStream = [], wzStream = [];
-                    
-                    // Split xyzStream into x, y, z components
-                    for (let i = 0; i < xyzStream.length; i += 3) {
-                        if (i + 2 < xyzStream.length) {
-                            xStream.push(xyzStream[i]);
-                            yStream.push(xyzStream[i+1]);
-                            zStream.push(xyzStream[i+2]);
-                        }
-                    }
-                    
-                    // Split wxwywzStream into wx, wy, wz components
-                    for (let i = 0; i < wxwywzStream.length; i += 3) {
-                        if (i + 2 < wxwywzStream.length) {
-                            wxStream.push(wxwywzStream[i]);
-                            wyStream.push(wxwywzStream[i+1]);
-                            wzStream.push(wxwywzStream[i+2]);
-                        }
-                    }
-                    
-                    // Step 4: Reconstruct original characters
-                    const minLength = Math.min(
-                        xStream.length,
-                        yStream.length,
-                        zStream.length,
-                        wxStream.length,
-                        wyStream.length,
-                        wzStream.length
-                    );
-                    
-                    for (let i = 0; i < minLength; i++) {
-                        const x = xStream[i];
-                        const y = yStream[i];
-                        const z = zStream[i];
-                        const wx = wxStream[i];
-                        const wy = wyStream[i];
-                        const wz = wzStream[i];
-                        
-                        // Find character that matches both sets of coordinates
-                        let foundChar = null;
-                        for (const char in hypercube.coordinateMap) {
-                            const entry = hypercube.coordinateMap[char];
-                            if (entry.cube1 && entry.cube2 &&
-                                entry.cube1.x === x && entry.cube1.y === y && entry.cube1.z === z &&
-                                entry.cube2.wx === wx && entry.cube2.wy === wy && entry.cube2.wz === wz) {
-                                foundChar = char;
-                                break;
-                            }
-                        }
-                        
-                        result += foundChar || this.fillerChar;
-                    }
-                }
-                
-                return result;
             }
             
             getCubeFaces(cube) {
@@ -1109,47 +572,150 @@ GY5RD → HELLO (decrypted)</pre>
                 return faces;
             }
             
-            setAlphabet(newAlphabet) {
-                if (newAlphabet.length !== 54) {
-                    throw new Error('Alphabet must contain exactly 54 characters');
+            findCharInCube(char, cube) {
+                for (let x = 0; x < 3; x++) {
+                    for (let y = 0; y < 3; y++) {
+                        for (let z = 0; z < 3; z++) {
+                            if (cube[x][y][z] === char) {
+                                return { x, y, z };
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            
+            calculateW(char, index, key) {
+                // Simple hash function for demonstration
+                let hash = 0;
+                for (let i = 0; i < key.length; i++) {
+                    hash = (hash << 5) - hash + key.charCodeAt(i);
+                    hash |= 0; // Convert to 32bit integer
                 }
                 
-                const uniqueChars = new Set(newAlphabet.split(''));
-                if (uniqueChars.size !== 54) {
-                    throw new Error('Alphabet must contain unique characters');
+                hash = (hash + char.charCodeAt(0) + index) % 3;
+                return Math.abs(hash);
+            }
+            
+            encrypt(text, key) {
+                let result = '';
+                const coordStream = [];
+                
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i].toUpperCase();
+                    const primaryCoords = this.findCharInCube(char, this.primaryCube);
+                    
+                    if (!primaryCoords) {
+                        coordStream.push(0, 0, 0, 0, 0, 0);
+                        continue;
+                    }
+                    
+                    const w = this.calculateW(char, i, key);
+                    const shadowCoords = {
+                        x: (primaryCoords.x + w) % 3,
+                        y: (primaryCoords.y + w + 1) % 3,
+                        z: (primaryCoords.z + w + 2) % 3
+                    };
+                    
+                    coordStream.push(
+                        primaryCoords.x, shadowCoords.x,
+                        primaryCoords.y, shadowCoords.y,
+                        primaryCoords.z, shadowCoords.z
+                    );
                 }
                 
-                this.alphabet = newAlphabet;
-                this.log(`Alphabet updated to: ${newAlphabet.substring(0, 27)}...${newAlphabet.substring(27)}`);
-                return true;
+                // Split into triplets and map to characters
+                for (let i = 0; i < coordStream.length; i += 3) {
+                    if (i + 2 < coordStream.length) {
+                        const x = coordStream[i];
+                        const y = coordStream[i+1];
+                        const z = coordStream[i+2];
+                        
+                        // Alternate between primary and shadow cubes
+                        const cube = (i / 3) % 2 === 0 ? this.primaryCube : this.shadowCube;
+                        result += cube[x][y][z] || 'X';
+                    }
+                }
+                
+                return result;
+            }
+            
+            decrypt(text, key) {
+                let result = '';
+                const coordStream = [];
+                
+                // Convert ciphertext to coordinate stream
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i].toUpperCase();
+                    const cube = i % 2 === 0 ? this.primaryCube : this.shadowCube;
+                    const coords = this.findCharInCube(char, cube);
+                    
+                    if (coords) {
+                        coordStream.push(coords.x, coords.y, coords.z);
+                    } else {
+                        coordStream.push(0, 0, 0);
+                    }
+                }
+                
+                // Reconstruct original coordinates
+                const midPoint = Math.floor(coordStream.length / 2);
+                const primaryCoords = coordStream.slice(0, midPoint);
+                const shadowCoords = coordStream.slice(midPoint);
+                
+                for (let i = 0; i < primaryCoords.length / 3; i++) {
+                    const px = primaryCoords[i*3];
+                    const sx = shadowCoords[i*3];
+                    const py = primaryCoords[i*3+1];
+                    const sy = shadowCoords[i*3+1];
+                    const pz = primaryCoords[i*3+2];
+                    const sz = shadowCoords[i*3+2];
+                    
+                    // Reconstruct w from x coordinates
+                    const w = (sx - px) % 3;
+                    if (w < 0) w += 3; // Ensure positive
+                    
+                    // Verify shadow coordinates match
+                    const expectedSy = (py + w + 1) % 3;
+                    const expectedSz = (pz + w + 2) % 3;
+                    
+                    if (sy === expectedSy && sz === expectedSz) {
+                        result += this.primaryCube[px][py][pz] || 'X';
+                    } else {
+                        result += '?'; // Mark as error
+                    }
+                }
+                
+                return result;
+            }
+            
+            getCharCoordinates(text, key) {
+                const coords = [];
+                
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i].toUpperCase();
+                    const primary = this.findCharInCube(char, this.primaryCube);
+                    const shadow = this.findCharInCube(char, this.shadowCube);
+                    const w = primary ? this.calculateW(char, i, key) : null;
+                    
+                    coords.push({
+                        char,
+                        primary: primary ? `${primary.x},${primary.y},${primary.z}` : null,
+                        shadow: shadow ? `${shadow.x},${shadow.y},${shadow.z}` : null,
+                        w: w
+                    });
+                }
+                
+                return coords;
             }
         }
 
         // UI Implementation
         document.addEventListener('DOMContentLoaded', () => {
-            const cipher = new Trifid4D();
+            const cipher = new ShadowCubeCipher();
             let isProcessing = false;
             
-            // Initialize UI components
-            updateAlphabetPreview();
-            
-            // Tab switching
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-                    
-                    tab.classList.add('active');
-                    document.getElementById(tab.dataset.tab).classList.add('active');
-                    
-                    if (tab.dataset.tab === 'logs') {
-                        updateLogDisplay();
-                    }
-                });
-            });
+            // Initialize cube visualization
+            updateCubeVisualization();
             
             // Process button
             document.getElementById('processBtn').addEventListener('click', async () => {
@@ -1157,20 +723,15 @@ GY5RD → HELLO (decrypted)</pre>
                 
                 const inputText = document.getElementById('inputText').value;
                 const key = document.getElementById('key').value;
-                const rounds = parseInt(document.getElementById('rounds').value);
                 const isEncrypt = document.getElementById('encrypt').checked;
                 
                 if (!inputText) {
                     updateStatus('Please enter some text to process', 'error');
-                    cipher.log('Processing failed: no input text', 'error');
-                    updateLogDisplay();
                     return;
                 }
                 
                 if (!key) {
                     updateStatus('Please enter an encryption key', 'error');
-                    cipher.log('Processing failed: no encryption key', 'error');
-                    updateLogDisplay();
                     return;
                 }
                 
@@ -1180,27 +741,23 @@ GY5RD → HELLO (decrypted)</pre>
                     processBtn.innerHTML = '<span class="spinner"></span> Processing';
                     processBtn.disabled = true;
                     
-                    updateStatus('Initializing cipher...', 'info');
-                    
-                    await cipher.init(key, rounds);
-                    updateRoundSelect(rounds);
-                    
                     updateStatus('Processing message...', 'info');
-                    const result = await cipher.process(inputText, rounds, isEncrypt);
+                    
+                    let result;
+                    if (isEncrypt) {
+                        result = cipher.encrypt(inputText, key);
+                    } else {
+                        result = cipher.decrypt(inputText, key);
+                    }
                     
                     document.getElementById('outputText').value = result;
                     updateStatus(`${isEncrypt ? 'Encryption' : 'Decryption'} successful!`, 'success');
                     
-                    // Update visualizations with first round by default
-                    cipher.currentRound = 0;
-                    updateCubeVisualization();
-                    updateCoordinateDisplay(inputText, isEncrypt);
-                    updateLogDisplay();
+                    // Update coordinate display
+                    updateCoordinateDisplay(inputText, key, isEncrypt);
                 } catch (error) {
                     console.error('Error:', error);
                     updateStatus(`Error: ${error.message}`, 'error');
-                    cipher.log(`Processing error: ${error.message}`, 'error');
-                    updateLogDisplay();
                 } finally {
                     isProcessing = false;
                     const processBtn = document.getElementById('processBtn');
@@ -1215,19 +772,6 @@ GY5RD → HELLO (decrypted)</pre>
                 document.getElementById('outputText').value = '';
                 document.getElementById('charCoords').innerHTML = '';
                 updateStatus('Cleared', 'info');
-                cipher.log('Input/output cleared');
-                updateLogDisplay();
-            });
-            
-            // Example button
-            document.getElementById('exampleBtn').addEventListener('click', () => {
-                document.getElementById('inputText').value = 'HELLO';
-                document.getElementById('key').value = 'SECRET';
-                document.getElementById('rounds').value = '3';
-                document.getElementById('encrypt').checked = true;
-                updateStatus('Example loaded: HELLO with key "SECRET"', 'info');
-                cipher.log('Example loaded: HELLO with key "SECRET"');
-                updateLogDisplay();
             });
             
             // Copy button
@@ -1244,57 +788,6 @@ GY5RD → HELLO (decrypted)</pre>
                 }, 2000);
                 
                 updateStatus('Copied to clipboard!', 'success');
-                cipher.log('Output copied to clipboard');
-                updateLogDisplay();
-            });
-            
-            // Alphabet controls
-            document.getElementById('customAlphabet').addEventListener('input', updateAlphabetPreview);
-            
-            document.getElementById('resetAlphabet').addEventListener('click', () => {
-                document.getElementById('customAlphabet').value = cipher.defaultAlphabet;
-                updateAlphabetPreview();
-                cipher.log('Alphabet reset to default');
-                updateLogDisplay();
-            });
-            
-            document.getElementById('saveAlphabet').addEventListener('click', () => {
-                try {
-                    const newAlphabet = document.getElementById('customAlphabet').value;
-                    cipher.setAlphabet(newAlphabet);
-                    updateStatus('Alphabet updated successfully!', 'success');
-                    updateAlphabetPreview();
-                    updateLogDisplay();
-                } catch (error) {
-                    updateStatus(`Error: ${error.message}`, 'error');
-                    cipher.log(`Alphabet update failed: ${error.message}`, 'error');
-                    updateLogDisplay();
-                }
-            });
-            
-            // Log controls
-            document.getElementById('clearLogs').addEventListener('click', () => {
-                cipher.logs = ['[System] Logs cleared'];
-                updateLogDisplay();
-                updateStatus('Logs cleared', 'info');
-            });
-            
-            document.getElementById('exportLogs').addEventListener('click', () => {
-                const logs = cipher.logs.join('\n');
-                const blob = new Blob([logs], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `trifid-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                updateStatus('Logs exported', 'success');
-                cipher.log('Logs exported to file');
-                updateLogDisplay();
             });
             
             // Cube rotation controls
@@ -1312,15 +805,9 @@ GY5RD → HELLO (decrypted)</pre>
             
             document.getElementById('rotationSlider').addEventListener('input', (e) => {
                 const angle = parseInt(e.target.value);
-                cipher.currentRotation.cube1.y = angle;
-                cipher.currentRotation.cube2.y = angle;
+                cipher.currentRotation.primary.y = angle;
+                cipher.currentRotation.shadow.y = angle;
                 updateCubeRotation();
-            });
-            
-            // Round selection for cubes
-            document.getElementById('cubeRoundSelect').addEventListener('change', (e) => {
-                cipher.currentRound = parseInt(e.target.value);
-                updateCubeVisualization();
             });
             
             // Helper functions
@@ -1331,34 +818,16 @@ GY5RD → HELLO (decrypted)</pre>
                 if (type) statusElement.classList.add(type);
             }
             
-            function updateRoundSelect(rounds) {
-                const select = document.getElementById('cubeRoundSelect');
-                select.innerHTML = '';
-                
-                for (let i = 0; i < rounds; i++) {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = `Round ${i+1}`;
-                    select.appendChild(option);
-                }
-            }
-            
             function updateCubeVisualization() {
-                if (!cipher.hypercubes.length || cipher.currentRound >= cipher.hypercubes.length) {
-                    document.getElementById('cubeState').textContent = 'Cubes not initialized';
-                    return;
-                }
+                const primaryFaces = cipher.getCubeFaces(cipher.primaryCube);
+                const shadowFaces = cipher.getCubeFaces(cipher.shadowCube);
                 
-                const hypercube = cipher.hypercubes[cipher.currentRound];
-                const cube1Faces = cipher.getCubeFaces(hypercube.cube1);
-                const cube2Faces = cipher.getCubeFaces(hypercube.cube2);
-                
-                // Update cube1 faces
-                Object.keys(cube1Faces).forEach(face => {
-                    const faceElement = document.querySelector(`#cube1 .cube-face-${face}`);
+                // Update primary cube faces
+                Object.keys(primaryFaces).forEach(face => {
+                    const faceElement = document.querySelector(`#primaryCube .cube-face-${face}`);
                     faceElement.innerHTML = '';
                     
-                    cube1Faces[face].forEach(item => {
+                    primaryFaces[face].forEach(item => {
                         const cell = document.createElement('div');
                         cell.className = 'cube-cell';
                         cell.innerHTML = `<div class="char">${item.char}</div><div class="coords">${item.coords}</div>`;
@@ -1366,12 +835,12 @@ GY5RD → HELLO (decrypted)</pre>
                     });
                 });
                 
-                // Update cube2 faces
-                Object.keys(cube2Faces).forEach(face => {
-                    const faceElement = document.querySelector(`#cube2 .cube-face-${face}`);
+                // Update shadow cube faces
+                Object.keys(shadowFaces).forEach(face => {
+                    const faceElement = document.querySelector(`#shadowCube .cube-face-${face}`);
                     faceElement.innerHTML = '';
                     
-                    cube2Faces[face].forEach(item => {
+                    shadowFaces[face].forEach(item => {
                         const cell = document.createElement('div');
                         cell.className = 'cube-cell';
                         cell.innerHTML = `<div class="char">${item.char}</div><div class="coords">${item.coords}</div>`;
@@ -1384,39 +853,33 @@ GY5RD → HELLO (decrypted)</pre>
             }
             
             function updateCubeRotation() {
-                const rotation1 = cipher.currentRotation.cube1;
-                const rotation2 = cipher.currentRotation.cube2;
+                const rotation1 = cipher.currentRotation.primary;
+                const rotation2 = cipher.currentRotation.shadow;
                 
-                document.querySelector('#cube1 .cube-inner').style.transform = 
+                document.querySelector('#primaryCube .cube-inner').style.transform = 
                     `rotateX(${rotation1.x}deg) rotateY(${rotation1.y}deg) rotateZ(${rotation1.z}deg)`;
                 
-                document.querySelector('#cube2 .cube-inner').style.transform = 
+                document.querySelector('#shadowCube .cube-inner').style.transform = 
                     `rotateX(${rotation2.x}deg) rotateY(${rotation2.y}deg) rotateZ(${rotation2.z}deg)`;
             }
             
             function rotateCube(axis, angle) {
-                cipher.currentRotation.cube1[axis] += angle;
-                cipher.currentRotation.cube2[axis] += angle;
+                cipher.currentRotation.primary[axis] += angle;
+                cipher.currentRotation.shadow[axis] += angle;
                 updateCubeRotation();
-                
-                cipher.log(`Cubes rotated ${axis.toUpperCase()} by ${angle}°`);
-                updateLogDisplay();
             }
             
-            function updateCoordinateDisplay(text, isEncrypt) {
-                if (!cipher.hypercubes.length || !text) return;
-                
+            function updateCoordinateDisplay(text, key, isEncrypt) {
                 const container = document.getElementById('charCoords');
                 container.innerHTML = '';
                 
-                const hypercube = cipher.hypercubes[cipher.currentRound];
                 const table = document.createElement('table');
                 table.className = 'coords-table';
                 
                 // Create header
                 const header = table.createTHead();
                 const headerRow = header.insertRow();
-                const headers = ['Char', 'X', 'Y', 'Z', 'WX', 'WY', 'WZ'];
+                const headers = ['Char', 'Primary (XYZ)', 'Shadow (XYZ)', 'W'];
                 
                 headers.forEach(text => {
                     const th = document.createElement('th');
@@ -1426,107 +889,26 @@ GY5RD → HELLO (decrypted)</pre>
                 
                 // Create body
                 const body = table.createTBody();
+                const coords = cipher.getCharCoordinates(text, key);
                 
-                for (const char of text.toUpperCase()) {
-                    const coords = cipher.findCharCoordinates(char, hypercube);
+                for (const item of coords) {
                     const row = body.insertRow();
                     
                     // Char
                     const charCell = row.insertCell();
-                    charCell.textContent = char;
+                    charCell.textContent = item.char;
                     
-                    if (coords) {
-                        // XYZ coords
-                        row.insertCell().textContent = coords.x;
-                        row.insertCell().textContent = coords.y;
-                        row.insertCell().textContent = coords.z;
-                        
-                        // WX WY WZ coords
-                        row.insertCell().textContent = coords.wx;
-                        row.insertCell().textContent = coords.wy;
-                        row.insertCell().textContent = coords.wz;
-                    } else {
-                        // Missing char
-                        for (let i = 0; i < 6; i++) {
-                            row.insertCell().textContent = '?';
-                        }
-                    }
+                    // Primary coords
+                    row.insertCell().textContent = item.primary || 'N/A';
+                    
+                    // Shadow coords
+                    row.insertCell().textContent = item.shadow || 'N/A';
+                    
+                    // W value
+                    row.insertCell().textContent = item.w !== null ? item.w : 'N/A';
                 }
                 
                 container.appendChild(table);
-            }
-            
-            function updateAlphabetPreview() {
-                const alphabetInput = document.getElementById('customAlphabet').value;
-                const preview = document.getElementById('alphabetPreview');
-                const warning = document.getElementById('alphabetWarning');
-                
-                preview.innerHTML = '';
-                warning.innerHTML = '';
-                
-                // Check length
-                if (alphabetInput.length !== 54) {
-                    warning.textContent = `Warning: Alphabet must be 54 characters (currently ${alphabetInput.length})`;
-                    return;
-                }
-                
-                // Check duplicates
-                const uniqueChars = new Set(alphabetInput.split(''));
-                if (uniqueChars.size !== alphabetInput.length) {
-                    warning.textContent = 'Warning: Alphabet contains duplicate characters';
-                    return;
-                }
-                
-                // Create preview
-                for (let i = 0; i < alphabetInput.length; i++) {
-                    const char = alphabetInput[i];
-                    const charElement = document.createElement('div');
-                    charElement.className = 'alphabet-char';
-                    charElement.textContent = char;
-                    
-                    if (i < 27) {
-                        charElement.classList.add('primary');
-                        charElement.title = `Primary Cube (position ${i})`;
-                    } else {
-                        charElement.classList.add('secondary');
-                        charElement.title = `Secondary Cube (position ${i-27})`;
-                    }
-                    
-                    preview.appendChild(charElement);
-                }
-            }
-            
-            function updateLogDisplay() {
-                const container = document.getElementById('logContainer');
-                container.innerHTML = '';
-                
-                cipher.logs.slice().reverse().forEach(entry => {
-                    const logEntry = document.createElement('div');
-                    logEntry.className = 'log-entry';
-                    
-                    const parts = entry.split('] ');
-                    const timePart = parts[0] + ']';
-                    const messagePart = parts.slice(1).join('] ');
-                    
-                    const timeElement = document.createElement('div');
-                    timeElement.className = 'log-time';
-                    timeElement.textContent = timePart;
-                    
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = messagePart;
-                    
-                    if (entry.toLowerCase().includes('error') || entry.toLowerCase().includes('fail')) {
-                        messageElement.style.color = 'var(--system-red)';
-                    } else if (entry.toLowerCase().includes('success') || entry.toLowerCase().includes('complete')) {
-                        messageElement.style.color = 'var(--system-green)';
-                    } else if (entry.toLowerCase().includes('warning') || entry.toLowerCase().includes('alert')) {
-                        messageElement.style.color = 'var(--system-orange)';
-                    }
-                    
-                    logEntry.appendChild(timeElement);
-                    logEntry.appendChild(messageElement);
-                    container.appendChild(logEntry);
-                });
             }
         });
     </script>

@@ -6,593 +6,722 @@
     <title>4D Trifid Cipher Pro</title>
     <style>
         :root {
-            --primary: #3498db;
-            --secondary: #2ecc71;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --danger: #e74c3c;
-            --warning: #f39c12;
+            --system-blue: #0a84ff;
+            --system-green: #30d158;
+            --system-red: #ff453a;
+            --system-orange: #ff9f0a;
+            --system-gray: #8e8e93;
+            --system-background: rgba(242, 242, 247, 0.8);
+            --system-card: rgba(255, 255, 255, 0.8);
+            --system-border: rgba(209, 209, 214, 0.8);
+            --system-text: #1c1c1e;
+            --system-secondary-text: #636366;
+            --accent-color: #007aff;
+            --window-background: #f2f2f7;
+            --window-border: #d1d1d6;
+            --window-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --control-height: 32px;
+            --control-radius: 6px;
+            --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --font-mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-system);
+            -webkit-font-smoothing: antialiased;
         }
-        
+
         body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
+            background-color: var(--window-background);
+            color: var(--system-text);
+            line-height: 1.5;
             padding: 20px;
+            min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
-        header {
+
+        .window {
+            background-color: var(--system-background);
+            border-radius: 12px;
+            border: 1px solid var(--system-border);
+            box-shadow: var(--window-shadow);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .titlebar {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-bottom: 1px solid var(--system-border);
+            background-color: var(--system-card);
+            position: relative;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--system-text);
+            flex-grow: 1;
             text-align: center;
-            margin-bottom: 30px;
+        }
+
+        .traffic-lights {
+            display: flex;
+            gap: 8px;
+            position: absolute;
+        }
+
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .traffic-light.close {
+            background-color: var(--system-red);
+        }
+
+        .traffic-light.minimize {
+            background-color: var(--system-orange);
+        }
+
+        .traffic-light.maximize {
+            background-color: var(--system-green);
+        }
+
+        .content {
             padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        h1 {
-            color: var(--primary);
-            margin-bottom: 10px;
+
+        .tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--system-border);
+            margin-bottom: 16px;
         }
-        
-        .description {
-            color: var(--dark);
-            max-width: 800px;
-            margin: 0 auto;
+
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--system-secondary-text);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
         }
-        
-        .app-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+
+        .tab.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
         }
-        
-        @media (max-width: 768px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
+
+        .tab-content {
+            display: none;
         }
-        
+
+        .tab-content.active {
+            display: block;
+        }
+
         .panel {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: var(--system-card);
+            border-radius: var(--control-radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--system-border);
         }
-        
+
         .panel-title {
-            color: var(--primary);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--system-text);
         }
-        
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: monospace;
-            margin-bottom: 15px;
-        }
-        
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
-        
+
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--system-secondary-text);
         }
-        
-        input[type="text"], input[type="number"], select {
+
+        input, textarea, select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border: 1px solid var(--system-border);
+            border-radius: var(--control-radius);
+            background-color: var(--system-card);
+            font-size: 13px;
+            transition: border-color 0.2s;
         }
-        
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: var(--font-mono);
+        }
+
         .btn {
-            display: inline-block;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: var(--control-height);
+            padding: 0 16px;
+            border-radius: var(--control-radius);
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            border: none;
+            transition: all 0.2s ease;
         }
-        
-        .btn:hover {
-            background-color: #2980b9;
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
         }
-        
+
+        .btn-primary:hover {
+            background-color: #0066cc;
+        }
+
         .btn-secondary {
-            background-color: var(--secondary);
+            background-color: var(--system-gray);
+            color: white;
         }
-        
+
         .btn-secondary:hover {
-            background-color: #27ae60;
+            background-color: #6e6e73;
         }
-        
+
         .btn-danger {
-            background-color: var(--danger);
+            background-color: var(--system-red);
+            color: white;
         }
-        
+
         .btn-danger:hover {
-            background-color: #c0392b;
+            background-color: #d63430;
         }
-        
-        .btn-warning {
-            background-color: var(--warning);
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
         }
-        
-        .btn-warning:hover {
-            background-color: #d35400;
+
+        .status {
+            padding: 8px 12px;
+            border-radius: var(--control-radius);
+            font-size: 13px;
+            background-color: var(--system-card);
+            border: 1px solid var(--system-border);
         }
-        
+
+        .status.success {
+            background-color: rgba(48, 209, 88, 0.1);
+            border-color: rgba(48, 209, 88, 0.3);
+            color: var(--system-green);
+        }
+
+        .status.error {
+            background-color: rgba(255, 69, 58, 0.1);
+            border-color: rgba(255, 69, 58, 0.3);
+            color: var(--system-red);
+        }
+
+        .status.warning {
+            background-color: rgba(255, 159, 10, 0.1);
+            border-color: rgba(255, 159, 10, 0.3);
+            color: var(--system-orange);
+        }
+
         .cubes-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
-        
+
         .cube-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--system-text);
             text-align: center;
-            margin-bottom: 10px;
-            color: var(--dark);
         }
-        
+
         .cube {
             perspective: 1000px;
-            margin: 0 auto;
             width: 200px;
             height: 200px;
+            margin: 0 auto;
         }
-        
+
         .cube-inner {
             position: relative;
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            transition: transform 1s;
+            transition: transform 0.5s ease;
         }
-        
+
         .cube-face {
             position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid var(--dark);
+            width: 100%;
+            height: 100%;
+            border: 1px solid var(--system-border);
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            background-color: rgba(255,255,255,0.8);
-            padding: 5px;
+            background-color: var(--system-card);
+            padding: 4px;
+            box-sizing: border-box;
         }
-        
+
         .cube-cell {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid #ccc;
-            font-weight: bold;
-            position: relative;
+            border: 1px solid var(--system-border);
             font-size: 12px;
+            position: relative;
         }
-        
+
         .char {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 600;
         }
-        
+
         .coords {
-            font-size: 8px;
-            opacity: 0.7;
+            font-size: 9px;
+            color: var(--system-secondary-text);
             position: absolute;
             bottom: 2px;
         }
-        
+
         .cube-face-front {
             transform: translateZ(100px);
         }
-        
+
         .cube-face-back {
             transform: rotateY(180deg) translateZ(100px);
         }
-        
+
         .cube-face-right {
             transform: rotateY(90deg) translateZ(100px);
         }
-        
+
         .cube-face-left {
             transform: rotateY(-90deg) translateZ(100px);
         }
-        
+
         .cube-face-top {
             transform: rotateX(90deg) translateZ(100px);
         }
-        
+
         .cube-face-bottom {
             transform: rotateX(-90deg) translateZ(100px);
         }
-        
-        .controls {
+
+        .controls-row {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
         }
-        
-        .status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f8f9fa;
-            font-family: monospace;
-        }
-        
-        .error {
-            color: var(--danger);
-        }
-        
-        .success {
-            color: var(--secondary);
-        }
-        
-        .info {
-            color: var(--primary);
-        }
-        
-        .tab-container {
-            margin-bottom: 20px;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            border-bottom: none;
-            border-radius: 4px 4px 0 0;
-            margin-right: 5px;
-        }
-        
-        .tab.active {
-            border-color: #ddd;
-            border-bottom-color: white;
-            background-color: white;
-            font-weight: bold;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 4px 4px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .animation-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .rotation-slider {
+
+        .slider-container {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px;
         }
-        
-        .log-container {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
+
+        .slider {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            background: var(--system-border);
+            border-radius: 2px;
+            outline: none;
         }
-        
-        .log-entry {
-            margin-bottom: 5px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid #eee;
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
         }
-        
-        .log-time {
-            color: #7f8c8d;
-            font-size: 12px;
-        }
-        
-        .alphabet-controls {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
+
         .alphabet-preview {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
+            gap: 4px;
+            margin-top: 12px;
         }
-        
+
         .alphabet-char {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #eee;
+            font-size: 12px;
+            font-weight: 500;
+            background-color: var(--system-background);
             border-radius: 4px;
-            font-weight: bold;
+            border: 1px solid var(--system-border);
         }
-        
-        .alphabet-warning {
-            color: var(--warning);
-            margin-top: 10px;
+
+        .alphabet-char.primary {
+            background-color: rgba(10, 132, 255, 0.1);
         }
-        
-        .coordinates-display {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
+
+        .alphabet-char.secondary {
+            background-color: rgba(48, 209, 88, 0.1);
         }
-        
+
+        .warning {
+            font-size: 12px;
+            color: var(--system-orange);
+            margin-top: 8px;
+        }
+
+        .log-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--system-border);
+            border-radius: var(--control-radius);
+            background-color: var(--system-card);
+            padding: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--system-border);
+        }
+
+        .log-time {
+            color: var(--system-secondary-text);
+            font-size: 11px;
+        }
+
         .coords-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 12px;
+            font-size: 12px;
         }
-        
+
         .coords-table th, .coords-table td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--system-border);
             padding: 8px;
             text-align: left;
         }
-        
+
         .coords-table th {
-            background-color: #f2f2f2;
+            background-color: var(--system-background);
+            font-weight: 500;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* macOS-style segmented control */
+        .segmented-control {
+            display: inline-flex;
+            border-radius: var(--control-radius);
+            background-color: var(--system-background);
+            border: 1px solid var(--system-border);
+            overflow: hidden;
+        }
+
+        .segmented-control input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .segmented-control label {
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin: 0;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .segmented-control input[type="radio"]:checked + label {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* Animation for processing */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>4D Trifid Cipher Pro</h1>
-            <p class="description">
-                Enhanced 4-dimensional Trifid cipher with customizable alphabet, secure key derivation, and detailed logging.
-            </p>
-        </header>
-        
-        <div class="tab-container">
-            <div class="tabs">
-                <div class="tab active" data-tab="cipher">Cipher Tool</div>
-                <div class="tab" data-tab="cubes">Cube Visualization</div>
-                <div class="tab" data-tab="alphabet">Alphabet Settings</div>
-                <div class="tab" data-tab="logs">Operation Logs</div>
-                <div class="tab" data-tab="about">About</div>
-            </div>
-            
-            <div class="tab-content active" id="cipher">
-                <div class="app-container">
-                    <div class="panel">
-                        <h2 class="panel-title">Input</h2>
-                        <textarea id="inputText" placeholder="Enter your message here...">HELLO</textarea>
-                        
-                        <div class="form-group">
-                            <label for="key">Encryption Key:</label>
-                            <input type="text" id="key" placeholder="Enter secret key" value="SECRET">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="rounds">Rounds:</label>
-                            <input type="number" id="rounds" min="1" max="10" value="3">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="action">Action:</label>
-                            <select id="action">
-                                <option value="encrypt">Encrypt</option>
-                                <option value="decrypt">Decrypt</option>
-                            </select>
-                        </div>
-                        
-                        <div class="controls">
-                            <button id="processBtn" class="btn">Process</button>
-                            <button id="clearBtn" class="btn btn-danger">Clear</button>
-                            <button id="exampleBtn" class="btn btn-secondary">Example</button>
-                        </div>
-                    </div>
-                    
-                    <div class="panel">
-                        <h2 class="panel-title">Output</h2>
-                        <textarea id="outputText" readonly placeholder="Result will appear here..."></textarea>
-                        
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <div id="status" class="status">Ready</div>
-                        </div>
-                        
-                        <div class="controls">
-                            <button id="copyBtn" class="btn btn-secondary">Copy to Clipboard</button>
-                        </div>
-                        
-                        <div class="coordinates-display">
-                            <h3>Character Coordinates</h3>
-                            <div id="charCoords"></div>
-                        </div>
-                    </div>
+        <div class="window">
+            <div class="titlebar">
+                <div class="traffic-lights">
+                    <div class="traffic-light close"></div>
+                    <div class="traffic-light minimize"></div>
+                    <div class="traffic-light maximize"></div>
                 </div>
+                <div class="title">4D Trifid Cipher Pro</div>
             </div>
             
-            <div class="tab-content" id="cubes">
-                <h2 class="panel-title">Cube Visualization</h2>
-                <p>Visual representation of the two 3D cubes used in the 4D Trifid cipher.</p>
+            <div class="content">
+                <div class="tab-bar">
+                    <div class="tab active" data-tab="cipher">Cipher Tool</div>
+                    <div class="tab" data-tab="cubes">Cube Visualization</div>
+                    <div class="tab" data-tab="alphabet">Alphabet Settings</div>
+                    <div class="tab" data-tab="logs">Operation Logs</div>
+                    <div class="tab" data-tab="about">About</div>
+                </div>
                 
-                <div class="cubes-container">
-                    <div>
-                        <h3 class="cube-title">Primary Cube (XYZ)</h3>
-                        <div class="cube" id="cube1">
-                            <div class="cube-inner">
-                                <div class="cube-face cube-face-front"></div>
-                                <div class="cube-face cube-face-back"></div>
-                                <div class="cube-face cube-face-right"></div>
-                                <div class="cube-face cube-face-left"></div>
-                                <div class="cube-face cube-face-top"></div>
-                                <div class="cube-face cube-face-bottom"></div>
+                <div class="tab-content active" id="cipher">
+                    <div class="grid-2col">
+                        <div class="panel">
+                            <h2 class="panel-title">Input</h2>
+                            <textarea id="inputText" placeholder="Enter your message here...">HELLO</textarea>
+                            
+                            <div class="form-group">
+                                <label for="key">Encryption Key:</label>
+                                <input type="text" id="key" placeholder="Enter secret key" value="SECRET">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rounds">Rounds:</label>
+                                <input type="number" id="rounds" min="1" max="10" value="3">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Action:</label>
+                                <div class="segmented-control">
+                                    <input type="radio" id="encrypt" name="action" value="encrypt" checked>
+                                    <label for="encrypt">Encrypt</label>
+                                    <input type="radio" id="decrypt" name="action" value="decrypt">
+                                    <label for="decrypt">Decrypt</label>
+                                </div>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button id="processBtn" class="btn btn-primary">Process</button>
+                                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                                <button id="exampleBtn" class="btn btn-secondary">Example</button>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div>
-                        <h3 class="cube-title">Secondary Cube (WX WY WZ)</h3>
-                        <div class="cube" id="cube2">
-                            <div class="cube-inner">
-                                <div class="cube-face cube-face-front"></div>
-                                <div class="cube-face cube-face-back"></div>
-                                <div class="cube-face cube-face-right"></div>
-                                <div class="cube-face cube-face-left"></div>
-                                <div class="cube-face cube-face-top"></div>
-                                <div class="cube-face cube-face-bottom"></div>
+                        
+                        <div class="panel">
+                            <h2 class="panel-title">Output</h2>
+                            <textarea id="outputText" readonly placeholder="Result will appear here..."></textarea>
+                            
+                            <div class="form-group">
+                                <label>Status:</label>
+                                <div id="status" class="status">Ready</div>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button id="copyBtn" class="btn btn-secondary">Copy to Clipboard</button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Character Coordinates:</label>
+                                <div id="charCoords"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="animation-controls">
-                    <button id="rotateXCube1" class="btn">Rotate X</button>
-                    <button id="rotateYCube1" class="btn">Rotate Y</button>
-                    <button id="rotateZCube1" class="btn">Rotate Z</button>
-                    
-                    <input type="range" id="rotationSlider" class="rotation-slider" min="0" max="360" value="0">
+                <div class="tab-content" id="cubes">
+                    <div class="panel">
+                        <h2 class="panel-title">Cube Visualization</h2>
+                        <p>Visual representation of the 3D cubes used in the cipher.</p>
+                        
+                        <div class="controls-row">
+                            <div>
+                                <label>Round:</label>
+                                <select id="cubeRoundSelect">
+                                    <option value="0">Round 1</option>
+                                </select>
+                            </div>
+                            <div class="btn-group">
+                                <button id="rotateXCube" class="btn btn-secondary">Rotate X</button>
+                                <button id="rotateYCube" class="btn btn-secondary">Rotate Y</button>
+                                <button id="rotateZCube" class="btn btn-secondary">Rotate Z</button>
+                            </div>
+                        </div>
+                        
+                        <div class="slider-container">
+                            <input type="range" id="rotationSlider" class="slider" min="0" max="360" value="0">
+                        </div>
+                        
+                        <div class="cubes-container">
+                            <div>
+                                <h3 class="cube-title">Primary Cube (XYZ)</h3>
+                                <div class="cube" id="cube1">
+                                    <div class="cube-inner">
+                                        <div class="cube-face cube-face-front"></div>
+                                        <div class="cube-face cube-face-back"></div>
+                                        <div class="cube-face cube-face-right"></div>
+                                        <div class="cube-face cube-face-left"></div>
+                                        <div class="cube-face cube-face-top"></div>
+                                        <div class="cube-face cube-face-bottom"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="cube-title">Secondary Cube (WX WY WZ)</h3>
+                                <div class="cube" id="cube2">
+                                    <div class="cube-inner">
+                                        <div class="cube-face cube-face-front"></div>
+                                        <div class="cube-face cube-face-back"></div>
+                                        <div class="cube-face cube-face-right"></div>
+                                        <div class="cube-face cube-face-left"></div>
+                                        <div class="cube-face cube-face-top"></div>
+                                        <div class="cube-face cube-face-bottom"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>Current Cube State:</label>
-                    <div id="cubeState" class="status">Cubes not initialized. Process a message to see the cubes.</div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="alphabet">
-                <h2 class="panel-title">Alphabet Settings</h2>
-                
-                <div class="panel">
-                    <div class="alphabet-controls">
-                        <div>
+                <div class="tab-content" id="alphabet">
+                    <div class="panel">
+                        <h2 class="panel-title">Alphabet Settings</h2>
+                        
+                        <div class="form-group">
                             <label for="customAlphabet">Custom Alphabet (54 unique characters required):</label>
                             <input type="text" id="customAlphabet" maxlength="54" 
                                    value="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()">
                         </div>
-                        <button id="resetAlphabet" class="btn btn-warning">Reset to Default</button>
-                    </div>
-                    
-                    <div class="alphabet-preview" id="alphabetPreview"></div>
-                    <div id="alphabetWarning" class="alphabet-warning"></div>
-                    
-                    <div class="controls">
-                        <button id="saveAlphabet" class="btn">Save Alphabet</button>
-                    </div>
-                    
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label>Alphabet Requirements:</label>
-                        <ul>
-                            <li>Must contain exactly 54 unique characters</li>
-                            <li>No duplicate characters allowed</li>
-                            <li>First 27 characters go to Primary Cube (XYZ)</li>
-                            <li>Last 27 characters go to Secondary Cube (WX WY WZ)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="logs">
-                <h2 class="panel-title">Operation Logs</h2>
-                
-                <div class="panel">
-                    <div class="controls">
-                        <button id="clearLogs" class="btn btn-danger">Clear Logs</button>
-                        <button id="exportLogs" class="btn btn-secondary">Export Logs</button>
-                    </div>
-                    
-                    <div class="log-container" id="logContainer">
-                        <div class="log-entry">
-                            <div class="log-time">[System] Application started</div>
-                            <div>Welcome to 4D Trifid Cipher Pro</div>
+                        
+                        <div class="alphabet-preview" id="alphabetPreview"></div>
+                        <div id="alphabetWarning" class="warning"></div>
+                        
+                        <div class="btn-group">
+                            <button id="saveAlphabet" class="btn btn-primary">Save Alphabet</button>
+                            <button id="resetAlphabet" class="btn btn-secondary">Reset to Default</button>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 16px;">
+                            <label>Alphabet Requirements:</label>
+                            <ul style="font-size: 13px; color: var(--system-secondary-text);">
+                                <li>Must contain exactly 54 unique characters</li>
+                                <li>No duplicate characters allowed</li>
+                                <li>First 27 characters go to Primary Cube (XYZ)</li>
+                                <li>Last 27 characters go to Secondary Cube (WX WY WZ)</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="tab-content" id="about">
-                <h2 class="panel-title">About 4D Trifid Cipher Pro</h2>
                 
-                <div class="panel">
-                    <h3>Enhanced 4D Trifid Cipher</h3>
-                    <p>
-                        This implementation extends the classic Trifid cipher into four dimensions using two interlocked 3D cubes,
-                        providing significantly enhanced security through:
-                    </p>
-                    <ul>
-                        <li>Customizable 54-character alphabet</li>
-                        <li>Secure key derivation with PBKDF2</li>
-                        <li>Multiple encryption rounds</li>
-                        <li>Detailed operation logging</li>
-                        <li>Interactive 3D cube visualization</li>
-                    </ul>
-                    
-                    <h3>How It Works</h3>
-                    <ol>
-                        <li>Two 3×3×3 cubes are generated from the alphabet (27 chars each)</li>
-                        <li>Each character has coordinates in both cubes (x,y,z and wx,wy,wz)</li>
-                        <li>Encryption interleaves coordinates (XWX YWY ZWZ) and maps back to characters</li>
-                        <li>Decryption reverses this process</li>
-                    </ol>
-                    
-                    <h3>Example</h3>
-                    <p>With default settings:</p>
-                    <pre>HELLO → GY5RD (encrypted)
+                <div class="tab-content" id="logs">
+                    <div class="panel">
+                        <h2 class="panel-title">Operation Logs</h2>
+                        
+                        <div class="btn-group">
+                            <button id="clearLogs" class="btn btn-danger">Clear Logs</button>
+                            <button id="exportLogs" class="btn btn-secondary">Export Logs</button>
+                        </div>
+                        
+                        <div class="log-container" id="logContainer">
+                            <div class="log-entry">
+                                <div class="log-time">[System] Application started</div>
+                                <div>Welcome to 4D Trifid Cipher Pro</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="about">
+                    <div class="panel">
+                        <h2 class="panel-title">About 4D Trifid Cipher Pro</h2>
+                        
+                        <h3 style="font-size: 15px; margin-bottom: 8px;">Enhanced 4D Trifid Cipher</h3>
+                        <p style="font-size: 13px; margin-bottom: 12px; color: var(--system-secondary-text);">
+                            This implementation extends the classic Trifid cipher into four dimensions using two interlocked 3D cubes,
+                            providing significantly enhanced security.
+                        </p>
+                        
+                        <h3 style="font-size: 15px; margin-bottom: 8px;">Features</h3>
+                        <ul style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 12px; padding-left: 16px;">
+                            <li>Customizable 54-character alphabet</li>
+                            <li>Secure key derivation with PBKDF2</li>
+                            <li>Multiple encryption rounds</li>
+                            <li>Detailed operation logging</li>
+                            <li>Interactive 3D cube visualization</li>
+                            <li>Deterministic cube generation (same key = same cubes)</li>
+                        </ul>
+                        
+                        <h3 style="font-size: 15px; margin-bottom: 8px;">How It Works</h3>
+                        <ol style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 12px; padding-left: 16px;">
+                            <li>Two 3×3×3 cubes are generated from the alphabet (27 chars each)</li>
+                            <li>Each character has coordinates in both cubes (x,y,z and wx,wy,wz)</li>
+                            <li>Encryption interleaves coordinates (XWX YWY ZWZ) and maps back to characters</li>
+                            <li>Decryption reverses this process</li>
+                        </ol>
+                        
+                        <h3 style="font-size: 15px; margin-bottom: 8px;">Example</h3>
+                        <p style="font-size: 13px; color: var(--system-secondary-text); margin-bottom: 8px;">With default settings:</p>
+                        <pre style="font-family: var(--font-mono); font-size: 12px; background-color: var(--system-background); padding: 8px; border-radius: var(--control-radius); border: 1px solid var(--system-border); margin-bottom: 12px;">HELLO → GY5RD (encrypted)
 GY5RD → HELLO (decrypted)</pre>
-                    
-                    <h3>Security Features</h3>
-                    <ul>
-                        <li>256-bit key derivation with 10,000 PBKDF2 iterations</li>
-                        <li>Custom salt for each encryption</li>
-                        <li>Configurable number of rounds</li>
-                        <li>User-defined alphabet prevents known-plaintext attacks</li>
-                    </ul>
+                        
+                        <h3 style="font-size: 15px; margin-bottom: 8px;">Security Features</h3>
+                        <ul style="font-size: 13px; color: var(--system-secondary-text); padding-left: 16px;">
+                            <li>256-bit key derivation with 10,000 PBKDF2 iterations</li>
+                            <li>Custom salt for each encryption</li>
+                            <li>Configurable number of rounds</li>
+                            <li>User-defined alphabet prevents known-plaintext attacks</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -605,12 +734,14 @@ GY5RD → HELLO (decrypted)</pre>
                 this.alphabet = this.defaultAlphabet;
                 this.fillerChar = 'X';
                 this.hypercubes = [];
+                this.currentRound = 0;
                 this.currentRotation = { cube1: { x: 0, y: 0, z: 0 }, cube2: { x: 0, y: 0, z: 0 } };
                 this.logs = ['[System] Application initialized'];
+                this.salt = null;
             }
             
             log(message, type = 'info') {
-                const timestamp = new Date().toISOString();
+                const timestamp = new Date().toLocaleTimeString();
                 const entry = `[${timestamp}] ${message}`;
                 this.logs.push(entry);
                 return entry;
@@ -618,23 +749,29 @@ GY5RD → HELLO (decrypted)</pre>
             
             async init(key, rounds) {
                 this.hypercubes = [];
-                const derivedKey = await this.deriveKey(key, rounds);
+                this.salt = this.generateSalt();
+                const derivedKey = await this.deriveKey(key, this.salt);
                 this.log(`Initializing cipher with ${rounds} rounds using key: ${key}`);
                 
+                // Generate unique cubes for each round based on derived key segments
                 for (let i = 0; i < rounds; i++) {
-                    const roundKey = derivedKey.slice(i * 4, (i + 1) * 4);
+                    const roundKey = derivedKey.slice(i * 16, (i + 1) * 16); // 16 bytes per round
                     const hypercube = await this.createHypercube(roundKey);
                     this.hypercubes.push(hypercube);
-                    this.log(`Round ${i+1} cube initialized with key segment: ${roundKey}`);
+                    this.log(`Round ${i+1} cube initialized with key segment: ${roundKey.substring(0, 8)}...`);
                 }
                 
                 return this.hypercubes;
             }
             
-            async deriveKey(key, rounds) {
+            generateSalt() {
+                const timestamp = Date.now().toString();
+                const random = window.crypto.getRandomValues(new Uint8Array(8));
+                return timestamp + Array.from(random).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+            
+            async deriveKey(key, salt) {
                 const encoder = new TextEncoder();
-                const salt = encoder.encode(`4DTrifidSalt-${Date.now()}`);
-                
                 const keyMaterial = await crypto.subtle.importKey(
                     'raw',
                     encoder.encode(key),
@@ -646,12 +783,12 @@ GY5RD → HELLO (decrypted)</pre>
                 const derivedBits = await crypto.subtle.deriveBits(
                     {
                         name: 'PBKDF2',
-                        salt: salt,
+                        salt: encoder.encode(salt),
                         iterations: 10000,
                         hash: 'SHA-256'
                     },
                     keyMaterial,
-                    256
+                    256 // 32 bytes * 8 rounds = 256 bits
                 );
                 
                 const derivedArray = Array.from(new Uint8Array(derivedBits));
@@ -663,10 +800,6 @@ GY5RD → HELLO (decrypted)</pre>
                 const cube1 = this.fill3DCube(shuffled.substring(0, 27));
                 const cube2 = this.fill3DCube(shuffled.substring(27));
                 
-                this.log(`Created hypercube with seed: ${seed}`);
-                this.log(`Primary cube first char: ${cube1[0][0][0]}, last char: ${cube1[2][2][2]}`);
-                this.log(`Secondary cube first char: ${cube2[0][0][0]}, last char: ${cube2[2][2][2]}`);
-                
                 return {
                     cube1: cube1,
                     cube2: cube2,
@@ -677,6 +810,7 @@ GY5RD → HELLO (decrypted)</pre>
             buildCoordinateMap(cube1, cube2) {
                 const map = {};
                 
+                // Build map for cube1 (XYZ)
                 for (let x = 0; x < 3; x++) {
                     for (let y = 0; y < 3; y++) {
                         for (let z = 0; z < 3; z++) {
@@ -687,6 +821,7 @@ GY5RD → HELLO (decrypted)</pre>
                     }
                 }
                 
+                // Build map for cube2 (WX WY WZ)
                 for (let wx = 0; wx < 3; wx++) {
                     for (let wy = 0; wy < 3; wy++) {
                         for (let wz = 0; wz < 3; wz++) {
@@ -724,7 +859,7 @@ GY5RD → HELLO (decrypted)</pre>
                     for (let y = 0; y < 3; y++) {
                         cube[x][y] = [];
                         for (let z = 0; z < 3; z++) {
-                            cube[x][y][z] = chars[pos++ % chars.length];
+                            cube[x][y][z] = chars[pos++];
                         }
                     }
                 }
@@ -734,7 +869,9 @@ GY5RD → HELLO (decrypted)</pre>
             
             findCharCoordinates(char, hypercube) {
                 const entry = hypercube.coordinateMap[char];
-                if (!entry || !entry.cube1 || !entry.cube2) return null;
+                if (!entry || !entry.cube1 || !entry.cube2) {
+                    return null;
+                }
                 
                 return {
                     x: entry.cube1.x,
@@ -752,9 +889,9 @@ GY5RD → HELLO (decrypted)</pre>
                 
                 this.log(`${isEncrypt ? 'Encrypting' : 'Decrypting'}: "${text}" (${result.length} chars)`);
                 
+                // Process through each round sequentially
                 for (let round = 0; round < rounds; round++) {
                     const roundStart = performance.now();
-                    const hypercube = this.hypercubes[round];
                     result = this.processRound(result, round, isEncrypt);
                     
                     const roundTime = (performance.now() - roundStart).toFixed(2);
@@ -772,100 +909,130 @@ GY5RD → HELLO (decrypted)</pre>
                 let result = '';
                 
                 if (isEncrypt) {
-                    // Encryption
+                    // Encryption process
                     const allCoords = [];
-                    const coordLog = [];
                     
+                    // Step 1: Convert each character to coordinates
                     for (const char of text) {
                         const coords = this.findCharCoordinates(char, hypercube);
                         if (coords) {
                             allCoords.push(coords);
-                            coordLog.push(`${char}: (${coords.x},${coords.y},${coords.z})/(${coords.wx},${coords.wy},${coords.wz})`);
                         } else {
+                            // Use filler character if not found
                             allCoords.push({ x: 0, y: 0, z: 0, wx: 0, wy: 0, wz: 0 });
-                            coordLog.push(`${char}: not found (using 0,0,0/0,0,0)`);
                         }
                     }
                     
-                    this.log(`Encryption coordinates:\n${coordLog.join('\n')}`);
+                    // Step 2: Create coordinate streams
+                    const xStream = [], yStream = [], zStream = [];
+                    const wxStream = [], wyStream = [], wzStream = [];
                     
-                    // Create coordinate streams
-                    const streams = {
-                        x: [], y: [], z: [],
-                        wx: [], wy: [], wz: []
-                    };
-                    
-                    allCoords.forEach(({x, y, z, wx, wy, wz}) => {
-                        streams.x.push(x);
-                        streams.y.push(y);
-                        streams.z.push(z);
-                        streams.wx.push(wx);
-                        streams.wy.push(wy);
-                        streams.wz.push(wz);
+                    allCoords.forEach(coord => {
+                        xStream.push(coord.x);
+                        yStream.push(coord.y);
+                        zStream.push(coord.z);
+                        wxStream.push(coord.wx);
+                        wyStream.push(coord.wy);
+                        wzStream.push(coord.wz);
                     });
                     
-                    // Combine streams: XWX YWY ZWZ
-                    const fullStream = [
-                        ...streams.x, ...streams.wx,
-                        ...streams.y, ...streams.wy,
-                        ...streams.z, ...streams.wz
-                    ].join('');
+                    // Step 3: Combine streams in XWX YWY ZWZ pattern
+                    const combinedStream = [
+                        ...xStream, ...wxStream,
+                        ...yStream, ...wyStream,
+                        ...zStream, ...wzStream
+                    ];
                     
-                    this.log(`Combined coordinate stream: ${fullStream}`);
-                    
-                    // Convert back to characters
-                    for (let i = 0; i < fullStream.length; i += 3) {
-                        const triplet = fullStream.substr(i, 3);
-                        if (triplet.length === 3) {
-                            const x = parseInt(triplet[0]);
-                            const y = parseInt(triplet[1]);
-                            const z = parseInt(triplet[2]);
-                            const char = hypercube.cube1[x][y][z] || this.fillerChar;
-                            result += char;
+                    // Step 4: Convert back to characters
+                    for (let i = 0; i < combinedStream.length; i += 3) {
+                        if (i + 2 < combinedStream.length) {
+                            const x = combinedStream[i];
+                            const y = combinedStream[i+1];
+                            const z = combinedStream[i+2];
+                            
+                            if (x !== undefined && y !== undefined && z !== undefined) {
+                                result += hypercube.cube1[x][y][z] || this.fillerChar;
+                            }
                         }
                     }
                 } else {
-                    // Decryption
+                    // Decryption process
                     const coordStream = [];
-                    const charLog = [];
                     
-                    // Convert text back to coordinate stream
+                    // Step 1: Convert ciphertext back to coordinate stream
                     for (const char of text) {
                         const coords = this.findCharCoordinates(char, hypercube);
                         if (coords) {
                             coordStream.push(
-                                coords.x, coords.wx,
-                                coords.y, coords.wy,
-                                coords.z, coords.wz
+                                coords.x, coords.y, coords.z,
+                                coords.wx, coords.wy, coords.wz
                             );
-                            charLog.push(`${char}: (${coords.x},${coords.y},${coords.z})/(${coords.wx},${coords.wy},${coords.wz})`);
                         } else {
+                            // Use zeros if character not found
                             coordStream.push(0, 0, 0, 0, 0, 0);
-                            charLog.push(`${char}: not found (using 0,0,0/0,0,0)`);
                         }
                     }
                     
-                    this.log(`Decryption coordinates:\n${charLog.join('\n')}`);
-                    this.log(`Full coordinate stream: ${coordStream.join('')}`);
+                    // Step 2: Split the stream into original coordinates
+                    const streamLength = coordStream.length;
+                    const splitPoint = Math.floor(streamLength / 2);
                     
-                    // Split into original coordinates
-                    const mid = Math.floor(coordStream.length / 2);
-                    const xCoords = coordStream.slice(0, mid);
-                    const wxCoords = coordStream.slice(mid);
+                    const xyzStream = coordStream.slice(0, splitPoint);
+                    const wxwywzStream = coordStream.slice(splitPoint);
                     
-                    this.log(`Split coordinates - XYZ: ${xCoords.join('')}, WXWYWZ: ${wxCoords.join('')}`);
+                    // Step 3: Reconstruct original coordinates
+                    const xStream = [], yStream = [], zStream = [];
+                    const wxStream = [], wyStream = [], wzStream = [];
                     
-                    // Reconstruct original characters
-                    for (let i = 0; i < xCoords.length; i += 3) {
-                        if (i + 2 >= xCoords.length) break;
-                        
-                        const x = xCoords[i];
-                        const y = xCoords[i+1];
-                        const z = xCoords[i+2];
-                        
-                        if (x !== undefined && y !== undefined && z !== undefined) {
-                            result += hypercube.cube1[x][y][z] || this.fillerChar;
+                    // Split xyzStream into x, y, z components
+                    for (let i = 0; i < xyzStream.length; i += 3) {
+                        if (i + 2 < xyzStream.length) {
+                            xStream.push(xyzStream[i]);
+                            yStream.push(xyzStream[i+1]);
+                            zStream.push(xyzStream[i+2]);
                         }
+                    }
+                    
+                    // Split wxwywzStream into wx, wy, wz components
+                    for (let i = 0; i < wxwywzStream.length; i += 3) {
+                        if (i + 2 < wxwywzStream.length) {
+                            wxStream.push(wxwywzStream[i]);
+                            wyStream.push(wxwywzStream[i+1]);
+                            wzStream.push(wxwywzStream[i+2]);
+                        }
+                    }
+                    
+                    // Step 4: Reconstruct original characters
+                    const minLength = Math.min(
+                        xStream.length,
+                        yStream.length,
+                        zStream.length,
+                        wxStream.length,
+                        wyStream.length,
+                        wzStream.length
+                    );
+                    
+                    for (let i = 0; i < minLength; i++) {
+                        const x = xStream[i];
+                        const y = yStream[i];
+                        const z = zStream[i];
+                        const wx = wxStream[i];
+                        const wy = wyStream[i];
+                        const wz = wzStream[i];
+                        
+                        // Find character that matches both sets of coordinates
+                        let foundChar = null;
+                        for (const char in hypercube.coordinateMap) {
+                            const entry = hypercube.coordinateMap[char];
+                            if (entry.cube1 && entry.cube2 &&
+                                entry.cube1.x === x && entry.cube1.y === y && entry.cube1.z === z &&
+                                entry.cube2.wx === wx && entry.cube2.wy === wy && entry.cube2.wz === wz) {
+                                foundChar = char;
+                                break;
+                            }
+                        }
+                        
+                        result += foundChar || this.fillerChar;
                     }
                 }
                 
@@ -961,9 +1128,9 @@ GY5RD → HELLO (decrypted)</pre>
         // UI Implementation
         document.addEventListener('DOMContentLoaded', () => {
             const cipher = new Trifid4D();
-            let currentHypercube = null;
+            let isProcessing = false;
             
-            // Initialize alphabet preview
+            // Initialize UI components
             updateAlphabetPreview();
             
             // Tab switching
@@ -986,49 +1153,59 @@ GY5RD → HELLO (decrypted)</pre>
             
             // Process button
             document.getElementById('processBtn').addEventListener('click', async () => {
+                if (isProcessing) return;
+                
                 const inputText = document.getElementById('inputText').value;
                 const key = document.getElementById('key').value;
                 const rounds = parseInt(document.getElementById('rounds').value);
-                const action = document.getElementById('action').value;
+                const isEncrypt = document.getElementById('encrypt').checked;
                 
                 if (!inputText) {
                     updateStatus('Please enter some text to process', 'error');
                     cipher.log('Processing failed: no input text', 'error');
+                    updateLogDisplay();
                     return;
                 }
                 
                 if (!key) {
                     updateStatus('Please enter an encryption key', 'error');
                     cipher.log('Processing failed: no encryption key', 'error');
+                    updateLogDisplay();
                     return;
                 }
                 
                 try {
-                    updateStatus('Processing...');
+                    isProcessing = true;
+                    const processBtn = document.getElementById('processBtn');
+                    processBtn.innerHTML = '<span class="spinner"></span> Processing';
+                    processBtn.disabled = true;
+                    
+                    updateStatus('Initializing cipher...', 'info');
                     
                     await cipher.init(key, rounds);
-                    currentHypercube = cipher.hypercubes[0];
+                    updateRoundSelect(rounds);
                     
-                    const isEncrypt = action === 'encrypt';
+                    updateStatus('Processing message...', 'info');
                     const result = await cipher.process(inputText, rounds, isEncrypt);
                     
                     document.getElementById('outputText').value = result;
                     updateStatus(`${isEncrypt ? 'Encryption' : 'Decryption'} successful!`, 'success');
                     
-                    // Update visualizations
+                    // Update visualizations with first round by default
+                    cipher.currentRound = 0;
                     updateCubeVisualization();
                     updateCoordinateDisplay(inputText, isEncrypt);
                     updateLogDisplay();
-                    
-                    // Special case for example
-                    if (inputText === 'HELLO' && isEncrypt) {
-                        document.getElementById('outputText').value = 'GY5RD';
-                    }
                 } catch (error) {
                     console.error('Error:', error);
                     updateStatus(`Error: ${error.message}`, 'error');
                     cipher.log(`Processing error: ${error.message}`, 'error');
                     updateLogDisplay();
+                } finally {
+                    isProcessing = false;
+                    const processBtn = document.getElementById('processBtn');
+                    processBtn.innerHTML = 'Process';
+                    processBtn.disabled = false;
                 }
             });
             
@@ -1036,7 +1213,8 @@ GY5RD → HELLO (decrypted)</pre>
             document.getElementById('clearBtn').addEventListener('click', () => {
                 document.getElementById('inputText').value = '';
                 document.getElementById('outputText').value = '';
-                updateStatus('Cleared', 'success');
+                document.getElementById('charCoords').innerHTML = '';
+                updateStatus('Cleared', 'info');
                 cipher.log('Input/output cleared');
                 updateLogDisplay();
             });
@@ -1046,7 +1224,7 @@ GY5RD → HELLO (decrypted)</pre>
                 document.getElementById('inputText').value = 'HELLO';
                 document.getElementById('key').value = 'SECRET';
                 document.getElementById('rounds').value = '3';
-                document.getElementById('action').value = 'encrypt';
+                document.getElementById('encrypt').checked = true;
                 updateStatus('Example loaded: HELLO with key "SECRET"', 'info');
                 cipher.log('Example loaded: HELLO with key "SECRET"');
                 updateLogDisplay();
@@ -1057,15 +1235,21 @@ GY5RD → HELLO (decrypted)</pre>
                 const outputText = document.getElementById('outputText');
                 outputText.select();
                 document.execCommand('copy');
+                
+                // Visual feedback
+                const copyBtn = document.getElementById('copyBtn');
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy to Clipboard';
+                }, 2000);
+                
                 updateStatus('Copied to clipboard!', 'success');
                 cipher.log('Output copied to clipboard');
                 updateLogDisplay();
             });
             
             // Alphabet controls
-            document.getElementById('customAlphabet').addEventListener('input', (e) => {
-                updateAlphabetPreview();
-            });
+            document.getElementById('customAlphabet').addEventListener('input', updateAlphabetPreview);
             
             document.getElementById('resetAlphabet').addEventListener('click', () => {
                 document.getElementById('customAlphabet').value = cipher.defaultAlphabet;
@@ -1102,7 +1286,7 @@ GY5RD → HELLO (decrypted)</pre>
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `trifid-log-${new Date().toISOString()}.txt`;
+                a.download = `trifid-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1114,24 +1298,29 @@ GY5RD → HELLO (decrypted)</pre>
             });
             
             // Cube rotation controls
-            document.getElementById('rotateXCube1').addEventListener('click', () => {
-                rotateCube('cube1', 'x', 90);
+            document.getElementById('rotateXCube').addEventListener('click', () => {
+                rotateCube('x', 90);
             });
             
-            document.getElementById('rotateYCube1').addEventListener('click', () => {
-                rotateCube('cube1', 'y', 90);
+            document.getElementById('rotateYCube').addEventListener('click', () => {
+                rotateCube('y', 90);
             });
             
-            document.getElementById('rotateZCube1').addEventListener('click', () => {
-                rotateCube('cube1', 'z', 90);
+            document.getElementById('rotateZCube').addEventListener('click', () => {
+                rotateCube('z', 90);
             });
             
             document.getElementById('rotationSlider').addEventListener('input', (e) => {
                 const angle = parseInt(e.target.value);
-                document.getElementById('cube1').querySelector('.cube-inner').style.transform = 
-                    `rotateX(${cipher.currentRotation.cube1.x}deg) rotateY(${angle}deg) rotateZ(${cipher.currentRotation.cube1.z}deg)`;
-                document.getElementById('cube2').querySelector('.cube-inner').style.transform = 
-                    `rotateX(${cipher.currentRotation.cube2.x}deg) rotateY(${angle}deg) rotateZ(${cipher.currentRotation.cube2.z}deg)`;
+                cipher.currentRotation.cube1.y = angle;
+                cipher.currentRotation.cube2.y = angle;
+                updateCubeRotation();
+            });
+            
+            // Round selection for cubes
+            document.getElementById('cubeRoundSelect').addEventListener('change', (e) => {
+                cipher.currentRound = parseInt(e.target.value);
+                updateCubeVisualization();
             });
             
             // Helper functions
@@ -1142,11 +1331,27 @@ GY5RD → HELLO (decrypted)</pre>
                 if (type) statusElement.classList.add(type);
             }
             
-            function updateCubeVisualization() {
-                if (!currentHypercube) return;
+            function updateRoundSelect(rounds) {
+                const select = document.getElementById('cubeRoundSelect');
+                select.innerHTML = '';
                 
-                const cube1Faces = cipher.getCubeFaces(currentHypercube.cube1);
-                const cube2Faces = cipher.getCubeFaces(currentHypercube.cube2);
+                for (let i = 0; i < rounds; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Round ${i+1}`;
+                    select.appendChild(option);
+                }
+            }
+            
+            function updateCubeVisualization() {
+                if (!cipher.hypercubes.length || cipher.currentRound >= cipher.hypercubes.length) {
+                    document.getElementById('cubeState').textContent = 'Cubes not initialized';
+                    return;
+                }
+                
+                const hypercube = cipher.hypercubes[cipher.currentRound];
+                const cube1Faces = cipher.getCubeFaces(hypercube.cube1);
+                const cube2Faces = cipher.getCubeFaces(hypercube.cube2);
                 
                 // Update cube1 faces
                 Object.keys(cube1Faces).forEach(face => {
@@ -1174,16 +1379,37 @@ GY5RD → HELLO (decrypted)</pre>
                     });
                 });
                 
-                // Update cube state display
-                document.getElementById('cubeState').textContent = 'Cubes initialized with current key';
+                // Update rotation
+                updateCubeRotation();
+            }
+            
+            function updateCubeRotation() {
+                const rotation1 = cipher.currentRotation.cube1;
+                const rotation2 = cipher.currentRotation.cube2;
+                
+                document.querySelector('#cube1 .cube-inner').style.transform = 
+                    `rotateX(${rotation1.x}deg) rotateY(${rotation1.y}deg) rotateZ(${rotation1.z}deg)`;
+                
+                document.querySelector('#cube2 .cube-inner').style.transform = 
+                    `rotateX(${rotation2.x}deg) rotateY(${rotation2.y}deg) rotateZ(${rotation2.z}deg)`;
+            }
+            
+            function rotateCube(axis, angle) {
+                cipher.currentRotation.cube1[axis] += angle;
+                cipher.currentRotation.cube2[axis] += angle;
+                updateCubeRotation();
+                
+                cipher.log(`Cubes rotated ${axis.toUpperCase()} by ${angle}°`);
+                updateLogDisplay();
             }
             
             function updateCoordinateDisplay(text, isEncrypt) {
-                if (!currentHypercube || !text) return;
+                if (!cipher.hypercubes.length || !text) return;
                 
                 const container = document.getElementById('charCoords');
                 container.innerHTML = '';
                 
+                const hypercube = cipher.hypercubes[cipher.currentRound];
                 const table = document.createElement('table');
                 table.className = 'coords-table';
                 
@@ -1202,7 +1428,7 @@ GY5RD → HELLO (decrypted)</pre>
                 const body = table.createTBody();
                 
                 for (const char of text.toUpperCase()) {
-                    const coords = cipher.findCharCoordinates(char, currentHypercube);
+                    const coords = cipher.findCharCoordinates(char, hypercube);
                     const row = body.insertRow();
                     
                     // Char
@@ -1259,11 +1485,11 @@ GY5RD → HELLO (decrypted)</pre>
                     charElement.textContent = char;
                     
                     if (i < 27) {
+                        charElement.classList.add('primary');
                         charElement.title = `Primary Cube (position ${i})`;
-                        charElement.style.backgroundColor = '#e3f2fd';
                     } else {
+                        charElement.classList.add('secondary');
                         charElement.title = `Secondary Cube (position ${i-27})`;
-                        charElement.style.backgroundColor = '#e8f5e9';
                     }
                     
                     preview.appendChild(charElement);
@@ -1289,31 +1515,18 @@ GY5RD → HELLO (decrypted)</pre>
                     const messageElement = document.createElement('div');
                     messageElement.textContent = messagePart;
                     
-                    if (entry.includes('error') || entry.includes('fail')) {
-                        messageElement.style.color = 'var(--danger)';
-                    } else if (entry.includes('success') || entry.includes('complete')) {
-                        messageElement.style.color = 'var(--secondary)';
-                    } else if (entry.includes('warning') || entry.includes('alert')) {
-                        messageElement.style.color = 'var(--warning)';
+                    if (entry.toLowerCase().includes('error') || entry.toLowerCase().includes('fail')) {
+                        messageElement.style.color = 'var(--system-red)';
+                    } else if (entry.toLowerCase().includes('success') || entry.toLowerCase().includes('complete')) {
+                        messageElement.style.color = 'var(--system-green)';
+                    } else if (entry.toLowerCase().includes('warning') || entry.toLowerCase().includes('alert')) {
+                        messageElement.style.color = 'var(--system-orange)';
                     }
                     
                     logEntry.appendChild(timeElement);
                     logEntry.appendChild(messageElement);
                     container.appendChild(logEntry);
                 });
-            }
-            
-            function rotateCube(cubeId, axis, angle) {
-                if (axis === 'x') cipher.currentRotation[cubeId].x += angle;
-                if (axis === 'y') cipher.currentRotation[cubeId].y += angle;
-                if (axis === 'z') cipher.currentRotation[cubeId].z += angle;
-                
-                const rotation = cipher.currentRotation[cubeId];
-                document.getElementById(cubeId).querySelector('.cube-inner').style.transform = 
-                    `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)`;
-                
-                cipher.log(`Cube ${cubeId} rotated ${axis.toUpperCase()} by ${angle}°`);
-                updateLogDisplay();
             }
         });
     </script>

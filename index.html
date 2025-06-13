@@ -5,210 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>4D HyperCipher Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #4361ee;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --light-gray: #e9ecef;
-            --success: #4cc9f0;
-            --error: #f72585;
-        }
-        
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.6;
-            color: var(--dark);
-            background-color: var(--light);
-            padding: 2rem;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-        
         .container {
-            max-width: 1400px;
+            max-width: 1000px;
             margin: 0 auto;
-        }
-        
-        .card {
-            background-color: white;
+            background: white;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.75rem 1.25rem;
-            background-color: var(--primary);
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .panel {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        textarea, input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #3498db;
             color: white;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-right: 0.5rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        textarea, input[type="text"], input[type="password"], input[type="number"] {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .cube-container {
-            display: flex;
-            gap: 2rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .cube-table {
-            flex: 1;
-            min-width: 300px;
-            border: 1px solid #ddd;
-            padding: 1rem;
-            background: white;
-            border-radius: 8px;
-        }
-        
-        .cube-layer {
-            margin-bottom: 1.5rem;
-        }
-        
-        .cube-layer h5 {
-            margin: 0 0 0.5rem 0;
-            color: var(--primary);
-        }
-        
-        .cube-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .cube-table td {
-            border: 1px solid #ddd;
-            padding: 0.75rem;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
-        
-        .text-preview {
-            font-family: 'Courier New', monospace;
-            padding: 0.5rem;
-            background-color: rgba(0,0,0,0.05);
+            padding: 10px 15px;
             border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
         }
-        
-        .alert {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+        button:hover {
+            background: #2980b9;
         }
-        
-        .alert-success {
-            background-color: rgba(76, 201, 240, 0.15);
-            border-left: 4px solid var(--success);
+        .cube-view {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
         }
-        
-        .alert-error {
-            background-color: rgba(247, 37, 133, 0.15);
-            border-left: 4px solid var(--error);
+        .cube {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background: white;
+        }
+        .cube-layer {
+            margin-bottom: 15px;
+        }
+        .cube-layer h4 {
+            margin: 0 0 5px 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            font-family: monospace;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e8f4fc;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-cube"></i> 4D HyperCipher Pro</h1>
-        </header>
-
-        <div class="card">
-            <h2><i class="fas fa-sliders-h"></i> Настройки шифра</h2>
-            
-            <div class="form-group">
-                <label for="alphabet">Алфавит (ровно 54 уникальных символа)</label>
+        <h1>4D HyperCipher</h1>
+        
+        <div class="panel">
+            <h2>Настройки</h2>
+            <div>
+                <label for="alphabet">Алфавит (54 символа):</label>
                 <textarea id="alphabet" rows="3">ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=[]{};:,.<>?</textarea>
             </div>
-            
-            <div class="form-group">
-                <label for="filler">Заполняющий символ (не должен быть в алфавите)</label>
+            <div>
+                <label for="filler">Заполняющий символ:</label>
                 <input type="text" id="filler" value="~" maxlength="1">
             </div>
-            
-            <div class="form-group">
-                <label for="encryptionKey">Ключ шифрования</label>
-                <input type="password" id="encryptionKey" placeholder="Введите ключ">
+            <div>
+                <label for="key">Ключ:</label>
+                <input type="password" id="key">
             </div>
-            
-            <div class="form-group">
-                <label for="rounds">Количество раундов (3-10)</label>
+            <div>
+                <label for="rounds">Раундов (3-10):</label>
                 <input type="number" id="rounds" min="3" max="10" value="5">
             </div>
-            
-            <button class="btn" id="initCubes"><i class="fas fa-cube"></i> Инициализировать гиперкубы</button>
-            <button class="btn" id="resetCubes"><i class="fas fa-undo"></i> Сбросить</button>
-            
-            <div id="alphabetStatus" class="alert" style="display: none;"></div>
-            
-            <div id="hypercubesVisualization">
-                <h3><i class="fas fa-project-diagram"></i> 4D Гиперкубы</h3>
-                <div class="cube-container">
-                    <div id="hypercube1-display"></div>
-                    <div id="hypercube2-display"></div>
-                </div>
-            </div>
+            <button id="initBtn">Инициализировать кубы</button>
+            <button id="resetBtn">Сбросить</button>
         </div>
 
-        <div class="card">
-            <h2><i class="fas fa-lock"></i> Шифрование</h2>
-            
-            <div class="form-group">
-                <label for="plaintext">Исходный текст</label>
-                <textarea id="plaintext" placeholder="Введите текст для шифрования"></textarea>
-                <div class="text-preview" id="plaintextPreview"></div>
-            </div>
-            
-            <button class="btn" id="encryptBtn"><i class="fas fa-key"></i> Зашифровать</button>
-            <button class="btn" id="samplePlaintext"><i class="fas fa-lightbulb"></i> Пример</button>
-            
-            <div id="encryptionResult" class="alert alert-success" style="display: none;">
-                <h3><i class="fas fa-check-circle"></i> Шифрование успешно</h3>
-                <p><strong>Шифротекст:</strong></p>
-                <div class="text-preview" id="ciphertextOutput"></div>
-                <button class="btn" id="copyCiphertext"><i class="fas fa-copy"></i> Копировать</button>
-            </div>
+        <div class="panel">
+            <h2>Шифрование</h2>
+            <textarea id="plaintext" placeholder="Текст для шифрования"></textarea>
+            <button id="encryptBtn">Зашифровать</button>
+            <div class="result" id="encryptResult"></div>
         </div>
 
-        <div class="card">
-            <h2><i class="fas fa-lock-open"></i> Дешифрование</h2>
-            
-            <div class="form-group">
-                <label for="ciphertext">Шифротекст</label>
-                <textarea id="ciphertext" placeholder="Введите текст для дешифрования"></textarea>
-                <div class="text-preview" id="ciphertextPreview"></div>
-            </div>
-            
-            <button class="btn" id="decryptBtn"><i class="fas fa-key"></i> Дешифровать</button>
-            
-            <div id="decryptionResult" class="alert alert-success" style="display: none;">
-                <h3><i class="fas fa-check-circle"></i> Дешифрование успешно</h3>
-                <p><strong>Исходный текст:</strong></p>
-                <div class="text-preview" id="plaintextOutput"></div>
-                <button class="btn" id="copyPlaintext"><i class="fas fa-copy"></i> Копировать</button>
-            </div>
+        <div class="panel">
+            <h2>Дешифрование</h2>
+            <textarea id="ciphertext" placeholder="Текст для дешифрования"></textarea>
+            <button id="decryptBtn">Дешифровать</button>
+            <div class="result" id="decryptResult"></div>
+        </div>
+
+        <div class="panel">
+            <h2>Гиперкубы</h2>
+            <div class="cube-view" id="cubeView"></div>
         </div>
     </div>
 
@@ -218,130 +141,79 @@
                 this.hypercubes = [];
                 this.alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=[]{};:,.<>?";
                 this.fillerChar = "~";
-                this.encryptionKey = "";
                 this.rounds = 5;
                 this.salt = CryptoJS.lib.WordArray.random(16).toString();
                 
-                this.initEventListeners();
+                this.initEvents();
             }
 
-            initEventListeners() {
-                document.getElementById('initCubes').addEventListener('click', () => this.initHypercubes());
-                document.getElementById('resetCubes').addEventListener('click', () => this.resetToDefault());
+            initEvents() {
+                document.getElementById('initBtn').addEventListener('click', () => this.initCubes());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
                 document.getElementById('encryptBtn').addEventListener('click', () => this.encrypt());
                 document.getElementById('decryptBtn').addEventListener('click', () => this.decrypt());
-                document.getElementById('samplePlaintext').addEventListener('click', () => this.loadSampleText());
-                document.getElementById('copyCiphertext').addEventListener('click', () => this.copyToClipboard('ciphertextOutput'));
-                document.getElementById('copyPlaintext').addEventListener('click', () => this.copyToClipboard('plaintextOutput'));
-                
-                document.getElementById('plaintext').addEventListener('input', (e) => {
-                    this.updateTextPreview(e.target.value, 'plaintextPreview');
-                });
-                
-                document.getElementById('ciphertext').addEventListener('input', (e) => {
-                    this.updateTextPreview(e.target.value, 'ciphertextPreview');
-                });
             }
 
-            async initHypercubes() {
-                const alphabetInput = document.getElementById('alphabet').value;
-                const newFiller = document.getElementById('filler').value.trim();
-                const statusElement = document.getElementById('alphabetStatus');
+            async initCubes() {
+                const alphabet = document.getElementById('alphabet').value;
+                const filler = document.getElementById('filler').value;
+                const key = document.getElementById('key').value;
+                const rounds = parseInt(document.getElementById('rounds').value);
 
                 // Валидация
-                if (alphabetInput.length !== 54) {
-                    this.showError(statusElement, `Алфавит должен содержать ровно 54 символа (сейчас: ${alphabetInput.length})`);
-                    return false;
+                if (alphabet.length !== 54) {
+                    alert("Алфавит должен содержать ровно 54 символа");
+                    return;
+                }
+                if (new Set(alphabet).size !== 54) {
+                    alert("Алфавит содержит повторяющиеся символы");
+                    return;
+                }
+                if (alphabet.includes(filler)) {
+                    alert("Заполняющий символ не должен быть в алфавите");
+                    return;
                 }
 
-                if (new Set(alphabetInput).size !== alphabetInput.length) {
-                    this.showError(statusElement, "Алфавит содержит повторяющиеся символы");
-                    return false;
-                }
-
-                if (alphabetInput.includes(newFiller)) {
-                    this.showError(statusElement, "Заполняющий символ не должен быть в алфавите");
-                    return false;
-                }
-
-                this.alphabet = alphabetInput;
-                this.fillerChar = newFiller;
-                this.encryptionKey = document.getElementById('encryptionKey').value;
-                this.rounds = parseInt(document.getElementById('rounds').value);
+                this.alphabet = alphabet;
+                this.fillerChar = filler;
+                this.rounds = rounds;
 
                 try {
-                    await this.generateAllHypercubes();
-                    this.showCubesAsTables();
-                    this.showSuccess(statusElement, `Успешно сгенерировано ${this.rounds} раундов шифрования`);
-                    return true;
-                } catch (error) {
-                    this.showError(statusElement, `Ошибка: ${error.message}`);
-                    console.error("Error:", error);
-                    return false;
+                    await this.generateHypercubes(key);
+                    this.displayCubes();
+                    alert(`Успешно создано ${this.rounds} раундов шифрования`);
+                } catch (e) {
+                    alert("Ошибка: " + e.message);
                 }
             }
 
-            async generateAllHypercubes() {
+            async generateHypercubes(key) {
                 this.hypercubes = [];
-                const key = this.encryptionKey;
-                
-                if (!key) {
-                    if (!confirm("Ключ не указан. Использовать алфавитный порядок?")) {
-                        throw new Error("Генерация отменена");
-                    }
-                    const hypercube = this.generateAlphabeticalHypercube();
-                    for (let round = 0; round < this.rounds; round++) {
-                        this.hypercubes.push(JSON.parse(JSON.stringify(hypercube)));
-                    }
+                let masterSeed;
+
+                if (key) {
+                    masterSeed = await this.deriveKey(key, this.salt, 100000);
                 } else {
-                    const masterSeed = await this.deriveKey(key, this.salt, 100000);
-                    
-                    for (let round = 0; round < this.rounds; round++) {
-                        const roundSeed = await this.hmacSha256(masterSeed, round.toString());
-                        const hypercube = await this.generateHypercubeFromSeed(roundSeed);
-                        this.hypercubes.push(hypercube);
-                    }
+                    if (!confirm("Ключ не указан. Использовать стандартные кубы?")) return;
+                    masterSeed = "default";
                 }
-                
-                this.verifyHypercubeUniqueness();
+
+                for (let round = 0; round < this.rounds; round++) {
+                    const roundSeed = key ? await this.hmacSha256(masterSeed, round.toString()) : round.toString();
+                    const hypercube = await this.createHypercube(roundSeed);
+                    this.hypercubes.push(hypercube);
+                }
             }
 
-            generateAlphabeticalHypercube() {
-                const hypercube = { cube1: [], cube2: [] };
-                let pos = 0;
-                
-                for (let x = 0; x < 3; x++) {
-                    hypercube.cube1[x] = [];
-                    for (let y = 0; y < 3; y++) {
-                        hypercube.cube1[x][y] = [];
-                        for (let z = 0; z < 3; z++) {
-                            hypercube.cube1[x][y][z] = this.alphabet[pos++ % this.alphabet.length];
-                        }
-                    }
-                }
-                
-                for (let wx = 0; wx < 3; wx++) {
-                    hypercube.cube2[wx] = [];
-                    for (let wy = 0; wy < 3; wy++) {
-                        hypercube.cube2[wx][wy] = [];
-                        for (let wz = 0; wz < 3; wz++) {
-                            hypercube.cube2[wx][wy][wz] = this.alphabet[pos++ % this.alphabet.length];
-                        }
-                    }
-                }
-                
-                return hypercube;
-            }
-
-            async generateHypercubeFromSeed(seed) {
-                const shuffledAlphabet = await this.deterministicShuffle(this.alphabet, seed);
+            async createHypercube(seed) {
+                const shuffled = await this.shuffleAlphabet(this.alphabet, seed);
                 return {
-                    cube1: this.fill3DCube(shuffledAlphabet, 0, 27),
-                    cube2: this.fill3DCube(shuffledAlphabet, 27, 27)
+                    cube1: this.fillCube(shuffled.substring(0, 27)),
+                    cube2: this.fillCube(shuffled.substring(27))
                 };
             }
 
-            fill3DCube(alphabet, startIndex, count) {
+            fillCube(chars) {
                 const cube = [];
                 let pos = 0;
                 
@@ -350,8 +222,7 @@
                     for (let y = 0; y < 3; y++) {
                         cube[x][y] = [];
                         for (let z = 0; z < 3; z++) {
-                            cube[x][y][z] = alphabet[(startIndex + pos) % alphabet.length];
-                            pos++;
+                            cube[x][y][z] = chars[pos++ % chars.length];
                         }
                     }
                 }
@@ -359,366 +230,208 @@
                 return cube;
             }
 
-            showCubesAsTables() {
+            displayCubes() {
+                const container = document.getElementById('cubeView');
+                container.innerHTML = '';
+
                 if (this.hypercubes.length === 0) return;
+
+                // Показываем только первый раунд для наглядности
+                const { cube1, cube2 } = this.hypercubes[0];
                 
-                const cube1 = this.hypercubes[0].cube1;
-                const cube2 = this.hypercubes[0].cube2;
-                
-                let html1 = '<div class="cube-table"><h4>XYZ Cube</h4>';
-                let html2 = '<div class="cube-table"><h4>WXWYWZ Cube</h4>';
-                
-                // Отображаем все слои
-                for (let z = 0; z < 3; z++) {
-                    html1 += this.generateCubeLayerHTML(cube1, z);
-                    html2 += this.generateCubeLayerHTML(cube2, z);
-                }
-                
-                html1 += '</div>';
-                html2 += '</div>';
-                
-                document.getElementById('hypercube1-display').innerHTML = html1;
-                document.getElementById('hypercube2-display').innerHTML = html2;
+                container.appendChild(this.createCubeTable(cube1, "XYZ Cube"));
+                container.appendChild(this.createCubeTable(cube2, "WXY Cube"));
             }
-            
-            generateCubeLayerHTML(cube, z) {
-                let html = `<div class="cube-layer"><h5>Слой Z=${z}</h5><table>`;
+
+            createCubeTable(cube, title) {
+                const div = document.createElement('div');
+                div.className = 'cube';
+                div.innerHTML = `<h3>${title}</h3>`;
                 
-                for (let y = 0; y < 3; y++) {
-                    html += '<tr>';
-                    for (let x = 0; x < 3; x++) {
-                        const char = cube[x][y][z];
-                        html += `<td title="X=${x}, Y=${y}, Z=${z}">${char}</td>`;
+                for (let z = 0; z < 3; z++) {
+                    const layerDiv = document.createElement('div');
+                    layerDiv.className = 'cube-layer';
+                    layerDiv.innerHTML = `<h4>Слой Z=${z}</h4>`;
+                    
+                    const table = document.createElement('table');
+                    for (let y = 0; y < 3; y++) {
+                        const row = table.insertRow();
+                        for (let x = 0; x < 3; x++) {
+                            const cell = row.insertCell();
+                            cell.textContent = cube[x][y][z];
+                            cell.title = `X=${x}, Y=${y}, Z=${z}`;
+                        }
                     }
-                    html += '</tr>';
+                    
+                    layerDiv.appendChild(table);
+                    div.appendChild(layerDiv);
                 }
                 
-                html += '</table></div>';
-                return html;
+                return div;
             }
 
             async encrypt() {
-                const plaintext = document.getElementById('plaintext').value;
-                if (!plaintext) {
+                const text = document.getElementById('plaintext').value;
+                if (!text) {
                     alert("Введите текст для шифрования");
                     return;
                 }
-
                 if (this.hypercubes.length === 0) {
-                    alert("Сначала инициализируйте гиперкубы");
+                    alert("Сначала инициализируйте кубы");
                     return;
                 }
 
                 try {
-                    let intermediate = plaintext;
-                    let ciphertext = "";
-                    
+                    let result = text;
                     for (let round = 0; round < this.rounds; round++) {
-                        ciphertext = this.singleRoundEncrypt(intermediate, round);
-                        intermediate = ciphertext;
+                        result = this.processRound(result, round, true);
                     }
-
-                    document.getElementById('encryptionResult').style.display = 'block';
-                    document.getElementById('ciphertextOutput').textContent = ciphertext;
-                } catch (error) {
-                    console.error("Ошибка шифрования:", error);
-                    alert(`Ошибка: ${error.message}`);
+                    document.getElementById('encryptResult').textContent = result;
+                } catch (e) {
+                    alert("Ошибка шифрования: " + e.message);
                 }
-            }
-
-            singleRoundEncrypt(text, round) {
-                const hypercube = this.hypercubes[round];
-                let coordinates = [];
-                let skippedChars = [];
-                
-                // Находим координаты для каждого символа
-                for (let char of text) {
-                    const coords = this.find4DCoordinates(char, round);
-                    if (coords) {
-                        coordinates.push(coords);
-                    } else {
-                        skippedChars.push(char);
-                    }
-                }
-                
-                // Если ни один символ не найден
-                if (coordinates.length === 0) {
-                    return text;
-                }
-                
-                // Создаем потоки координат
-                let xyzStream = coordinates.map(c => c.xyz.join('')).join('');
-                let wxwywzStream = coordinates.map(c => c.wxwywz.join('')).join('');
-                let combinedStream = xyzStream + wxwywzStream;
-                
-                // Генерируем шифротекст
-                let ciphertext = '';
-                for (let i = 0; i < combinedStream.length; i += 6) {
-                    let triplet = combinedStream.substr(i, 6);
-                    if (triplet.length === 6) {
-                        const x = parseInt(triplet[0]);
-                        const y = parseInt(triplet[1]);
-                        const z = parseInt(triplet[2]);
-                        const wx = parseInt(triplet[3]);
-                        const wy = parseInt(triplet[4]);
-                        const wz = parseInt(triplet[5]);
-                        
-                        ciphertext += this.getCharFrom4DCoordinates(x, y, z, wx, wy, wz, round);
-                    } else {
-                        ciphertext += this.fillerChar;
-                    }
-                }
-                
-                // Восстанавливаем пропущенные символы
-                if (skippedChars.length > 0) {
-                    let originalIndex = 0;
-                    let cipherIndex = 0;
-                    let finalCiphertext = '';
-                    
-                    for (let char of text) {
-                        const coords = this.find4DCoordinates(char, round);
-                        if (coords) {
-                            if (cipherIndex < ciphertext.length) {
-                                finalCiphertext += ciphertext[cipherIndex++];
-                            } else {
-                                finalCiphertext += this.fillerChar;
-                            }
-                        } else {
-                            finalCiphertext += char;
-                        }
-                    }
-                    
-                    ciphertext = finalCiphertext;
-                }
-                
-                return ciphertext;
             }
 
             async decrypt() {
-                const ciphertext = document.getElementById('ciphertext').value;
-                if (!ciphertext) {
-                    alert("Введите шифротекст");
+                const text = document.getElementById('ciphertext').value;
+                if (!text) {
+                    alert("Введите текст для дешифрования");
                     return;
                 }
-
                 if (this.hypercubes.length === 0) {
-                    alert("Сначала инициализируйте гиперкубы");
+                    alert("Сначала инициализируйте кубы");
                     return;
                 }
 
                 try {
-                    let intermediate = ciphertext;
-                    let plaintext = "";
-                    
-                    // Дешифруем в обратном порядке раундов
+                    let result = text;
                     for (let round = this.rounds - 1; round >= 0; round--) {
-                        plaintext = this.singleRoundDecrypt(intermediate, round);
-                        intermediate = plaintext;
+                        result = this.processRound(result, round, false);
                     }
-
-                    document.getElementById('decryptionResult').style.display = 'block';
-                    document.getElementById('plaintextOutput').textContent = plaintext;
-                } catch (error) {
-                    console.error("Ошибка дешифрования:", error);
-                    alert(`Ошибка: ${error.message}`);
+                    document.getElementById('decryptResult').textContent = result;
+                } catch (e) {
+                    alert("Ошибка дешифрования: " + e.message);
                 }
             }
 
-            singleRoundDecrypt(text, round) {
+            processRound(text, round, isEncrypt) {
                 const hypercube = this.hypercubes[round];
-                let coordinates = [];
-                let skippedChars = [];
+                let result = '';
                 
-                // Находим координаты для каждого символа
-                for (let char of text) {
-                    const coords = this.find4DCoordinates(char, round);
-                    if (coords) {
-                        coordinates.push(coords);
-                    } else {
-                        skippedChars.push(char);
+                if (isEncrypt) {
+                    // Шифрование
+                    const coords = [];
+                    
+                    // 1. Получаем координаты всех символов
+                    for (const char of text.toUpperCase()) {
+                        const coord = this.findCharCoordinates(char, hypercube);
+                        coords.push(coord || { x: 0, y: 0, z: 0, wx: 0, wy: 0, wz: 0, char });
                     }
-                }
-                
-                // Если ни один символ не найден
-                if (coordinates.length === 0) {
-                    return text;
-                }
-                
-                // Восстанавливаем координаты
-                let coordSequence = '';
-                for (let coord of coordinates) {
-                    coordSequence += coord.xyz.join('') + coord.wxwywz.join('');
-                }
-                
-                // Разделяем на XYZ и WXWYWZ части
-                const partLength = Math.floor(coordSequence.length / 2);
-                const xyzPart = coordSequence.substring(0, partLength);
-                const wxwywzPart = coordSequence.substring(partLength);
-                
-                // Восстанавливаем текст
-                let plaintext = '';
-                for (let i = 0; i < xyzPart.length; i += 3) {
-                    const x = parseInt(xyzPart[i]);
-                    const y = parseInt(xyzPart[i+1]);
-                    const z = parseInt(xyzPart[i+2]);
-                    const wx = parseInt(wxwywzPart[i]);
-                    const wy = parseInt(wxwywzPart[i+1]);
-                    const wz = parseInt(wxwywzPart[i+2]);
                     
-                    plaintext += this.getCharFrom4DCoordinates(x, y, z, wx, wy, wz, round);
-                }
-                
-                // Восстанавливаем пропущенные символы
-                if (skippedChars.length > 0) {
-                    let originalIndex = 0;
-                    let plainIndex = 0;
-                    let finalPlaintext = '';
+                    // 2. Собираем потоки координат
+                    const xStream = [], yStream = [], zStream = [], wStream = [];
+                    for (const {x, y, z, wx, wy, wz} of coords) {
+                        xStream.push(x, wx);
+                        yStream.push(y, wy);
+                        zStream.push(z, wz);
+                    }
                     
-                    for (let char of text) {
-                        const coords = this.find4DCoordinates(char, round);
-                        if (coords) {
-                            if (plainIndex < plaintext.length) {
-                                finalPlaintext += plaintext[plainIndex++];
-                            } else {
-                                finalPlaintext += this.fillerChar;
-                            }
+                    // 3. Объединяем потоки
+                    const fullStream = [...xStream, ...yStream, ...zStream].join('');
+                    
+                    // 4. Разбиваем на триплеты и преобразуем в символы
+                    for (let i = 0; i < fullStream.length; i += 3) {
+                        const triplet = fullStream.substr(i, 3);
+                        if (triplet.length === 3) {
+                            const x = parseInt(triplet[0]);
+                            const y = parseInt(triplet[1]);
+                            const z = parseInt(triplet[2]);
+                            result += hypercube.cube1[x][y][z] || this.fillerChar;
+                        }
+                    }
+                } else {
+                    // Дешифрование
+                    const coords = [];
+                    
+                    // 1. Получаем координаты всех символов
+                    for (const char of text.toUpperCase()) {
+                        const coord = this.findCharCoordinates(char, hypercube);
+                        if (coord) {
+                            coords.push(coord);
                         } else {
-                            finalPlaintext += char;
+                            result += char; // Пропускаем неизвестные символы
                         }
                     }
                     
-                    plaintext = finalPlaintext;
+                    // 2. Собираем полный поток координат
+                    let fullStream = '';
+                    for (const {x, y, z, wx, wy, wz} of coords) {
+                        fullStream += x.toString() + y.toString() + z.toString() + wx.toString() + wy.toString() + wz.toString();
+                    }
+                    
+                    // 3. Разделяем на оригинальные потоки
+                    const mid = Math.floor(fullStream.length / 2);
+                    const xStream = fullStream.substring(0, mid);
+                    const yzStream = fullStream.substring(mid);
+                    
+                    // 4. Восстанавливаем символы
+                    for (let i = 0; i < xStream.length; i += 3) {
+                        const x = parseInt(xStream[i]);
+                        const y = parseInt(yzStream[i]);
+                        const z = parseInt(xStream[i+1]);
+                        const wx = parseInt(yzStream[i+1]);
+                        
+                        result += hypercube.cube1[x][y][z] || this.fillerChar;
+                    }
                 }
                 
-                return plaintext;
+                return result;
             }
 
-            find4DCoordinates(char, round) {
-                if (round >= this.hypercubes.length) return null;
-                
-                const hypercube = this.hypercubes[round];
-                const result = { xyz: null, wxwywz: null };
-                
-                // Поиск в XYZ кубе
+            findCharCoordinates(char, hypercube) {
+                // Ищем в первом кубе (XYZ)
                 for (let x = 0; x < 3; x++) {
                     for (let y = 0; y < 3; y++) {
                         for (let z = 0; z < 3; z++) {
                             if (hypercube.cube1[x][y][z] === char) {
-                                result.xyz = [x, y, z];
-                                break;
+                                // Ищем соответствующий символ во втором кубе (WXY)
+                                for (let wx = 0; wx < 3; wx++) {
+                                    for (let wy = 0; wy < 3; wy++) {
+                                        for (let wz = 0; wz < 3; wz++) {
+                                            if (hypercube.cube2[wx][wy][wz] === char) {
+                                                return { x, y, z, wx, wy, wz };
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
-                        if (result.xyz) break;
-                    }
-                    if (result.xyz) break;
-                }
-                
-                // Поиск в WXWYWZ кубе
-                for (let wx = 0; wx < 3; wx++) {
-                    for (let wy = 0; wy < 3; wy++) {
-                        for (let wz = 0; wz < 3; wz++) {
-                            if (hypercube.cube2[wx][wy][wz] === char) {
-                                result.wxwywz = [wx, wy, wz];
-                                break;
-                            }
-                        }
-                        if (result.wxwywz) break;
-                    }
-                    if (result.wxwywz) break;
-                }
-                
-                return (result.xyz && result.wxwywz) ? result : null;
-            }
-
-            getCharFrom4DCoordinates(x, y, z, wx, wy, wz, round) {
-                if (round >= this.hypercubes.length || 
-                    x < 0 || x >= 3 || y < 0 || y >= 3 || z < 0 || z >= 3 ||
-                    wx < 0 || wx >= 3 || wy < 0 || wy >= 3 || wz < 0 || wz >= 3) {
-                    return this.fillerChar;
-                }
-                
-                return this.hypercubes[round].cube1[x][y][z];
-            }
-
-            updateTextPreview(text, elementId) {
-                if (this.hypercubes.length === 0) {
-                    document.getElementById(elementId).innerHTML = '<span style="color:red">Сначала инициализируйте гиперкубы</span>';
-                    return;
-                }
-
-                let previewHtml = '';
-                for (const char of text) {
-                    const coords = this.find4DCoordinates(char, 0);
-                    if (coords) {
-                        previewHtml += `<span style="background-color:rgba(67,97,238,0.2)" title="XYZ: ${coords.xyz.join(',')}, WXWYWZ: ${coords.wxwywz.join(',')}">${this.escapeHtml(char)}</span>`;
-                    } else {
-                        previewHtml += `<span style="background-color:rgba(248,150,30,0.2)" title="Символ не найден">${this.escapeHtml(char)}</span>`;
                     }
                 }
-                document.getElementById(elementId).innerHTML = previewHtml || '<span style="color:red">Нет текста</span>';
+                return null;
             }
 
-            loadSampleText() {
-                const sample = "SECRET MESSAGE 123!";
-                document.getElementById('plaintext').value = sample;
-                this.updateTextPreview(sample, 'plaintextPreview');
-            }
-
-            resetToDefault() {
-                document.getElementById('alphabet').value = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=[]{};:,.<>?";
-                document.getElementById('filler').value = "~";
-                document.getElementById('encryptionKey').value = "";
-                document.getElementById('rounds').value = "5";
-                document.getElementById('plaintext').value = "";
-                document.getElementById('ciphertext').value = "";
-                document.getElementById('hypercube1-display').innerHTML = "";
-                document.getElementById('hypercube2-display').innerHTML = "";
-                document.getElementById('alphabetStatus').style.display = "none";
+            reset() {
+                document.getElementById('alphabet').value = this.alphabet;
+                document.getElementById('filler').value = this.fillerChar;
+                document.getElementById('key').value = '';
+                document.getElementById('plaintext').value = '';
+                document.getElementById('ciphertext').value = '';
+                document.getElementById('encryptResult').textContent = '';
+                document.getElementById('decryptResult').textContent = '';
+                document.getElementById('cubeView').innerHTML = '';
                 this.hypercubes = [];
             }
 
-            async copyToClipboard(elementId) {
-                const text = document.getElementById(elementId)?.textContent;
-                if (!text) return;
-                
-                try {
-                    await navigator.clipboard.writeText(text);
-                    alert("Скопировано в буфер обмена");
-                } catch (error) {
-                    console.error("Copy failed:", error);
-                    alert("Не удалось скопировать");
-                }
-            }
-
-            verifyHypercubeUniqueness() {
-                const cubeHashes = new Set();
-                
-                for (const hypercube of this.hypercubes) {
-                    const cubeString = JSON.stringify(hypercube);
-                    const cubeHash = CryptoJS.SHA256(cubeString).toString();
-                    
-                    if (cubeHashes.has(cubeHash)) {
-                        throw new Error("Обнаружены дубликаты кубов");
-                    }
-                    cubeHashes.add(cubeHash);
-                }
-            }
-
-            async deterministicShuffle(array, seedString) {
-                const seed = CryptoJS.SHA256(seedString).toString();
-                const hashArray = [];
-                
-                for (let i = 0; i < seed.length; i += 2) {
-                    hashArray.push(parseInt(seed.substr(i, 2), 16));
-                }
-                
-                const arr = array.split('');
-                let hashIndex = 0;
+            async shuffleAlphabet(alphabet, seed) {
+                const hash = CryptoJS.SHA256(seed).toString();
+                const arr = alphabet.split('');
+                let hashPos = 0;
                 
                 for (let i = arr.length - 1; i > 0; i--) {
-                    const randomByte = hashArray[hashIndex % hashArray.length];
-                    hashIndex++;
-                    const j = randomByte % (i + 1);
+                    const n = parseInt(hash.substr(hashPos, 2), 16);
+                    hashPos = (hashPos + 2) % 64;
+                    const j = n % (i + 1);
                     [arr[i], arr[j]] = [arr[j], arr[i]];
                 }
                 
@@ -736,28 +449,9 @@
             async hmacSha256(key, message) {
                 return CryptoJS.HmacSHA256(message, key).toString();
             }
-
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            showError(element, message) {
-                element.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
-                element.classList.remove('alert-success');
-                element.classList.add('alert-error');
-                element.style.display = 'block';
-            }
-
-            showSuccess(element, message) {
-                element.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-                element.classList.remove('alert-error');
-                element.classList.add('alert-success');
-                element.style.display = 'block';
-            }
         }
 
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', () => {
             window.cipher = new HyperCipher4D();
         });

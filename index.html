@@ -371,6 +371,18 @@
             animation: spin 1s ease-in-out infinite;
             margin-right: 8px;
         }
+
+        .error-message {
+            color: var(--system-red);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .alphabet-requirements {
+            font-size: 12px;
+            color: var(--system-secondary-text);
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -389,6 +401,7 @@
                         <div class="form-group">
                             <label for="key">Encryption Key:</label>
                             <input type="text" id="key" placeholder="Enter secret key" value="SECRET">
+                            <div id="keyError" class="error-message"></div>
                         </div>
                         
                         <div class="form-group">
@@ -398,6 +411,16 @@
                                 <label for="encrypt">Encrypt</label>
                                 <input type="radio" id="decrypt" name="action" value="decrypt">
                                 <label for="decrypt">Decrypt</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="alphabet">Custom Alphabet (54 chars):</label>
+                            <input type="text" id="alphabet" placeholder="Leave empty for default" 
+                                   value="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()-+=">
+                            <div id="alphabetError" class="error-message"></div>
+                            <div class="alphabet-requirements">
+                                Must contain exactly 54 unique characters. First 27 for Primary Cube, last 27 for Shadow Cube.
                             </div>
                         </div>
                         
@@ -479,10 +502,30 @@
     <script>
         class ShadowCubeCipher {
             constructor() {
-                this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()-+=';
+                this.defaultAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!?@#$%^&*()-+=';
+                this.alphabet = this.defaultAlphabet;
+                this.primaryCube = [];
+                this.shadowCube = [];
+                this.currentRotation = { primary: { x: 0, y: 0, z: 0 }, shadow: { x: 0, y: 0, z: 0 } };
+                this.fillerChar = 'X';
+            }
+            
+            initialize(alphabet = '') {
+                // Validate and set alphabet
+                if (alphabet && alphabet.length === 54) {
+                    const uniqueChars = new Set(alphabet.split(''));
+                    if (uniqueChars.size === 54) {
+                        this.alphabet = alphabet;
+                    } else {
+                        throw new Error('Alphabet must contain unique characters');
+                    }
+                } else if (alphabet) {
+                    throw new Error('Alphabet must contain exactly 54 characters');
+                }
+                
+                // Create cubes
                 this.primaryCube = this.createCube(this.alphabet.substring(0, 27));
                 this.shadowCube = this.createCube(this.alphabet.substring(27));
-                this.currentRotation = { primary: { x: 0, y: 0, z: 0 }, shadow: { x: 0, y: 0, z: 0 } };
             }
             
             createCube(chars) {
@@ -586,15 +629,15 @@
             }
             
             calculateW(char, index, key) {
-                // Simple hash function for demonstration
+                // Better hash function
                 let hash = 0;
-                for (let i = 0; i < key.length; i++) {
-                    hash = (hash << 5) - hash + key.charCodeAt(i);
+                const str = key + index + char;
+                for (let i = 0; i < str.length; i++) {
+                    const charCode = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + charCode;
                     hash |= 0; // Convert to 32bit integer
                 }
-                
-                hash = (hash + char.charCodeAt(0) + index) % 3;
-                return Math.abs(hash);
+                return Math.abs(hash) % 3;
             }
             
             encrypt(text, key) {
@@ -606,7 +649,7 @@
                     const primaryCoords = this.findCharInCube(char, this.primaryCube);
                     
                     if (!primaryCoords) {
-                        coordStream.push(0, 0, 0, 0, 0, 0);
+                        // Skip characters not in alphabet
                         continue;
                     }
                     
@@ -617,6 +660,7 @@
                         z: (primaryCoords.z + w + 2) % 3
                     };
                     
+                    // Add to coordinate stream: x, shadow_x, y, shadow_y, z, shadow_z
                     coordStream.push(
                         primaryCoords.x, shadowCoords.x,
                         primaryCoords.y, shadowCoords.y,
@@ -624,7 +668,7 @@
                     );
                 }
                 
-                // Split into triplets and map to characters
+                // Convert coordinates to characters
                 for (let i = 0; i < coordStream.length; i += 3) {
                     if (i + 2 < coordStream.length) {
                         const x = coordStream[i];
@@ -633,7 +677,7 @@
                         
                         // Alternate between primary and shadow cubes
                         const cube = (i / 3) % 2 === 0 ? this.primaryCube : this.shadowCube;
-                        result += cube[x][y][z] || 'X';
+                        result += cube[x][y][z] || this.fillerChar;
                     }
                 }
                 
@@ -671,15 +715,15 @@
                     const sz = shadowCoords[i*3+2];
                     
                     // Reconstruct w from x coordinates
-                    const w = (sx - px) % 3;
+                    let w = (sx - px) % 3;
                     if (w < 0) w += 3; // Ensure positive
                     
-                    // Verify shadow coordinates match
+                    // Verify shadow coordinates
                     const expectedSy = (py + w + 1) % 3;
                     const expectedSz = (pz + w + 2) % 3;
                     
                     if (sy === expectedSy && sz === expectedSz) {
-                        result += this.primaryCube[px][py][pz] || 'X';
+                        result += this.primaryCube[px][py][pz] || this.fillerChar;
                     } else {
                         result += '?'; // Mark as error
                     }
@@ -699,8 +743,8 @@
                     
                     coords.push({
                         char,
-                        primary: primary ? `${primary.x},${primary.y},${primary.z}` : null,
-                        shadow: shadow ? `${shadow.x},${shadow.y},${shadow.z}` : null,
+                        primary: primary ? `${primary.x},${primary.y},${primary.z}` : 'Not found',
+                        shadow: shadow ? `${shadow.x},${shadow.y},${shadow.z}` : 'Not found',
                         w: w
                     });
                 }
@@ -714,7 +758,8 @@
             const cipher = new ShadowCubeCipher();
             let isProcessing = false;
             
-            // Initialize cube visualization
+            // Initialize cipher with default alphabet
+            cipher.initialize();
             updateCubeVisualization();
             
             // Process button
@@ -724,14 +769,15 @@
                 const inputText = document.getElementById('inputText').value;
                 const key = document.getElementById('key').value;
                 const isEncrypt = document.getElementById('encrypt').checked;
+                const customAlphabet = document.getElementById('alphabet').value;
                 
-                if (!inputText) {
-                    updateStatus('Please enter some text to process', 'error');
-                    return;
-                }
+                // Clear previous errors
+                document.getElementById('keyError').textContent = '';
+                document.getElementById('alphabetError').textContent = '';
                 
+                // Validate key
                 if (!key) {
-                    updateStatus('Please enter an encryption key', 'error');
+                    document.getElementById('keyError').textContent = 'Please enter an encryption key';
                     return;
                 }
                 
@@ -740,6 +786,12 @@
                     const processBtn = document.getElementById('processBtn');
                     processBtn.innerHTML = '<span class="spinner"></span> Processing';
                     processBtn.disabled = true;
+                    
+                    updateStatus('Initializing cipher...', 'info');
+                    
+                    // Reinitialize cipher with custom alphabet if provided
+                    cipher.initialize(customAlphabet);
+                    updateCubeVisualization();
                     
                     updateStatus('Processing message...', 'info');
                     
@@ -757,6 +809,9 @@
                     updateCoordinateDisplay(inputText, key, isEncrypt);
                 } catch (error) {
                     console.error('Error:', error);
+                    if (error.message.includes('Alphabet')) {
+                        document.getElementById('alphabetError').textContent = error.message;
+                    }
                     updateStatus(`Error: ${error.message}`, 'error');
                 } finally {
                     isProcessing = false;
@@ -899,10 +954,10 @@
                     charCell.textContent = item.char;
                     
                     // Primary coords
-                    row.insertCell().textContent = item.primary || 'N/A';
+                    row.insertCell().textContent = item.primary;
                     
                     // Shadow coords
-                    row.insertCell().textContent = item.shadow || 'N/A';
+                    row.insertCell().textContent = item.shadow;
                     
                     // W value
                     row.insertCell().textContent = item.w !== null ? item.w : 'N/A';

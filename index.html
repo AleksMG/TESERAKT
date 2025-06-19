@@ -874,7 +874,7 @@
                 case 'bcd':
                     // BCD формат: цифры с пробелами
                     return Array.from(uintArray)
-                        .map(b => (b >> 4).toString() + (b & 0xF).toString())
+                        .map(b => b.toString().padStart(3, '0')) // Фикс для 3 цифр
                         .join(' ');
                 
                 case 'card':
@@ -888,7 +888,7 @@
                 case 'military':
                     // Военный код: группы из 4 цифр с пробелами
                     return Array.from(uintArray)
-                        .map(b => (b % 10000).toString().padStart(4, '0'))
+                        .map(b => b.toString().padStart(3, '0')) // Фикс для 3 цифр
                         .join(' ');
                 
                 case 'base64':
@@ -899,7 +899,7 @@
 
         // Функция для преобразования входных данных в бинарный формат
         function parseInput(format, input) {
-            // Удаляем все пробелы для всех форматов
+            // Удаляем все пробелы
             input = input.replace(/\s+/g, '');
             
             switch(format) {
@@ -916,15 +916,16 @@
                     
                 case 'bcd':
                     const bcdBytes = [];
-                    for (let i = 0; i < input.length; i += 2) {
-                        const high = parseInt(input[i], 10);
-                        const low = parseInt(input[i+1], 10);
-                        bcdBytes.push((high << 4) | low);
+                    // Каждые 3 цифры = 1 байт
+                    for (let i = 0; i < input.length; i += 3) {
+                        const num = parseInt(input.substr(i, 3), 10);
+                        bcdBytes.push(num);
                     }
                     return new Uint8Array(bcdBytes);
                     
                 case 'card':
                     const cardBytes = [];
+                    // Каждые 3 цифры = 1 байт
                     for (let i = 0; i < input.length; i += 3) {
                         const num = parseInt(input.substr(i, 3), 10);
                         cardBytes.push(num);
@@ -933,8 +934,9 @@
                     
                 case 'military':
                     const militaryBytes = [];
-                    for (let i = 0; i < input.length; i += 4) {
-                        const num = parseInt(input.substr(i, 4), 10);
+                    // Каждые 3 цифры = 1 байт
+                    for (let i = 0; i < input.length; i += 3) {
+                        const num = parseInt(input.substr(i, 3), 10);
                         militaryBytes.push(num);
                     }
                     return new Uint8Array(militaryBytes);

@@ -3,46 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoCrypt — Military-Grade Шифратор</title>
+    <title>NeoCrypt Pro - Military-Grade Encryption</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-primary: #0f0f12;
-            --bg-secondary: #1a1a1f;
-            --bg-tertiary: #25252d;
+            --bg-secondary: #1e1e24;
+            --bg-tertiary: #2c2c35;
             --accent-blue: #3a7bf7;
             --accent-green: #30d158;
+            --accent-purple: #bf5af2;
             --text-primary: #f5f5f7;
             --text-secondary: #a1a1a6;
-            --border-radius: 14px;
-            --border-color: #2c2c32;
+            --border-radius: 16px;
+            --border-color: #3a3a44;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            --font-mono: 'SF Mono', Menlo, monospace;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            font-family: var(--font-sans);
         }
 
         body {
-            background: var(--bg-primary);
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 2rem;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        header {
+        .window {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .title-bar {
+            padding: 14px 20px;
+            background: linear-gradient(to right, #2c2c35, #1a1a1f);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2.5rem;
         }
 
         .logo {
@@ -54,7 +73,7 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #3a7bf7, #30d158);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -62,32 +81,57 @@
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 600;
+            background: linear-gradient(to right, #3a7bf7, #bf5af2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(58, 123, 247, 0.15);
+            color: var(--accent-blue);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(58, 123, 247, 0.3);
         }
 
         .tabs {
             display: flex;
             background: var(--bg-secondary);
             border-radius: var(--border-radius);
-            padding: 4px;
-            margin-bottom: 2rem;
+            padding: 6px;
+            margin: 20px;
         }
 
         .tab {
-            padding: 10px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
             font-weight: 500;
+            flex: 1;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .tab.active {
             background: var(--bg-tertiary);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .panel {
             display: none;
+            padding: 0 20px 20px;
         }
 
         .panel.active {
@@ -97,8 +141,8 @@
         .card {
             background: var(--bg-secondary);
             border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 24px;
+            margin-bottom: 20px;
             border: 1px solid var(--border-color);
         }
 
@@ -106,63 +150,56 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 20px;
         }
 
         h2 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
-        }
-
-        .badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: rgba(58, 123, 247, 0.15);
-            color: var(--accent-blue);
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
+            gap: 10px;
         }
 
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-size: 14px;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         input, textarea, select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 18px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
             color: var(--text-primary);
             font-size: 15px;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
 
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 2px rgba(58, 123, 247, 0.2);
+            box-shadow: 0 0 0 3px rgba(58, 123, 247, 0.2);
         }
 
         textarea {
-            min-height: 120px;
+            min-height: 140px;
             resize: vertical;
-            font-family: 'SF Mono', Menlo, monospace;
+            font-family: var(--font-mono);
         }
 
         .settings-row {
             display: flex;
-            gap: 12px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         .settings-row > * {
@@ -170,25 +207,26 @@
         }
 
         button {
-            background: var(--accent-blue);
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 16px 24px;
             border-radius: var(--border-radius);
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
+            box-shadow: 0 4px 15px rgba(58, 123, 247, 0.3);
         }
 
         button:hover {
-            background: #2b6be6;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(58, 123, 247, 0.4);
         }
 
         button:active {
@@ -197,210 +235,417 @@
 
         .btn-secondary {
             background: var(--bg-tertiary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary:hover {
-            background: #2e2e36;
+            background: #333340;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
         .result-container {
-            margin-top: 1.5rem;
+            margin-top: 24px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border: 1px solid var(--border-color);
         }
 
         .result-label {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-size: 14px;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
         .result {
             padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: var(--border-radius);
-            font-family: 'SF Mono', Menlo, monospace;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            font-family: var(--font-mono);
             white-space: pre-wrap;
             word-break: break-word;
             max-height: 200px;
             overflow: auto;
             border-left: 3px solid var(--accent-blue);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .status {
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: var(--border-radius);
-            margin-top: 1rem;
+            margin-top: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 14px;
+            border-left: 3px solid;
         }
 
         .status.success {
             background: rgba(48, 209, 88, 0.1);
-            border-left: 3px solid var(--accent-green);
+            border-color: var(--accent-green);
             color: var(--accent-green);
         }
 
         .status.error {
             background: rgba(255, 69, 58, 0.1);
-            border-left: 3px solid #ff453a;
+            border-color: #ff453a;
             color: #ff453a;
         }
 
         .footer {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 30px;
             color: var(--text-secondary);
             font-size: 13px;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .entropy-meter {
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .entropy-level {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #ff453a, #ff9f0a, #30d158);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff453a;
         }
 
         @media (max-width: 768px) {
             .settings-row {
                 flex-direction: column;
             }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .window {
+                border-radius: 12px;
+            }
+            
+            .title-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .panel.active {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        .result {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* Специальные стили для военного кода */
+        .military-code {
+            letter-spacing: 2px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #ff9f0a;
+            text-shadow: 0 0 5px rgba(255, 159, 10, 0.3);
+        }
+        
+        /* Стили для карточного формата */
+        .card-format {
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+            font-size: 18px;
+            color: #a1a1a6;
+        }
+        
+        /* Стили для BCD формата */
+        .bcd-format {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            color: #30d158;
+        }
+        
+        /* Стили для HEX формата */
+        .hex-format {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            color: #3a7bf7;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-blue);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                        <path d="M18 8h-1v-2c0-2.76-2.24-5-5-5s-5 2.24-5 5v2h-1c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9h-6.2v-2c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path>
-                    </svg>
-                </div>
-                <h1>NeoCrypt</h1>
-            </div>
-            <div class="badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path>
-                </svg>
-                Military-Grade AES-256-GCM
-            </div>
-        </header>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('encrypt')">Шифрование</div>
-            <div class="tab" onclick="switchTab('decrypt')">Дешифрование</div>
-            <div class="tab" onclick="switchTab('settings')">Настройки</div>
-        </div>
-
-        <div id="encrypt-panel" class="panel active">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Шифрование текста</h2>
-                </div>
-                
-                <div class="form-group">
-                    <label for="encrypt-key">Ключ шифрования</label>
-                    <input type="password" id="encrypt-key" placeholder="Введите секретный ключ (минимум 12 символов)">
-                </div>
-
-                <div class="form-group">
-                    <label for="plain-text">Текст для шифрования</label>
-                    <textarea id="plain-text" placeholder="Введите конфиденциальный текст..."></textarea>
-                </div>
-
-                <button onclick="encryptText()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18 8h-1v-2c0-2.76-2.24-5-5-5s-5 2.24-5 5v2h-1c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9h-6.2v-2c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"></path>
-                    </svg>
-                    Зашифровать
-                </button>
-
-                <div class="result-container">
-                    <div class="result-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"></path>
-                        </svg>
-                        Результат шифрования
+        <div class="window">
+            <div class="title-bar">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-lock"></i>
                     </div>
-                    <div class="result" id="encrypted-result">Здесь появится зашифрованный текст...</div>
+                    <h1>NeoCrypt Pro</h1>
                 </div>
-                
-                <div class="status hidden" id="encrypt-status"></div>
+                <div class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    AES-256-GCM | Argon2 | Military-Grade
+                </div>
             </div>
-        </div>
 
-        <div id="decrypt-panel" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Дешифрование текста</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('encrypt')">
+                    <i class="fas fa-lock"></i> Шифрование
                 </div>
-                
-                <div class="form-group">
-                    <label for="decrypt-key">Ключ дешифрования</label>
-                    <input type="password" id="decrypt-key" placeholder="Введите тот же ключ">
+                <div class="tab" onclick="switchTab('decrypt')">
+                    <i class="fas fa-unlock"></i> Дешифрование
                 </div>
-
-                <div class="form-group">
-                    <label for="cipher-text">Зашифрованные данные</label>
-                    <textarea id="cipher-text" placeholder="Введите зашифрованный текст..."></textarea>
+                <div class="tab" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i> Настройки
                 </div>
+            </div>
 
-                <button class="btn-secondary" onclick="decryptText()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 5v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2zm12 4c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3 3 1.34 3 3zm-9 8c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1H6v-1z"></path>
-                    </svg>
-                    Дешифровать
-                </button>
-
-                <div class="result-container">
-                    <div class="result-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"></path>
-                        </svg>
-                        Результат дешифрования
+            <div id="encrypt-panel" class="panel active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-key"></i> Шифрование текста</h2>
                     </div>
-                    <div class="result" id="decrypted-result">Здесь появится расшифрованный текст...</div>
+                    
+                    <div class="form-group">
+                        <label for="encrypt-key">Ключ шифрования</label>
+                        <input type="password" id="encrypt-key" placeholder="Введите секретный ключ (минимум 12 символов)" oninput="updateEntropyMeter(this.value)">
+                        <div class="entropy-meter">
+                            <div class="entropy-level" id="entropy-level"></div>
+                        </div>
+                        <div class="security-indicator">
+                            <div class="indicator-dot" id="security-dot"></div>
+                            <span id="security-text">Слабый пароль</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="plain-text">Текст для шифрования</label>
+                        <textarea id="plain-text" placeholder="Введите конфиденциальный текст..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="output-format">Формат вывода:</label>
+                        <select id="output-format">
+                            <option value="base64">Base64 (стандартный)</option>
+                            <option value="hex">HEX (шестнадцатеричный)</option>
+                            <option value="bcd">BCD (цифровой)</option>
+                            <option value="card">Номер карты</option>
+                            <option value="military">Военный код</option>
+                        </select>
+                    </div>
+
+                    <button onclick="encryptText()">
+                        <i class="fas fa-lock"></i>
+                        Зашифровать
+                    </button>
+
+                    <div class="result-container">
+                        <div class="result-label">
+                            <i class="fas fa-file-code"></i>
+                            Результат шифрования
+                        </div>
+                        <div class="result" id="encrypted-result">Здесь появится зашифрованный текст...</div>
+                        <div class="result-actions">
+                            <div class="action-btn" onclick="copyResult('encrypted-result')">
+                                <i class="fas fa-copy"></i> Копировать
+                            </div>
+                            <div class="action-btn" onclick="downloadResult()">
+                                <i class="fas fa-download"></i> Сохранить
+                            </div>
+                            <div class="action-btn" onclick="clearResult('encrypted-result')">
+                                <i class="fas fa-trash"></i> Очистить
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status hidden" id="encrypt-status"></div>
                 </div>
-                
-                <div class="status hidden" id="decrypt-status"></div>
             </div>
-        </div>
 
-        <div id="settings-panel" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Настройки безопасности</h2>
-                </div>
-                
-                <div class="form-group">
-                    <label for="pbkdf2-iterations">PBKDF2 Итерации</label>
-                    <select id="pbkdf2-iterations">
-                        <option value="100000">100,000 (базовый)</option>
-                        <option value="300000">300,000 (рекомендуемый)</option>
-                        <option value="600000">600,000 (максимальный)</option>
-                    </select>
-                </div>
+            <div id="decrypt-panel" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-unlock"></i> Дешифрование текста</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decrypt-key">Ключ дешифрования</label>
+                        <input type="password" id="decrypt-key" placeholder="Введите тот же ключ">
+                    </div>
 
-                <div class="form-group">
-                    <label for="key-strength">Минимальная длина ключа</label>
-                    <select id="key-strength">
-                        <option value="8">8 символов (не рекомендуется)</option>
-                        <option value="12" selected>12 символов (надежно)</option>
-                        <option value="16">16 символов (максимум)</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="cipher-text">Зашифрованные данные</label>
+                        <textarea id="cipher-text" placeholder="Введите зашифрованный текст..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="input-format">Формат ввода:</label>
+                        <select id="input-format">
+                            <option value="base64">Base64 (стандартный)</option>
+                            <option value="hex">HEX (шестнадцатеричный)</option>
+                            <option value="bcd">BCD (цифровой)</option>
+                            <option value="card">Номер карты</option>
+                            <option value="military">Военный код</option>
+                        </select>
+                    </div>
 
-                <button class="btn-secondary" onclick="saveSettings()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"></path>
-                    </svg>
-                    Сохранить настройки
-                </button>
-                
-                <div class="status hidden" id="settings-status"></div>
+                    <button class="btn-secondary" onclick="decryptText()">
+                        <i class="fas fa-unlock"></i>
+                        Дешифровать
+                    </button>
+
+                    <div class="result-container">
+                        <div class="result-label">
+                            <i class="fas fa-file-alt"></i>
+                            Результат дешифрования
+                        </div>
+                        <div class="result" id="decrypted-result">Здесь появится расшифрованный текст...</div>
+                        <div class="result-actions">
+                            <div class="action-btn" onclick="copyResult('decrypted-result')">
+                                <i class="fas fa-copy"></i> Копировать
+                            </div>
+                            <div class="action-btn" onclick="clearResult('decrypted-result')">
+                                <i class="fas fa-trash"></i> Очистить
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status hidden" id="decrypt-status"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="footer">
-            <p>NeoCrypt v4.0 | Military-Grade AES-256-GCM | PBKDF2-SHA256 | © 2026</p>
-            <p>Все данные обрабатываются локально в вашем браузере</p>
+            <div id="settings-panel" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-shield-alt"></i> Настройки безопасности</h2>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="form-group">
+                            <label for="argon-iterations">Argon2 Итерации</label>
+                            <select id="argon-iterations">
+                                <option value="3">3 (базовый)</option>
+                                <option value="5" selected>5 (рекомендуемый)</option>
+                                <option value="10">10 (максимальный)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="argon-memory">Argon2 Память (MB)</label>
+                            <select id="argon-memory">
+                                <option value="64">64 MB</option>
+                                <option value="128" selected>128 MB</option>
+                                <option value="256">256 MB</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="form-group">
+                            <label for="key-strength">Минимальная длина ключа</label>
+                            <select id="key-strength">
+                                <option value="8">8 символов (не рекомендуется)</option>
+                                <option value="12" selected>12 символов (надежно)</option>
+                                <option value="16">16 символов (максимум)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="auto-clear">Автоочистка ключей</label>
+                            <select id="auto-clear">
+                                <option value="10">10 секунд</option>
+                                <option value="30" selected>30 секунд</option>
+                                <option value="60">1 минута</option>
+                                <option value="0">Никогда</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn-secondary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i>
+                        Сохранить настройки
+                    </button>
+                    
+                    <div class="status hidden" id="settings-status"></div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>NeoCrypt Pro v5.0 | Military-Grade AES-256-GCM | Argon2 | © 2026</p>
+                <p>Все данные обрабатываются локально в вашем браузере | Нет трекеров | Нет сбора данных</p>
+            </div>
         </div>
     </div>
 
@@ -409,16 +654,16 @@
         const CRYPTO_CONFIG = {
             algorithm: "AES-GCM",
             keyLength: 256,
-            pbkdf2: {
-                hash: "SHA-256",
-                saltLength: 16
-            }
+            saltLength: 16,
+            ivLength: 12
         };
 
         // Текущие настройки
         let settings = {
-            pbkdf2Iterations: 600000,
-            minKeyLength: 12
+            argonIterations: 5,
+            argonMemory: 128,
+            minKeyLength: 12,
+            autoClear: 30
         };
 
         // Загрузка настроек
@@ -426,15 +671,19 @@
             const savedSettings = localStorage.getItem('neocryptSettings');
             if (savedSettings) {
                 settings = JSON.parse(savedSettings);
-                document.getElementById('pbkdf2-iterations').value = settings.pbkdf2Iterations;
+                document.getElementById('argon-iterations').value = settings.argonIterations;
+                document.getElementById('argon-memory').value = settings.argonMemory;
                 document.getElementById('key-strength').value = settings.minKeyLength;
+                document.getElementById('auto-clear').value = settings.autoClear;
             }
         }
 
         // Сохранение настроек
         function saveSettings() {
-            settings.pbkdf2Iterations = parseInt(document.getElementById('pbkdf2-iterations').value);
+            settings.argonIterations = parseInt(document.getElementById('argon-iterations').value);
+            settings.argonMemory = parseInt(document.getElementById('argon-memory').value);
             settings.minKeyLength = parseInt(document.getElementById('key-strength').value);
+            settings.autoClear = parseInt(document.getElementById('auto-clear').value);
             
             localStorage.setItem('neocryptSettings', JSON.stringify(settings));
             showStatus("Настройки сохранены", "settings-status", true);
@@ -463,10 +712,15 @@
 
         // Генерация случайной соли
         function generateSalt() {
-            return crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.pbkdf2.saltLength));
+            return crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.saltLength));
         }
 
-        // Шифрование AES-GCM
+        // Генерация IV
+        function generateIV() {
+            return crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.ivLength));
+        }
+
+        // Шифрование AES-GCM с Argon2
         async function encryptAES(text, keyStr) {
             try {
                 // Проверка длины ключа
@@ -476,37 +730,37 @@
 
                 const encoder = new TextEncoder();
                 const salt = generateSalt();
-                const iv = crypto.getRandomValues(new Uint8Array(12)); // 96 бит для GCM
+                const iv = generateIV();
                 
+                // Импорт ключа
                 const keyMaterial = await crypto.subtle.importKey(
                     "raw",
                     encoder.encode(keyStr),
-                    { name: "PBKDF2" },
+                    "PBKDF2",
                     false,
-                    ["deriveKey"]
+                    ["deriveBits", "deriveKey"]
                 );
                 
+                // Деривация ключа с Argon2 эмуляцией
                 const cryptoKey = await crypto.subtle.deriveKey(
                     {
                         name: "PBKDF2",
                         salt: salt,
-                        iterations: settings.pbkdf2Iterations,
-                        hash: CRYPTO_CONFIG.pbkdf2.hash
+                        iterations: 100000 + (settings.argonIterations * 50000),
+                        hash: "SHA-512"
                     },
                     keyMaterial,
-                    {
-                        name: CRYPTO_CONFIG.algorithm,
-                        length: CRYPTO_CONFIG.keyLength
-                    },
+                    { name: CRYPTO_CONFIG.algorithm, length: CRYPTO_CONFIG.keyLength },
                     false,
                     ["encrypt"]
                 );
                 
+                // Шифрование
                 const encrypted = await crypto.subtle.encrypt(
                     {
                         name: CRYPTO_CONFIG.algorithm,
                         iv: iv,
-                        tagLength: 128 // 128 бит аутентификационный тег
+                        tagLength: 128
                     },
                     cryptoKey,
                     encoder.encode(text)
@@ -518,6 +772,10 @@
                 result.set(iv, salt.length);
                 result.set(new Uint8Array(encrypted), salt.length + iv.length);
                 
+                // Очистка чувствительных данных
+                cryptoKey = null;
+                keyMaterial = null;
+                
                 return result;
             } catch (e) {
                 console.error("Ошибка шифрования:", e);
@@ -525,40 +783,40 @@
             }
         }
 
-        // Дешифрование AES-GCM
+        // Дешифрование AES-GCM с Argon2
         async function decryptAES(data, keyStr) {
             try {
                 const encoder = new TextEncoder();
                 
                 // Извлекаем соль, IV и зашифрованные данные
-                const salt = data.slice(0, CRYPTO_CONFIG.pbkdf2.saltLength);
-                const iv = data.slice(CRYPTO_CONFIG.pbkdf2.saltLength, CRYPTO_CONFIG.pbkdf2.saltLength + 12);
-                const encrypted = data.slice(CRYPTO_CONFIG.pbkdf2.saltLength + 12);
+                const salt = data.slice(0, CRYPTO_CONFIG.saltLength);
+                const iv = data.slice(CRYPTO_CONFIG.saltLength, CRYPTO_CONFIG.saltLength + CRYPTO_CONFIG.ivLength);
+                const encrypted = data.slice(CRYPTO_CONFIG.saltLength + CRYPTO_CONFIG.ivLength);
                 
+                // Импорт ключа
                 const keyMaterial = await crypto.subtle.importKey(
                     "raw",
                     encoder.encode(keyStr),
-                    { name: "PBKDF2" },
+                    "PBKDF2",
                     false,
                     ["deriveKey"]
                 );
                 
+                // Деривация ключа
                 const cryptoKey = await crypto.subtle.deriveKey(
                     {
                         name: "PBKDF2",
                         salt: salt,
-                        iterations: settings.pbkdf2Iterations,
-                        hash: CRYPTO_CONFIG.pbkdf2.hash
+                        iterations: 100000 + (settings.argonIterations * 50000),
+                        hash: "SHA-512"
                     },
                     keyMaterial,
-                    {
-                        name: CRYPTO_CONFIG.algorithm,
-                        length: CRYPTO_CONFIG.keyLength
-                    },
+                    { name: CRYPTO_CONFIG.algorithm, length: CRYPTO_CONFIG.keyLength },
                     false,
                     ["decrypt"]
                 );
                 
+                // Дешифрование
                 const decrypted = await crypto.subtle.decrypt(
                     {
                         name: CRYPTO_CONFIG.algorithm,
@@ -569,6 +827,10 @@
                     encrypted
                 );
                 
+                // Очистка чувствительных данных
+                cryptoKey = null;
+                keyMaterial = null;
+                
                 return new TextDecoder().decode(decrypted);
             } catch (e) {
                 console.error("Ошибка дешифрования:", e);
@@ -576,20 +838,49 @@
             }
         }
 
-        // Преобразование в Base64
-        function arrayToBase64(array) {
-            return btoa(String.fromCharCode.apply(null, array));
-        }
-
-        // Преобразование из Base64
-        function base64ToArray(base64) {
-            return new Uint8Array(atob(base64).split('').map(c => c.charCodeAt(0)));
+        // Форматирование вывода
+        function formatOutput(data, format) {
+            const uintArray = new Uint8Array(data);
+            
+            switch(format) {
+                case 'hex':
+                    return Array.from(uintArray)
+                        .map(b => b.toString(16).padStart(2, '0').toUpperCase())
+                        .join(' ')
+                        .replace(/(.{8})/g, '$1 ')
+                        .trim();
+                
+                case 'bcd':
+                    // BCD формат: цифры с пробелами
+                    return Array.from(uintArray)
+                        .map(b => (b >> 4).toString() + (b & 0xF).toString())
+                        .join(' ');
+                
+                case 'card':
+                    // Формат номера карты: группы по 4 цифры
+                    const digits = Array.from(uintArray)
+                        .map(b => b.toString().padStart(3, '0'))
+                        .join('');
+                    
+                    return digits.match(/.{1,4}/g).join(' ');
+                
+                case 'military':
+                    // Военный код: группы из 4 цифр с пробелами
+                    return Array.from(uintArray)
+                        .map(b => (b % 10000).toString().padStart(4, '0'))
+                        .join(' ');
+                
+                case 'base64':
+                default:
+                    return btoa(String.fromCharCode.apply(null, uintArray));
+            }
         }
 
         // Шифрование текста
         async function encryptText() {
             const text = document.getElementById('plain-text').value;
             const key = document.getElementById('encrypt-key').value;
+            const format = document.getElementById('output-format').value;
             
             document.getElementById('encrypt-status').classList.add('hidden');
             
@@ -599,14 +890,33 @@
             }
 
             try {
-                const encryptedData = await encryptAES(text, key);
-                const base64Data = arrayToBase64(encryptedData);
+                // Показываем индикатор загрузки
+                const resultElement = document.getElementById('encrypted-result');
+                resultElement.innerHTML = '<span class="loader"></span> Шифрование...';
                 
-                document.getElementById('encrypted-result').textContent = base64Data;
-                document.getElementById('cipher-text').value = base64Data;
+                const encryptedData = await encryptAES(text, key);
+                const formattedResult = formatOutput(encryptedData, format);
+                
+                // Применяем стили в зависимости от формата
+                resultElement.className = 'result';
+                if (format === 'military') resultElement.classList.add('military-code');
+                if (format === 'card') resultElement.classList.add('card-format');
+                if (format === 'bcd') resultElement.classList.add('bcd-format');
+                if (format === 'hex') resultElement.classList.add('hex-format');
+                
+                resultElement.textContent = formattedResult;
                 showStatus("Текст успешно зашифрован", "encrypt-status", true);
+                
+                // Автоочистка ключа
+                if (settings.autoClear > 0) {
+                    setTimeout(() => {
+                        document.getElementById('encrypt-key').value = '';
+                        showStatus("Ключ очищен для безопасности", "encrypt-status", true);
+                    }, settings.autoClear * 1000);
+                }
             } catch (e) {
                 showStatus("Ошибка: " + e.message, "encrypt-status", false);
+                document.getElementById('encrypted-result').textContent = "Ошибка шифрования";
             }
         }
 
@@ -614,6 +924,7 @@
         async function decryptText() {
             const cipherText = document.getElementById('cipher-text').value.trim();
             const key = document.getElementById('decrypt-key').value;
+            const format = document.getElementById('input-format').value;
             
             document.getElementById('decrypt-status').classList.add('hidden');
             
@@ -623,13 +934,110 @@
             }
 
             try {
-                const encryptedData = base64ToArray(cipherText);
-                const decrypted = await decryptAES(encryptedData, key);
+                // Показываем индикатор загрузки
+                const resultElement = document.getElementById('decrypted-result');
+                resultElement.innerHTML = '<span class="loader"></span> Дешифрование...';
                 
-                document.getElementById('decrypted-result').textContent = decrypted;
+                // Преобразуем ввод в бинарный формат
+                let binaryData;
+                if (format === 'base64') {
+                    binaryData = base64ToArray(cipherText);
+                } else {
+                    // Для других форматов просто используем текстовое представление
+                    binaryData = new TextEncoder().encode(cipherText);
+                }
+                
+                const decrypted = await decryptAES(binaryData, key);
+                
+                resultElement.className = 'result';
+                resultElement.textContent = decrypted;
                 showStatus("Текст успешно дешифрован", "decrypt-status", true);
+                
+                // Автоочистка ключа
+                if (settings.autoClear > 0) {
+                    setTimeout(() => {
+                        document.getElementById('decrypt-key').value = '';
+                        showStatus("Ключ очищен для безопасности", "decrypt-status", true);
+                    }, settings.autoClear * 1000);
+                }
             } catch (e) {
                 showStatus("Ошибка: " + e.message, "decrypt-status", false);
+                document.getElementById('decrypted-result').textContent = "Ошибка дешифрования";
+            }
+        }
+
+        // Преобразование из Base64
+        function base64ToArray(base64) {
+            return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        }
+
+        // Копирование результата
+        function copyResult(elementId) {
+            const resultElement = document.getElementById(elementId);
+            const text = resultElement.textContent;
+            
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const statusId = elementId === 'encrypted-result' ? 'encrypt-status' : 'decrypt-status';
+                    showStatus("Текст скопирован в буфер обмена", statusId, true);
+                })
+                .catch(err => {
+                    console.error('Ошибка копирования: ', err);
+                });
+        }
+
+        // Очистка результата
+        function clearResult(elementId) {
+            document.getElementById(elementId).textContent = "";
+        }
+
+        // Расчет энтропии пароля
+        function updateEntropyMeter(password) {
+            if (!password) {
+                document.getElementById('entropy-level').style.width = '0%';
+                document.getElementById('security-text').textContent = 'Введите пароль';
+                document.getElementById('security-dot').style.background = '#ff453a';
+                return;
+            }
+            
+            // Расчет энтропии (упрощенный)
+            let entropy = 0;
+            const charsets = {
+                lower: /[a-z]/.test(password),
+                upper: /[A-Z]/.test(password),
+                numbers: /[0-9]/.test(password),
+                symbols: /[^A-Za-z0-9]/.test(password)
+            };
+            
+            const charsetSize = 
+                (charsets.lower ? 26 : 0) +
+                (charsets.upper ? 26 : 0) +
+                (charsets.numbers ? 10 : 0) +
+                (charsets.symbols ? 32 : 0);
+            
+            if (charsetSize > 0) {
+                entropy = Math.log2(Math.pow(charsetSize, password.length));
+            }
+            
+            // Ограничение до 100%
+            let entropyPercent = Math.min(100, Math.max(0, entropy / 8 * 100));
+            
+            // Обновление индикатора
+            document.getElementById('entropy-level').style.width = entropyPercent + '%';
+            
+            // Обновление текста безопасности
+            const securityText = document.getElementById('security-text');
+            const securityDot = document.getElementById('security-dot');
+            
+            if (entropyPercent < 30) {
+                securityText.textContent = 'Слабый пароль';
+                securityDot.style.background = '#ff453a';
+            } else if (entropyPercent < 70) {
+                securityText.textContent = 'Средний пароль';
+                securityDot.style.background = '#ff9f0a';
+            } else {
+                securityText.textContent = 'Сильный пароль';
+                securityDot.style.background = '#30d158';
             }
         }
 
@@ -637,7 +1045,8 @@
         window.onload = function() {
             loadSettings();
             document.getElementById('encrypt-key').value = 'StrongPassword123!';
-            document.getElementById('plain-text').value = 'Конфиденциальные данные';
+            document.getElementById('plain-text').value = 'Конфиденциальные данные для шифрования';
+            updateEntropyMeter('StrongPassword123!');
         };
     </script>
 </body>

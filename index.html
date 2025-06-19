@@ -442,6 +442,16 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        .error-details {
+            background: rgba(255, 69, 58, 0.1);
+            border-left: 3px solid #ff453a;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -486,7 +496,7 @@
                         </div>
                         <div class="security-indicator">
                             <div class="indicator-dot" id="security-dot"></div>
-                            <span id="security-text">Слабый пароль</span>
+                            <span id="security-text">Введите пароль</span>
                         </div>
                     </div>
 
@@ -530,7 +540,10 @@
                         </div>
                     </div>
                     
-                    <div class="status hidden" id="encrypt-status"></div>
+                    <div class="status hidden" id="encrypt-status">
+                        <span class="error-message"></span>
+                        <div class="error-details" id="encrypt-error-details"></div>
+                    </div>
                 </div>
             </div>
 
@@ -582,7 +595,10 @@
                         </div>
                     </div>
                     
-                    <div class="status hidden" id="decrypt-status"></div>
+                    <div class="status hidden" id="decrypt-status">
+                        <span class="error-message"></span>
+                        <div class="error-details" id="decrypt-error-details"></div>
+                    </div>
                 </div>
             </div>
 
@@ -699,15 +715,19 @@
         }
 
         // Показать статус
-        function showStatus(message, elementId, isSuccess) {
+        function showStatus(message, elementId, isSuccess, details = "") {
             const element = document.getElementById(elementId);
-            element.textContent = message;
+            element.querySelector('.error-message').textContent = message;
             element.className = isSuccess ? 'status success' : 'status error';
             element.classList.remove('hidden');
             
-            setTimeout(() => {
-                element.classList.add('hidden');
-            }, 5000);
+            const detailsElement = element.querySelector('.error-details');
+            if (details) {
+                detailsElement.textContent = details;
+                detailsElement.style.display = 'block';
+            } else {
+                detailsElement.style.display = 'none';
+            }
         }
 
         // Генерация случайной соли
@@ -733,7 +753,7 @@
                 const iv = generateIV();
                 
                 // Импорт ключа
-                const keyMaterial = await crypto.subtle.importKey(
+                let keyMaterial = await crypto.subtle.importKey(
                     "raw",
                     encoder.encode(keyStr),
                     "PBKDF2",
@@ -742,7 +762,7 @@
                 );
                 
                 // Деривация ключа с Argon2 эмуляцией
-                const cryptoKey = await crypto.subtle.deriveKey(
+                let cryptoKey = await crypto.subtle.deriveKey(
                     {
                         name: "PBKDF2",
                         salt: salt,
@@ -773,8 +793,8 @@
                 result.set(new Uint8Array(encrypted), salt.length + iv.length);
                 
                 // Очистка чувствительных данных
-                cryptoKey = null;
                 keyMaterial = null;
+                cryptoKey = null;
                 
                 return result;
             } catch (e) {
@@ -794,7 +814,7 @@
                 const encrypted = data.slice(CRYPTO_CONFIG.saltLength + CRYPTO_CONFIG.ivLength);
                 
                 // Импорт ключа
-                const keyMaterial = await crypto.subtle.importKey(
+                let keyMaterial = await crypto.subtle.importKey(
                     "raw",
                     encoder.encode(keyStr),
                     "PBKDF2",
@@ -803,7 +823,7 @@
                 );
                 
                 // Деривация ключа
-                const cryptoKey = await crypto.subtle.deriveKey(
+                let cryptoKey = await crypto.subtle.deriveKey(
                     {
                         name: "PBKDF2",
                         salt: salt,
@@ -828,8 +848,8 @@
                 );
                 
                 // Очистка чувствительных данных
-                cryptoKey = null;
                 keyMaterial = null;
+                cryptoKey = null;
                 
                 return new TextDecoder().decode(decrypted);
             } catch (e) {
@@ -915,7 +935,20 @@
                     }, settings.autoClear * 1000);
                 }
             } catch (e) {
-                showStatus("Ошибка: " + e.message, "encrypt-status", false);
+                let errorMessage = "Ошибка шифрования";
+                let errorDetails = "";
+                
+                if (e.message.includes("deriveKey")) {
+                    errorMessage = "Некорректный ключ";
+                    errorDetails = "Проверьте длину и символы в ключе";
+                } else if (e.message.includes("encrypt")) {
+                    errorMessage = "Ошибка алгоритма шифрования";
+                    errorDetails = "Попробуйте уменьшить объем данных";
+                } else {
+                    errorDetails = e.message;
+                }
+                
+                showStatus(errorMessage, "encrypt-status", false, errorDetails);
                 document.getElementById('encrypted-result').textContent = "Ошибка шифрования";
             }
         }
@@ -961,14 +994,32 @@
                     }, settings.autoClear * 1000);
                 }
             } catch (e) {
-                showStatus("Ошибка: " + e.message, "decrypt-status", false);
+                let errorMessage = "Ошибка дешифрования";
+                let errorDetails = "";
+                
+                if (e.message.includes("deriveKey")) {
+                    errorMessage = "Некорректный ключ";
+                    errorDetails = "Используйте тот же ключ, что и при шифровании";
+                } else if (e.message.includes("decrypt")) {
+                    errorMessage = "Ошибка алгоритма дешифрования";
+                    errorDetails = "Проверьте формат и целостность данных";
+                } else {
+                    errorDetails = e.message;
+                }
+                
+                showStatus(errorMessage, "decrypt-status", false, errorDetails);
                 document.getElementById('decrypted-result').textContent = "Ошибка дешифрования";
             }
         }
 
         // Преобразование из Base64
         function base64ToArray(base64) {
-            return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
         }
 
         // Копирование результата

@@ -6,6 +6,7 @@
     <title>NeoCrypt Pro - Military-Grade Encryption</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили остаются без изменений */
         :root {
             --bg-primary: #0f0f12;
             --bg-secondary: #1e1e24;
@@ -896,6 +897,53 @@
             }
         }
 
+        // Функция для преобразования входных данных в бинарный формат
+        function parseInput(format, input) {
+            // Удаляем все пробелы для всех форматов
+            input = input.replace(/\s+/g, '');
+            
+            switch(format) {
+                case 'base64':
+                    return base64ToArray(input);
+                    
+                case 'hex':
+                    const hexBytes = [];
+                    for (let i = 0; i < input.length; i += 2) {
+                        const byte = input.substr(i, 2);
+                        hexBytes.push(parseInt(byte, 16));
+                    }
+                    return new Uint8Array(hexBytes);
+                    
+                case 'bcd':
+                    const bcdBytes = [];
+                    for (let i = 0; i < input.length; i += 2) {
+                        const high = parseInt(input[i], 10);
+                        const low = parseInt(input[i+1], 10);
+                        bcdBytes.push((high << 4) | low);
+                    }
+                    return new Uint8Array(bcdBytes);
+                    
+                case 'card':
+                    const cardBytes = [];
+                    for (let i = 0; i < input.length; i += 3) {
+                        const num = parseInt(input.substr(i, 3), 10);
+                        cardBytes.push(num);
+                    }
+                    return new Uint8Array(cardBytes);
+                    
+                case 'military':
+                    const militaryBytes = [];
+                    for (let i = 0; i < input.length; i += 4) {
+                        const num = parseInt(input.substr(i, 4), 10);
+                        militaryBytes.push(num);
+                    }
+                    return new Uint8Array(militaryBytes);
+                    
+                default:
+                    throw new Error(`Неизвестный формат: ${format}`);
+            }
+        }
+
         // Шифрование текста
         async function encryptText() {
             const text = document.getElementById('plain-text').value;
@@ -972,13 +1020,7 @@
                 resultElement.innerHTML = '<span class="loader"></span> Дешифрование...';
                 
                 // Преобразуем ввод в бинарный формат
-                let binaryData;
-                if (format === 'base64') {
-                    binaryData = base64ToArray(cipherText);
-                } else {
-                    // Для других форматов просто используем текстовое представление
-                    binaryData = new TextEncoder().encode(cipherText);
-                }
+                let binaryData = parseInput(format, cipherText);
                 
                 const decrypted = await decryptAES(binaryData, key);
                 

@@ -6,6 +6,7 @@
     <title>NeoCrypt Pro - Military-Grade Encryption</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Все стили остаются без изменений */
         :root {
             --bg-primary: #0f0f12;
             --bg-secondary: #1e1e24;
@@ -490,7 +491,7 @@
                     
                     <div class="form-group">
                         <label for="encrypt-key">Ключ шифрования</label>
-                        <input type="password" id="encrypt-key" placeholder="Введите секретный ключ (минимум 12 символов)" oninput="updateEntropyMeter(this.value)">
+                        <input type="password" id="encrypt-key" placeholder="Введите секретный ключ (минимум 8 символов)" oninput="updateEntropyMeter(this.value)">
                         <div class="entropy-meter">
                             <div class="entropy-level" id="entropy-level"></div>
                         </div>
@@ -621,8 +622,8 @@
                         <div class="form-group">
                             <label for="key-strength">Минимальная длина ключа</label>
                             <select id="key-strength">
-                                <option value="8">8 символов (не рекомендуется)</option>
-                                <option value="12" selected>12 символов (надежно)</option>
+                                <option value="8">8 символов (минимум)</option>
+                                <option value="12" selected>12 символов (рекомендуется)</option>
                                 <option value="16">16 символов (максимум)</option>
                             </select>
                         </div>
@@ -742,9 +743,9 @@
         // Шифрование AES-GCM с PBKDF2
         async function encryptAES(text, keyStr) {
             try {
-                // Проверка длины ключа
-                if (keyStr.length < settings.minKeyLength) {
-                    throw new Error(`Ключ должен быть не менее ${settings.minKeyLength} символов`);
+                // Проверка длины ключа (минимальная длина теперь 8)
+                if (!keyStr || keyStr.length < 8) {
+                    throw new Error(`Ключ должен быть не менее 8 символов (сейчас ${keyStr.length})`);
                 }
 
                 const encoder = new TextEncoder();
@@ -885,12 +886,11 @@
                 
                 case 'military':
                     // Военный код: группы из 5 цифр с пробелами
-                    const militaryDigits = Array.from(uintArray)
+                    return Array.from(uintArray)
                         .map(b => b.toString().padStart(3, '0')) // Каждый байт в 3 цифры
                         .join('')
                         .match(/.{1,5}/g) // Разбиваем на группы по 5 цифр
                         .join(' ');
-                    return militaryDigits;
                 
                 case 'base64':
                 default:
@@ -941,10 +941,9 @@
                     
                 case 'military':
                     const militaryBytes = [];
-                    // Каждые 5 цифр = 1-2 байта (так как 3 цифры = 1 байт)
-                    const cleanInput = input.replace(/\D/g, '');
-                    for (let i = 0; i < cleanInput.length; i += 3) {
-                        const chunk = cleanInput.substr(i, 3);
+                    // Каждые 3 цифры = 1 байт
+                    for (let i = 0; i < input.length; i += 3) {
+                        const chunk = input.substr(i, 3);
                         if (chunk.length < 3) continue;
                         const num = parseInt(chunk, 10);
                         militaryBytes.push(num);
@@ -996,16 +995,12 @@
                 }
             } catch (e) {
                 let errorMessage = "Ошибка шифрования";
-                let errorDetails = "";
+                let errorDetails = e.message;
                 
                 if (e.message.includes("deriveKey")) {
-                    errorMessage = "Некорректный ключ";
-                    errorDetails = "Проверьте длину и символы в ключе";
+                    errorMessage = "Ошибка обработки ключа";
                 } else if (e.message.includes("encrypt")) {
                     errorMessage = "Ошибка алгоритма шифрования";
-                    errorDetails = "Попробуйте уменьшить объем данных";
-                } else {
-                    errorDetails = e.message;
                 }
                 
                 showStatus(errorMessage, "encrypt-status", false, errorDetails);
@@ -1049,16 +1044,12 @@
                 }
             } catch (e) {
                 let errorMessage = "Ошибка дешифрования";
-                let errorDetails = "";
+                let errorDetails = e.message;
                 
                 if (e.message.includes("deriveKey")) {
-                    errorMessage = "Некорректный ключ";
-                    errorDetails = "Используйте тот же ключ, что и при шифровании";
+                    errorMessage = "Ошибка обработки ключа";
                 } else if (e.message.includes("decrypt")) {
                     errorMessage = "Ошибка алгоритма дешифрования";
-                    errorDetails = "Проверьте формат и целостность данных";
-                } else {
-                    errorDetails = e.message;
                 }
                 
                 showStatus(errorMessage, "decrypt-status", false, errorDetails);
@@ -1094,6 +1085,27 @@
         // Очистка результата
         function clearResult(elementId) {
             document.getElementById(elementId).textContent = "";
+        }
+
+        // Скачивание результата
+        function downloadResult() {
+            const result = document.getElementById('encrypted-result').textContent;
+            if (!result || result.includes("Ошибка") || result.includes("Здесь появится")) {
+                showStatus("Нет данных для сохранения", "encrypt-status", false);
+                return;
+            }
+            
+            const blob = new Blob([result], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neocrypt_${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus("Файл сохранен", "encrypt-status", true);
         }
 
         // Расчет энтропии пароля
@@ -1144,27 +1156,6 @@
                 securityText.textContent = 'Сильный пароль';
                 securityDot.style.background = '#30d158';
             }
-        }
-
-        // Скачивание результата
-        function downloadResult() {
-            const result = document.getElementById('encrypted-result').textContent;
-            if (!result || result.includes("Ошибка") || result.includes("Здесь появится")) {
-                showStatus("Нет данных для сохранения", "encrypt-status", false);
-                return;
-            }
-            
-            const blob = new Blob([result], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `neocrypt_${new Date().toISOString().slice(0,10)}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showStatus("Файл сохранен", "encrypt-status", true);
         }
 
         // Инициализация

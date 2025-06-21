@@ -6,7 +6,6 @@
     <title>NeoCrypt Pro - Military-Grade Encryption</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Все стили остаются без изменений */
         :root {
             --bg-primary: #0f0f12;
             --bg-secondary: #1e1e24;
@@ -467,7 +466,7 @@
                 </div>
                 <div class="badge">
                     <i class="fas fa-shield-alt"></i>
-                    AES-256-GCM | Argon2 | Military-Grade
+                    AES-256-GCM | PBKDF2-HMAC-SHA512 | Military-Grade
                 </div>
             </div>
 
@@ -513,7 +512,7 @@
                             <option value="hex">HEX (шестнадцатеричный)</option>
                             <option value="bcd">BCD (цифровой)</option>
                             <option value="card">Номер карты</option>
-                            <option value="military">Военный код</option>
+                            <option value="military">Военный код (5 цифр)</option>
                         </select>
                     </div>
 
@@ -571,7 +570,7 @@
                             <option value="hex">HEX (шестнадцатеричный)</option>
                             <option value="bcd">BCD (цифровой)</option>
                             <option value="card">Номер карты</option>
-                            <option value="military">Военный код</option>
+                            <option value="military">Военный код (5 цифр)</option>
                         </select>
                     </div>
 
@@ -611,31 +610,29 @@
                     
                     <div class="settings-row">
                         <div class="form-group">
-                            <label for="argon-iterations">Argon2 Итерации</label>
-                            <select id="argon-iterations">
-                                <option value="3">3 (базовый)</option>
-                                <option value="5" selected>5 (рекомендуемый)</option>
-                                <option value="10">10 (максимальный)</option>
+                            <label for="kdf-iterations">PBKDF2 Итерации</label>
+                            <select id="kdf-iterations">
+                                <option value="100000">100,000 (базовый)</option>
+                                <option value="250000" selected>250,000 (рекомендуемый)</option>
+                                <option value="500000">500,000 (максимальный)</option>
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="argon-memory">Argon2 Память (MB)</label>
-                            <select id="argon-memory">
-                                <option value="64">64 MB</option>
-                                <option value="128" selected>128 MB</option>
-                                <option value="256">256 MB</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="settings-row">
                         <div class="form-group">
                             <label for="key-strength">Минимальная длина ключа</label>
                             <select id="key-strength">
                                 <option value="8">8 символов (не рекомендуется)</option>
                                 <option value="12" selected>12 символов (надежно)</option>
                                 <option value="16">16 символов (максимум)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="form-group">
+                            <label for="hash-algorithm">Алгоритм хеширования</label>
+                            <select id="hash-algorithm" disabled>
+                                <option value="SHA-512" selected>SHA-512 (рекомендуемый)</option>
                             </select>
                         </div>
                         
@@ -660,7 +657,7 @@
             </div>
 
             <div class="footer">
-                <p>NeoCrypt Pro v5.0 | Military-Grade AES-256-GCM | Argon2 | © 2026</p>
+                <p>NeoCrypt Pro v5.1 | Military-Grade AES-256-GCM | PBKDF2-HMAC-SHA512 | © 2026</p>
                 <p>Все данные обрабатываются локально в вашем браузере | Нет трекеров | Нет сбора данных</p>
             </div>
         </div>
@@ -672,15 +669,16 @@
             algorithm: "AES-GCM",
             keyLength: 256,
             saltLength: 16,
-            ivLength: 12
+            ivLength: 12,
+            tagLength: 128
         };
 
         // Текущие настройки
         let settings = {
-            argonIterations: 5,
-            argonMemory: 128,
+            kdfIterations: 250000,
             minKeyLength: 12,
-            autoClear: 30
+            autoClear: 30,
+            hashAlgorithm: "SHA-512"
         };
 
         // Загрузка настроек
@@ -688,19 +686,19 @@
             const savedSettings = localStorage.getItem('neocryptSettings');
             if (savedSettings) {
                 settings = JSON.parse(savedSettings);
-                document.getElementById('argon-iterations').value = settings.argonIterations;
-                document.getElementById('argon-memory').value = settings.argonMemory;
+                document.getElementById('kdf-iterations').value = settings.kdfIterations;
                 document.getElementById('key-strength').value = settings.minKeyLength;
                 document.getElementById('auto-clear').value = settings.autoClear;
+                document.getElementById('hash-algorithm').value = settings.hashAlgorithm;
             }
         }
 
         // Сохранение настроек
         function saveSettings() {
-            settings.argonIterations = parseInt(document.getElementById('argon-iterations').value);
-            settings.argonMemory = parseInt(document.getElementById('argon-memory').value);
+            settings.kdfIterations = parseInt(document.getElementById('kdf-iterations').value);
             settings.minKeyLength = parseInt(document.getElementById('key-strength').value);
             settings.autoClear = parseInt(document.getElementById('auto-clear').value);
+            settings.hashAlgorithm = document.getElementById('hash-algorithm').value;
             
             localStorage.setItem('neocryptSettings', JSON.stringify(settings));
             showStatus("Настройки сохранены", "settings-status", true);
@@ -741,7 +739,7 @@
             return crypto.getRandomValues(new Uint8Array(CRYPTO_CONFIG.ivLength));
         }
 
-        // Шифрование AES-GCM с Argon2
+        // Шифрование AES-GCM с PBKDF2
         async function encryptAES(text, keyStr) {
             try {
                 // Проверка длины ключа
@@ -762,13 +760,13 @@
                     ["deriveBits", "deriveKey"]
                 );
                 
-                // Деривация ключа с Argon2 эмуляцией
+                // Деривация ключа с PBKDF2
                 let cryptoKey = await crypto.subtle.deriveKey(
                     {
                         name: "PBKDF2",
                         salt: salt,
-                        iterations: 100000 + (settings.argonIterations * 50000),
-                        hash: "SHA-512"
+                        iterations: settings.kdfIterations,
+                        hash: settings.hashAlgorithm
                     },
                     keyMaterial,
                     { name: CRYPTO_CONFIG.algorithm, length: CRYPTO_CONFIG.keyLength },
@@ -781,7 +779,7 @@
                     {
                         name: CRYPTO_CONFIG.algorithm,
                         iv: iv,
-                        tagLength: 128
+                        tagLength: CRYPTO_CONFIG.tagLength
                     },
                     cryptoKey,
                     encoder.encode(text)
@@ -804,7 +802,7 @@
             }
         }
 
-        // Дешифрование AES-GCM с Argon2
+        // Дешифрование AES-GCM с PBKDF2
         async function decryptAES(data, keyStr) {
             try {
                 const encoder = new TextEncoder();
@@ -828,8 +826,8 @@
                     {
                         name: "PBKDF2",
                         salt: salt,
-                        iterations: 100000 + (settings.argonIterations * 50000),
-                        hash: "SHA-512"
+                        iterations: settings.kdfIterations,
+                        hash: settings.hashAlgorithm
                     },
                     keyMaterial,
                     { name: CRYPTO_CONFIG.algorithm, length: CRYPTO_CONFIG.keyLength },
@@ -842,7 +840,7 @@
                     {
                         name: CRYPTO_CONFIG.algorithm,
                         iv: iv,
-                        tagLength: 128
+                        tagLength: CRYPTO_CONFIG.tagLength
                     },
                     cryptoKey,
                     encrypted
@@ -872,9 +870,9 @@
                         .trim();
                 
                 case 'bcd':
-                    // BCD формат: цифры с пробелами
+                    // BCD формат: цифры с пробелами (3 цифры)
                     return Array.from(uintArray)
-                        .map(b => b.toString().padStart(3, '0')) // Фикс для 3 цифр
+                        .map(b => b.toString().padStart(3, '0'))
                         .join(' ');
                 
                 case 'card':
@@ -886,10 +884,13 @@
                     return digits.match(/.{1,4}/g).join(' ');
                 
                 case 'military':
-                    // Военный код: группы из 4 цифр с пробелами
-                    return Array.from(uintArray)
-                        .map(b => b.toString().padStart(3, '0')) // Фикс для 3 цифр
+                    // Военный код: группы из 5 цифр с пробелами
+                    const militaryDigits = Array.from(uintArray)
+                        .map(b => b.toString().padStart(3, '0')) // Каждый байт в 3 цифры
+                        .join('')
+                        .match(/.{1,5}/g) // Разбиваем на группы по 5 цифр
                         .join(' ');
+                    return militaryDigits;
                 
                 case 'base64':
                 default:
@@ -899,8 +900,12 @@
 
         // Функция для преобразования входных данных в бинарный формат
         function parseInput(format, input) {
-            // Удаляем все пробелы
-            input = input.replace(/\s+/g, '');
+            // Удаляем все пробелы и нецифровые символы для цифровых форматов
+            if (format === 'bcd' || format === 'card' || format === 'military') {
+                input = input.replace(/[^0-9]/g, '');
+            } else {
+                input = input.replace(/\s+/g, '');
+            }
             
             switch(format) {
                 case 'base64':
@@ -919,6 +924,7 @@
                     // Каждые 3 цифры = 1 байт
                     for (let i = 0; i < input.length; i += 3) {
                         const num = parseInt(input.substr(i, 3), 10);
+                        if (isNaN(num)) continue;
                         bcdBytes.push(num);
                     }
                     return new Uint8Array(bcdBytes);
@@ -928,15 +934,19 @@
                     // Каждые 3 цифры = 1 байт
                     for (let i = 0; i < input.length; i += 3) {
                         const num = parseInt(input.substr(i, 3), 10);
+                        if (isNaN(num)) continue;
                         cardBytes.push(num);
                     }
                     return new Uint8Array(cardBytes);
                     
                 case 'military':
                     const militaryBytes = [];
-                    // Каждые 3 цифры = 1 байт
-                    for (let i = 0; i < input.length; i += 3) {
-                        const num = parseInt(input.substr(i, 3), 10);
+                    // Каждые 5 цифр = 1-2 байта (так как 3 цифры = 1 байт)
+                    const cleanInput = input.replace(/\D/g, '');
+                    for (let i = 0; i < cleanInput.length; i += 3) {
+                        const chunk = cleanInput.substr(i, 3);
+                        if (chunk.length < 3) continue;
+                        const num = parseInt(chunk, 10);
                         militaryBytes.push(num);
                     }
                     return new Uint8Array(militaryBytes);
@@ -1134,6 +1144,27 @@
                 securityText.textContent = 'Сильный пароль';
                 securityDot.style.background = '#30d158';
             }
+        }
+
+        // Скачивание результата
+        function downloadResult() {
+            const result = document.getElementById('encrypted-result').textContent;
+            if (!result || result.includes("Ошибка") || result.includes("Здесь появится")) {
+                showStatus("Нет данных для сохранения", "encrypt-status", false);
+                return;
+            }
+            
+            const blob = new Blob([result], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `neocrypt_${new Date().toISOString().slice(0,10)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus("Файл сохранен", "encrypt-status", true);
         }
 
         // Инициализация
